@@ -383,4 +383,9 @@ Krea-2 的 bf16 更极端：**12,822 MB 驻留 + 11,628 MB 卸载**，首轮跑�
 
 ## 许可
 
-见 [LICENSE](LICENSE)。手册内容可自由转载，注明出处即可。
+MIT · 见 [LICENSE](LICENSE)。
+
+手册内容可自由转载，注明出处即可。
+
+作者：林永刚（Yonggang Lin）
+
