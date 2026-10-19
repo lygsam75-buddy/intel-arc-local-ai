@@ -8,7 +8,7 @@
 
 不是厂商文档，也不是教程复述。**只记录自己跑通了的配置和实测结果。**
 
-> 仓库：`intel-arc-ai-cookbook` · **数据可复算**：采集脚本、machine-readable 数据、测试项台账都在库里；`llama-server` 的原始运行日志随仓库分发（[`bench/logs/`](bench/logs/)），
+> 仓库：`intel-arc-local-ai` · **数据可复算**：采集脚本、machine-readable 数据、测试项台账都在库里；`llama-server` 的原始运行日志随仓库分发（[`bench/logs/`](bench/logs/)），
 > ComfyUI 的批次日志体积过大未入库，按记录里的 `log_evidence` 与路径占位符索引。
 
 ---
