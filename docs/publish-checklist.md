@@ -127,7 +127,7 @@ chore:      工具与基建
 
 ## 6. 发布后当天
 
-- ☑️ `README.md` 顶部「GitHub（待发布）」改成实际链接
+- ☑️ `README.md` 顶部补上实际仓库地址（现在是纯名字 `intel-arc-local-ai`，发布后换成 `https://github.com/<账号>/intel-arc-local-ai`）
 - ☑️ `docs/test-registry.md` §0 登记发布日期与首个 commit
 - ☑️ 对客材料可以开始引用仓库链接（「性能档案」落地）
 - ☑️ 核对 GitHub 页面上 `bench/logs/` 是否真的可见（`.gitignore` 的 `!` 例外只对已跟踪文件生效，`git add` 时要确认 33 份都在）
