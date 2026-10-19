@@ -1,0 +1,26 @@
+0.00.666.019 W SYCL GPU device 0 does not use Level Zero backend, disabling Level Zero memory API
+0.00.667.000 I srv  llama_server: initializing ...
+0.00.667.011 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)
+0.00.671.660 I srv    load_model: loading model '<模型目录>/Qwen3-VL-4B-Instruct-Q4_0.gguf'
+0.01.154.423 W load: control-looking token: 128247 '</s>' was not control-type; this is probably a bug in the model. its type will be overridden
+0.02.594.178 I cmn          init: llama threadpool init, n_threads = 6
+0.05.519.594 I srv    load_model: initializing, n_slots = 4, n_ctx_slot = 4096, kv_unified = 'true'
+0.05.534.916 I srv  llama_server: model loaded
+0.05.534.922 I srv  llama_server: listening on http://127.0.0.1:8097
+0.06.885.447 W srv    operator(): unauthorized: Invalid API Key
+0.06.891.111 I slot get_availabl: id  3 | task -1 | selected slot by LRU, t_last = -1
+0.06.891.757 I slot launch_slot_: id  3 | task 0 | processing task, is_child = 0
+0.08.223.209 I slot print_timing: id  3 | task 0 | prompt eval time =    1215.57 ms /     1 tokens ( 1215.57 ms per token,     0.82 tokens per second)
+0.08.223.215 I slot print_timing: id  3 | task 0 |        eval time =     115.83 ms /     8 tokens (   16.55 ms per token,    60.43 tokens per second)
+0.08.223.216 I slot print_timing: id  3 | task 0 |       total time =    1331.39 ms /     9 tokens
+0.08.223.217 I slot print_timing: id  3 | task 0 |    graphs reused =          8
+0.08.223.240 I slot      release: id  3 | task 0 | stop processing: n_tokens = 8, truncated = 0
+0.08.229.114 W srv    operator(): unauthorized: Invalid API Key
+0.08.230.690 I slot get_availabl: id  3 | task -1 | selected slot by LCP similarity, f_sim_best = 1.000 (> 0.100 thold), f_keep = 0.125
+0.08.232.408 I slot launch_slot_: id  3 | task 9 | processing task, is_child = 0
+0.08.350.375 I slot print_timing: id  3 | task 9 | prompt eval time =      15.34 ms /     1 tokens (   15.34 ms per token,    65.21 tokens per second)
+0.08.350.379 I slot print_timing: id  3 | task 9 |        eval time =     102.60 ms /     8 tokens (   14.66 ms per token,    68.22 tokens per second)
+0.08.350.380 I slot print_timing: id  3 | task 9 |       total time =     117.94 ms /     9 tokens
+0.08.350.381 I slot print_timing: id  3 | task 9 |    graphs reused =         16
+0.08.350.394 I slot      release: id  3 | task 9 | stop processing: n_tokens = 8, truncated = 0
+0.08.352.548 W srv    operator(): unauthorized: Invalid API Key

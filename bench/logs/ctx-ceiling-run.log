@@ -1,0 +1,96 @@
+########## Run B: Q3_K_S 上下文天花板 ##########
+[ENV] 物理内存 31.1 GiB · 页面文件上限 95.1 GiB
+
+======================================================================
+  [c4096-q8]  -c 4096 -fa on -ctk q8_0 -ctv q8_0
+======================================================================
+     显存 14705.0 MB (共享 32.1) 工作集 14579.2 MB 提交 15727.7 MB
+[OK] c4096-q8  load=16.6s  decode=37.33 (min 37.05 / max 37.61, n=2)
+     prompt=41.43  warmup_decode=36.493673139808735
+     -> 2026-10-15_b50-16g-q3ks-ctx_c4096-q8.json
+     | 0.15.863.271 I srv    load_model: initializing, n_slots = 4, n_ctx_slot = 4096, kv_unified = 'true'
+
+======================================================================
+  [c65536-q8]  -c 65536 -fa on -ctk q8_0 -ctv q8_0
+======================================================================
+     显存 15513.1 MB (共享 92.1) 工作集 14642.6 MB 提交 16601.1 MB
+[OK] c65536-q8  load=12.5s  decode=37.13 (min 36.85 / max 37.4, n=2)
+     prompt=44.9  warmup_decode=35.8163682449609
+     -> 2026-10-15_b50-16g-q3ks-ctx_c65536-q8.json
+     | 0.00.694.439 W common_fit_params: failed to fit params to free device memory: n_gpu_layers already set by user to 999, abort
+     | 0.11.701.743 I srv    load_model: initializing, n_slots = 4, n_ctx_slot = 65536, kv_unified = 'true'
+
+======================================================================
+  [c131072-q8]  -c 131072 -fa on -ctk q8_0 -ctv q8_0
+======================================================================
+     显存 16129.8 MB (共享 412.1) 工作集 23376.7 MB 提交 17544.3 MB
+[OK] c131072-q8  load=22.6s  decode=30.25 (min 30.18 / max 30.32, n=2)
+     prompt=37.46  warmup_decode=30.471733628101365
+     -> 2026-10-15_b50-16g-q3ks-ctx_c131072-q8.json
+     | 0.00.554.595 W common_fit_params: failed to fit params to free device memory: n_gpu_layers already set by user to 999, abort
+     | 0.22.051.584 I srv    load_model: initializing, n_slots = 4, n_ctx_slot = 131072, kv_unified = 'true'
+
+======================================================================
+  [c262144-q8]  -c 262144 -fa on -ctk q8_0 -ctv q8_0
+======================================================================
+     显存 16085.5 MB (共享 2332.1) 工作集 23564.3 MB 提交 19428.0 MB
+[OK] c262144-q8  load=24.6s  decode=15.74 (min 15.56 / max 15.91, n=2)
+     prompt=18.39  warmup_decode=15.230634644680398
+     -> 2026-10-15_b50-16g-q3ks-ctx_c262144-q8.json
+     | 0.00.690.884 W common_fit_params: failed to fit params to free device memory: n_gpu_layers already set by user to 999, abort
+     | 0.22.970.910 I srv    load_model: initializing, n_slots = 4, n_ctx_slot = 262144, kv_unified = 'true'
+
+=== 汇总 ===
+config                 load_s   decode   prompt   spread
+c4096-q8                 16.6    37.33    41.43      1.5
+c65536-q8                12.5    37.13     44.9      1.5
+c131072-q8               22.6    30.25    37.46      0.4
+c262144-q8               24.6    15.74    18.39      2.2
+########## Run C: IQ2_M f16 KV 边界 ##########
+[ENV] 物理内存 31.1 GiB · 页面文件上限 95.1 GiB
+
+======================================================================
+  [c4096-q8]  -c 4096 -fa on -ctk q8_0 -ctv q8_0
+======================================================================
+     显存 11129.2 MB (共享 32.1) 工作集 10990.6 MB 提交 12141.2 MB
+[OK] c4096-q8  load=14.6s  decode=44.56 (min 44.2 / max 44.92, n=2)
+     prompt=40.06  warmup_decode=44.81039132035284
+     -> 2026-10-15_b50-16g-iq2m-f16kv_c4096-q8.json
+     | 0.13.052.130 I srv    load_model: initializing, n_slots = 4, n_ctx_slot = 4096, kv_unified = 'true'
+
+======================================================================
+  [c32768-f16]  -c 32768 -fa on -ctk f16 -ctv f16
+======================================================================
+     显存 11752.5 MB (共享 60.1) 工作集 11008.8 MB 提交 12777.8 MB
+[OK] c32768-f16  load=10.5s  decode=45.28 (min 45.2 / max 45.36, n=2)
+     prompt=42.22  warmup_decode=45.2466536020045
+     -> 2026-10-15_b50-16g-iq2m-f16kv_c32768-f16.json
+     | 0.09.357.543 I srv    load_model: initializing, n_slots = 4, n_ctx_slot = 32768, kv_unified = 'true'
+
+======================================================================
+  [c131072-f16]  -c 131072 -fa on -ctk f16 -ctv f16
+======================================================================
+     显存 13750.7 MB (共享 156.1) 工作集 11121.4 MB 提交 14889.4 MB
+[OK] c131072-f16  load=10.5s  decode=45.23 (min 45.15 / max 45.32, n=2)
+     prompt=42.97  warmup_decode=45.29066263449008
+     -> 2026-10-15_b50-16g-iq2m-f16kv_c131072-f16.json
+     | 0.09.334.997 I srv    load_model: initializing, n_slots = 4, n_ctx_slot = 131072, kv_unified = 'true'
+
+======================================================================
+  [c262144-f16]  -c 262144 -fa on -ctk f16 -ctv f16
+======================================================================
+     显存 16183.5 MB (共享 540.1) 工作集 20401.6 MB 提交 17712.7 MB
+[OK] c262144-f16  load=18.6s  decode=33.52 (min 33.5 / max 33.53, n=2)
+     prompt=18.46  warmup_decode=33.33819843525722
+     -> 2026-10-15_b50-16g-iq2m-f16kv_c262144-f16.json
+     | 0.00.629.183 W common_fit_params: failed to fit params to free device memory: n_gpu_layers already set by user to 999, abort
+     | 0.16.825.417 I srv    load_model: initializing, n_slots = 4, n_ctx_slot = 262144, kv_unified = 'true'
+
+=== 汇总 ===
+config                 load_s   decode   prompt   spread
+c4096-q8                 14.6    44.56    40.06      1.6
+c32768-f16               10.5    45.28    42.22      0.4
+c131072-f16              10.5    45.23    42.97      0.4
+c262144-f16              18.6    33.52    18.46      0.1
+
+全部完成。数据在 bench/data，日志在 bench/logs

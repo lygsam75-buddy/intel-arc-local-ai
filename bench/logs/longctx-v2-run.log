@@ -1,0 +1,24 @@
+[CMD] <llama.cpp>/build/bin\llama-server.exe -m <模型目录>/Qwen3.6-35B-A3B-UD-IQ2_M.gguf -ngl 999 -ncmoe 0 -c 262144 --host 127.0.0.1 --port 8099 -fa on -ctk q8_0 -ctv q8_0 -v
+[OK] 加载完成 13.1s
+  -> 目标深度 512（prompt 852 字符）…
+     prompt_n=508  prefill=414.91 tok/s (1.2s)  decode@depth=44.35 tok/s
+  -> 目标深度 32768（prompt 52461 字符）…
+     prompt_n=31323  prefill=427.53 tok/s (73.3s)  decode@depth=30.82 tok/s
+  -> 目标深度 62654（prompt 100279 字符）…
+     prompt_n=59918  prefill=385.95 tok/s (155.2s)  decode@depth=24.26 tok/s
+  -> 目标深度 125356（prompt 200602 字符）…
+     prompt_n=119902  prefill=330.04 tok/s (363.3s)  decode@depth=17.02 tok/s
+  -> 目标深度 189673（prompt 303509 字符）…
+     prompt_n=181454  prefill=285.82 tok/s (634.9s)  decode@depth=13.01 tok/s
+  -> 目标深度 255000（prompt 408033 字符）…
+     prompt_n=244098  prefill=254.76 tok/s (958.1s)  decode@depth=10.48 tok/s
+
+-> bench\data\2026-10-15_b50-16g-iq2m-longctx-v2.json
+
+target       prompt_n prefill_tok_s        gen decode_tok_s
+512               508       414.91        128        44.35
+32768           31323       427.53        128        30.82
+62654           59918       385.95        128        24.26
+125356         119902       330.04        128        17.02
+189673         181454       285.82        128        13.01
+255000         244098       254.76        128        10.48

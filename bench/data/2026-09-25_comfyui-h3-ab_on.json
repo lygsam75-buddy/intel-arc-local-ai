@@ -1,0 +1,159 @@
+{
+  "schema": "comfyui-xpu-bench/1",
+  "tag": "comfyui-h3-ab_on",
+  "date": "2026-09-25",
+  "source": "local",
+  "domain": "comfyui-video",
+  "tool": "bench_h3.py + ComfyUI /prompt + /history",
+  "status": "active",
+  "env": {
+    "gpu": "Intel Arc Pro B70 32G",
+    "driver": "32.0.101.8976",
+    "vram_visible_gib": 31.16,
+    "ecc": "off",
+    "cpu": "AMD Ryzen 5 9600X",
+    "ram_gb": 32,
+    "os": "Windows",
+    "chip": "E223",
+    "subsys": "27421EF7",
+    "device_id": "PCI\\VEN_8086&DEV_E223&SUBSYS_27421EF7&REV_00",
+    "board_vendor": "GUNNIR 蓝戟 (PCI vendor 1EF7)",
+    "env_confidence": {
+      "gpu": "recorded",
+      "driver": "recorded",
+      "vram_visible_gib": "recorded",
+      "ecc": "recorded",
+      "cpu": "recorded",
+      "ram_gb": "recorded",
+      "envvars": "recorded",
+      "reserve_vram_gb": "inferred",
+      "steps": "recorded",
+      "duration_sec": "recorded",
+      "chip": "recorded",
+      "subsys": "recorded",
+      "device_id": "recorded",
+      "board_vendor": "recorded",
+      "resolution": "inferred",
+      "width": "inferred",
+      "height": "inferred",
+      "frames": "inferred",
+      "fps": "inferred"
+    },
+    "env_evidence": "AIB 身份由服务器日志的 `Device: xpu:0 ...` 行直接证明：Intel(R) Arc(TM) Pro B70 Graphics 出现在 <ComfyUI 日志目录>\\server_ab_on_s6_r0.log；Intel(R) Arc(TM) Pro B70 Graphics 出现在 <ComfyUI 日志目录>\\server_ab_on_s6_r1.log。这四字段原为按注册表 PCI 枚举推断（backfill_aib.py），今有运行日志佐证，故 env_confidence 升为 recorded。"
+  },
+  "envvars": {
+    "ZE_ENABLE_PCI_ID_DEVICE_ORDER": "1",
+    "SYCL_CACHE_PERSISTENT": "1",
+    "OMNIXPU_PROVIDER_BOOTSTRAP": "auto",
+    "OMNIXPU_PIN_MEMORY": "1",
+    "OMNIXPU_PIN_RATIO": "0.12",
+    "OMNI_XPU_DEVICE": "bmg"
+  },
+  "workload": {
+    "model": "MiniMax H3 (DiT + Qwen3VL 32B nvfp4 文本编码器)",
+    "task": "image-to-video",
+    "steps": [
+      6
+    ],
+    "duration_sec": 5.0,
+    "text_encoder_quant": "qwen3vl_32b_minimax_h3_nvfp4_awq",
+    "width": 864,
+    "height": 480,
+    "frames": 124,
+    "fps": 24,
+    "resolution": "864x480",
+    "selector_megapixels": 0.4,
+    "duration_sec_exact": 5.167
+  },
+  "mode": "fresh",
+  "reserve_vram_gb": 5,
+  "samples": [
+    {
+      "steps": 6,
+      "round": 0,
+      "seed": 20260924,
+      "ok": true,
+      "server_sec": 271.13,
+      "loads_delta": 5,
+      "prompt_len": 46
+    },
+    {
+      "steps": 6,
+      "round": 1,
+      "seed": 20268843,
+      "ok": true,
+      "server_sec": 277.2,
+      "loads_delta": 5,
+      "prompt_len": 46
+    }
+  ],
+  "summary": {
+    "n_total": 2,
+    "n_ok": 2,
+    "n_fail": 0,
+    "server_sec_mean": 274.16,
+    "server_sec_min": 271.13,
+    "server_sec_max": 277.2
+  },
+  "notes": "口径：服务端 execution_start → execution_success，不含排队；fresh 模式每条换提示词以强制重载文本编码。环境字段中 reserve_vram_gb 由 tag 名推断（默认 5，rsv9 为 9），原始数据未逐组记录 env，其余按 bench_h3.py BASE_ENV 补齐。 fresh 口径的固有风险：换提示词触发卸载/重装，同一服务器会话第 2~3 条易 DEVICE_LOST（bench_h3.py 注释已实锤），故多数组只有第 1 条成功——失败样本保留不删，按口径视为该组的有效约束而非成绩。",
+  "env_backfill": "chip/subsys/device_id/board_vendor 四项为 2026-10-16 backfill 补写，标 inferred：采集当时未落盘，身份由注册表 PCI 枚举取证（bench/harness/gpu_identity.py，见 docs/test-rig.md 的 AIB 身份表）。同一台机器、同一块物理卡，故该身份对本机全部历史记录成立。 workload 的分辨率维度（width/height/frames/fps）为 2026-10-16 backfill 补写，标 inferred：原始采集记录只落了 duration_sec，分辨率事后重建。重建依据三条独立证据：① 采集工作流 MiniMax_H3_低显存修复.json 的节点 115 ResolutionSelector = 16:9 / 0.4 MP / 32 的倍数，按 comfy_extras/nodes_resolution.py 的实现（total_pixels = megapixels × 1024²，宽高各自 round 到 multiple）得 864×480；② 节点 134 ComfyMathExpression 的帧数公式在 duration=5.0 时得 124 帧；③ docs/comfyui-h3.md §1 采集口径表记「864×480（实测产物核对）」。⚠️ 口径提醒：本项目采集用 0.4 MP 选择器（864×480），「B70 H3 实战」资料那套用 0.5 MP 选择器（960×544）——两边都被口头称作「0.5 MP」，实为不同分辨率，不可并排引用。",
+  "timing_breakdown": {
+    "note": "按样本分列（同一组内不同步数/轮次）",
+    "runs": [
+      {
+        "source": "<ComfyUI 日志目录>\\server_ab_on_s6_r0.log",
+        "prompt_executed_sec": 271.14,
+        "matched_sample": {
+          "steps": 6,
+          "round": 0,
+          "server_sec": 271.13
+        },
+        "dit_load_mode": "completely",
+        "dit_loaded_mb": 19996,
+        "dit_offloaded_mb": 0,
+        "steps": 6,
+        "step_sec_trace": [
+          9,
+          7,
+          7,
+          7,
+          7,
+          7
+        ],
+        "sampling_sec": 44,
+        "sampling_sec_per_step": 7.33,
+        "fixed_overhead_sec": 227.1,
+        "sampling_share_pct": 16.2
+      },
+      {
+        "source": "<ComfyUI 日志目录>\\server_ab_on_s6_r1.log",
+        "prompt_executed_sec": 277.22,
+        "matched_sample": {
+          "steps": 6,
+          "round": 1,
+          "server_sec": 277.2
+        },
+        "dit_load_mode": "completely",
+        "dit_loaded_mb": 19996,
+        "dit_offloaded_mb": 0,
+        "steps": 6,
+        "step_sec_trace": [
+          9,
+          7,
+          7,
+          7,
+          7,
+          7
+        ],
+        "sampling_sec": 44,
+        "sampling_sec_per_step": 7.33,
+        "fixed_overhead_sec": 233.2,
+        "sampling_share_pct": 15.9
+      }
+    ]
+  },
+  "log_evidence": {
+    "status": "annotated",
+    "note": "本记录的时间分解与卡型号由 2 条服务器日志取证（<ComfyUI 日志目录>\\server_ab_on_s6_r0.log; <ComfyUI 日志目录>\\server_ab_on_s6_r1.log）：每条日志的 `Prompt executed in X seconds` 均与对应样本的 server_sec 在 1.0s 容差内对上，确认是同一轮；日志中的 `Device: xpu:0 ...` 行是卡型号的直接证据。"
+  }
+}

@@ -1,0 +1,197 @@
+{
+  "schema": "comfyui-xpu-bench/1",
+  "domain": "comfyui-video",
+  "date": "2026-10-19",
+  "tag": "h3_1280x720_d15s_b70dur",
+  "status": "active",
+  "source": "local",
+  "tool": "bench_f_h3.py + ComfyUI /prompt + /history",
+  "batch": "B50 出视频分辨率天花板扫描（cold 单轮）",
+  "samples": [
+    {
+      "mode": "cold",
+      "ok": true,
+      "server_sec": 1316.16,
+      "last_sit": "188.15 s/it",
+      "sampling_sec": 1128.9,
+      "sampling_sec_per_step": 188.15,
+      "n_load": 4,
+      "vram_post_gib": null,
+      "power": null
+    },
+    {
+      "mode": "fresh",
+      "ok": true,
+      "server_sec": 1309.84,
+      "last_sit": "187.98 s/it",
+      "sampling_sec": 1127.88,
+      "sampling_sec_per_step": 187.98,
+      "n_load": 4,
+      "vram_post_gib": null,
+      "power": null
+    },
+    {
+      "mode": "cached",
+      "ok": true,
+      "server_sec": 1302.62,
+      "last_sit": "187.68 s/it",
+      "sampling_sec": 1126.08,
+      "sampling_sec_per_step": 187.68,
+      "n_load": 4,
+      "vram_post_gib": null,
+      "power": null
+    }
+  ],
+  "summary": {
+    "n_total": 3,
+    "n_ok": 3,
+    "n_fail": 0,
+    "server_sec_mean": 1309.54,
+    "power": null
+  },
+  "workload": {
+    "model": "MiniMax H3",
+    "task": "image-to-video",
+    "steps": 6,
+    "duration_sec": 15.0,
+    "frames": 362,
+    "fps": 24,
+    "duration_sec_exact": 15.083,
+    "selector_megapixels": null,
+    "width": 1280,
+    "height": 720,
+    "resolution": "1280x720",
+    "dit_file": "minimax_h3_fl2va_pruned_int8_convrot.safetensors",
+    "text_encoder_file": "qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors",
+    "sampler": "euler",
+    "scheduler": "simple"
+  },
+  "env": {
+    "gpu": "Intel Arc Pro B70 32G",
+    "chip": "E223",
+    "subsys": "27421EF7",
+    "device_id": "PCI\\VEN_8086&DEV_E223&SUBSYS_27421EF7&REV_00",
+    "board_vendor": "GUNNIR 蓝戟 (PCI vendor 1EF7)",
+    "board_code": "2742",
+    "vram_visible_gib": 31.16,
+    "ecc": "off",
+    "driver": "32.0.101.8976",
+    "cpu": "AMD Ryzen 5 9600X",
+    "ram_gb": 32,
+    "os": "Windows",
+    "attention_backend": "sdpa (CUTE 关闭；CUTE 开着跑 H3 音频封装必崩)",
+    "stack_variant": "int8fix",
+    "int8fix_env": {
+      "OMNIXPU_INT8_COMPUTE": "1",
+      "OMNIXPU_INT8_SIGFIX": "1"
+    },
+    "env_confidence": {
+      "gpu": "recorded",
+      "vram_visible_gib": "recorded",
+      "ecc": "recorded",
+      "cpu": "recorded",
+      "ram_gb": "recorded",
+      "os": "recorded",
+      "width": "recorded",
+      "height": "recorded",
+      "resolution": "recorded",
+      "steps": "recorded",
+      "attention_backend": "recorded",
+      "chip": "recorded",
+      "subsys": "recorded",
+      "device_id": "recorded",
+      "board_vendor": "recorded",
+      "board_code": "recorded",
+      "driver": "inferred",
+      "reserve_vram_gb": "inferred"
+    },
+    "env_evidence": "AIB 身份由服务器日志的 `Device: xpu:0 ...` 行直接证明：Intel(R) Arc(TM) Pro B70 Graphics 出现在 <bench_f>\\server_h3_1280x720_d15s_b70dur.log。这四字段原为按注册表 PCI 枚举推断（backfill_aib.py），今有运行日志佐证，故 env_confidence 升为 recorded。"
+  },
+  "log_evidence": {
+    "status": "annotated",
+    "note": "本记录的时间分解与卡型号由 3 条服务器日志取证（<bench_f>\\server_h3_1280x720_d15s_b70dur.log）：每条日志的 `Prompt executed in X seconds` 均与对应样本的 server_sec 在 1.0s 容差内对上，确认是同一轮；日志中的 `Device: xpu:0 ...` 行是卡型号的直接证据。"
+  },
+  "timing_breakdown": {
+    "note": "按样本分列（同一组内不同步数/轮次）",
+    "runs": [
+      {
+        "source": "<bench_f>\\server_h3_1280x720_d15s_b70dur.log",
+        "prompt_executed_sec": 1316,
+        "matched_sample": {
+          "steps": null,
+          "round": null,
+          "server_sec": 1316.16
+        },
+        "dit_load_mode": "partially",
+        "dit_loaded_mb": 12431,
+        "dit_offloaded_mb": 7564,
+        "steps": 6,
+        "step_sec_trace": [
+          199,
+          186,
+          186,
+          186,
+          186,
+          185
+        ],
+        "sampling_sec": 1128,
+        "sampling_sec_per_step": 188.0,
+        "fixed_overhead_sec": 188.2,
+        "sampling_share_pct": 85.7,
+        "overhead_base": "samples.server_sec (端到端)"
+      },
+      {
+        "source": "<bench_f>\\server_h3_1280x720_d15s_b70dur.log",
+        "prompt_executed_sec": 1309,
+        "matched_sample": {
+          "steps": null,
+          "round": null,
+          "server_sec": 1316.16
+        },
+        "dit_load_mode": "partially",
+        "dit_loaded_mb": 12431,
+        "dit_offloaded_mb": 7564,
+        "steps": 6,
+        "step_sec_trace": [
+          198,
+          187,
+          185,
+          186,
+          186,
+          185
+        ],
+        "sampling_sec": 1127,
+        "sampling_sec_per_step": 187.83,
+        "fixed_overhead_sec": 189.2,
+        "sampling_share_pct": 85.6,
+        "overhead_base": "samples.server_sec (端到端)"
+      },
+      {
+        "source": "<bench_f>\\server_h3_1280x720_d15s_b70dur.log",
+        "prompt_executed_sec": 1302,
+        "matched_sample": {
+          "steps": null,
+          "round": null,
+          "server_sec": 1316.16
+        },
+        "dit_load_mode": "partially",
+        "dit_loaded_mb": 12431,
+        "dit_offloaded_mb": 7564,
+        "steps": 6,
+        "step_sec_trace": [
+          196,
+          186,
+          186,
+          186,
+          186,
+          186
+        ],
+        "sampling_sec": 1126,
+        "sampling_sec_per_step": 187.67,
+        "fixed_overhead_sec": 190.2,
+        "sampling_share_pct": 85.6,
+        "overhead_base": "samples.server_sec (端到端)"
+      }
+    ]
+  }
+}

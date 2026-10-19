@@ -1,0 +1,22 @@
+# 行尾策略：**默认不做任何转换**，仓库里存的就是作者机器上磁盘里的字节。
+#
+# 为什么这么定：
+#   bench/logs/ 是取证用的原始日志，入库前做过「路径归一化、其余字节逐字节未动」
+#   的核对（含 \r\n 行尾）。若 Git 在这里做换行转换，那份「逐字节相等」的结论就
+#   不再成立，日志也就不能当证据用了。
+#
+# 例外：代码与脚本统一 LF —— Windows 上写的 .py/.sh 若带 CRLF，
+#   在 Linux / WSL / CI 里直接跑会失败（`bash\r: command not found`）。
+
+* -text
+
+*.py   text eol=lf
+*.sh   text eol=lf
+
+# 原始数据与日志：原样保存，不做换行转换
+bench/logs/**  -text
+bench/data/**  -text
+
+# 图片按二进制处理（避免 diff 尝试解析）
+*.png  binary
+*.jpg  binary

@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# 编辑器
+.vscode/
+.idea/
+*.swp
+
+# 大文件不进仓库（模型、构建产物）
+*.gguf
+*.bin
+*.exe
+*.zip
+
+# 日志默认排除……
+*.log
+# ……但 bench/logs/ 是结论的原始证据，**要入库**（见 bench/logs/README.md）
+!bench/logs/
+!bench/logs/*.log
+
+# 本地环境覆盖
+local.env
+*.local.json

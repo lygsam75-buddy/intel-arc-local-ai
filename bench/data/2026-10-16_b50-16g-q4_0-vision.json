@@ -1,0 +1,181 @@
+{
+  "schema": "arc-xpu-vision-probe/1",
+  "tag": "b50-16g-q4_0-vision",
+  "date": "2026-10-16",
+  "source": "local",
+  "env": {
+    "gpu": "Intel Arc Pro B50 LP 16G",
+    "driver": "32.0.101.8976",
+    "ecc": "off",
+    "backend": "SYCL",
+    "tool": "llama-server /v1/chat/completions",
+    "device_selector": "opencl:0",
+    "sycl_path": "<SYCL 运行时目录>;<oneMKL 目录>;<oneAPI 编译器目录>",
+    "ram_gb": 31.1,
+    "commit_limit_gb": 95.1,
+    "slot": "PCIE1 (CPU-attached x16, B50 negotiates x8)",
+    "chip": "E212",
+    "subsys": "25221EF7",
+    "vbios": "2304240000",
+    "vram_visible_gib": 15.51
+  },
+  "model": {
+    "name": "Qwen_Qwen3.6-35B-A3B-Q4_0",
+    "quant": "Q4_0",
+    "size_gib": 19.41
+  },
+  "mmproj": {
+    "file": "mmproj-Qwen3.6-35B-A3B-Q8_0.gguf",
+    "size_gib": 0.57
+  },
+  "ncmoe": 8,
+  "ctx": 16384,
+  "image_min_tokens": 1024,
+  "server_args": [
+    "-m",
+    "<模型目录>/Qwen_Qwen3.6-35B-A3B-Q4_0.gguf",
+    "-ngl",
+    "999",
+    "-ncmoe",
+    "8",
+    "--host",
+    "127.0.0.1",
+    "--port",
+    "8098",
+    "-c",
+    "16384",
+    "--parallel",
+    "1",
+    "--cache-type-k",
+    "q8_0",
+    "--cache-type-v",
+    "q8_0",
+    "--fit",
+    "off",
+    "-lm",
+    "dio",
+    "--jinja",
+    "--mmproj",
+    "<模型目录>/mmproj-Qwen3.6-35B-A3B-Q8_0.gguf",
+    "--image-min-tokens",
+    "1024",
+    "--api-key",
+    "local"
+  ],
+  "log": "..\\logs\\2026-10-16_b50-16g-q4_0-vision.log",
+  "test_image": {
+    "path": "..\\data\\assets\\vision_test.png",
+    "w": 640,
+    "h": 360,
+    "bytes": 3207,
+    "expected": [
+      "red",
+      "green",
+      "blue"
+    ]
+  },
+  "prompt": "List the shapes in this image. For each one give its color. Answer in one short line, left to right.",
+  "load_s": 21.1,
+  "vram_after_load": {
+    "pid": 23384,
+    "name": "llama-server.exe",
+    "vram_dedicated_mb": 16148.7,
+    "vram_shared_mb": 4434.1,
+    "ram_working_set_mb": 4748.2,
+    "ram_commit_mb": 21759.1,
+    "ram_page_faults": 1415013
+  },
+  "runs": [
+    {
+      "rep": 0,
+      "wall_s": 114.24,
+      "answer": "",
+      "decode_tok_s": 30.72330750958486,
+      "prompt_tok_s": 9.998977422308979,
+      "prompt_n": 1111,
+      "predicted_n": 96,
+      "usage": {
+        "completion_tokens": 96,
+        "prompt_tokens": 1111,
+        "total_tokens": 1207,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      }
+    },
+    {
+      "rep": 1,
+      "wall_s": 3.23,
+      "answer": "",
+      "decode_tok_s": 31.044787825214573,
+      "prompt_tok_s": 26.501474144499287,
+      "prompt_n": 4,
+      "predicted_n": 96,
+      "usage": {
+        "completion_tokens": 96,
+        "prompt_tokens": 1111,
+        "total_tokens": 1207,
+        "prompt_tokens_details": {
+          "cached_tokens": 1107
+        }
+      }
+    },
+    {
+      "rep": 2,
+      "wall_s": 3.2,
+      "answer": "",
+      "decode_tok_s": 31.407512809306148,
+      "prompt_tok_s": 26.480771649685874,
+      "prompt_n": 4,
+      "predicted_n": 96,
+      "usage": {
+        "completion_tokens": 96,
+        "prompt_tokens": 1111,
+        "total_tokens": 1207,
+        "prompt_tokens_details": {
+          "cached_tokens": 1107
+        }
+      }
+    }
+  ],
+  "vram_after_probe": {
+    "pid": 23384,
+    "name": "llama-server.exe",
+    "vram_dedicated_mb": 16202.2,
+    "vram_shared_mb": 4702.6,
+    "ram_working_set_mb": 5170.9,
+    "ram_commit_mb": 22236.1,
+    "ram_page_faults": 1724412
+  },
+  "decode_tok_s": 31.06,
+  "prompt_tok_s": 20.99,
+  "image_prompt_n": 1111,
+  "content_check": {
+    "expected_colors": [
+      "red",
+      "green",
+      "blue"
+    ],
+    "found": [],
+    "pass": false,
+    "answers": [
+      "",
+      "",
+      ""
+    ]
+  },
+  "status": "discarded",
+  "log_scan": {
+    "lines": 60,
+    "clip_loaded": [
+      "loaded multimodal model, '<模型目录>/mmproj-Qwen3.6-35B-A3B-Q8_0.gguf'"
+    ],
+    "mmproj_note": [
+      "mmproj-Qwen3.6-35B-A3B-Q8_0.gguf'"
+    ],
+    "key_lines": [
+      "0.19.654.532 I srv    load_model: loaded multimodal model, '<模型目录>/mmproj-Qwen3.6-35B-A3B-Q8_0.gguf'"
+    ]
+  },
+  "discard_reason": "参数写错：max_tokens=96 且未关思考，96 个 token 全被推理模型的思考阶段吃掉，content 返回空字符串 → 内容核对 FAIL。加载、显存、速度读数均正常，所以这条记录的价值是反面对照：'服务起来了 / 速度有值' 不等于 '多模态跑通了'。正确做法见同目录 2026-10-16_b50-16g-q4_0-vision-nothink.json（status=active，9 个 token 答对）。"
+}
