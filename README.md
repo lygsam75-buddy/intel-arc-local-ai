@@ -1,3 +1,5 @@
+**简体中文** · [English](README.en.md)
+
 # Intel Arc 本地 AI 实战手册
 
 **Intel Arc Local AI Handbook** · everything here was measured on our own cards
@@ -337,6 +339,7 @@ Krea-2 的 bf16 更极端：**12,822 MB 驻留 + 11,628 MB 卸载**，首轮跑�
 
 | 路径 | 内容 |
 |---|---|
+| [`README.en.md`](README.en.md) | **English entry point**——英文入口页（定位 / 硬件 / 核心数字 / 文档地图 / 未测项）。**完整文档是中文** |
 | [`docs/pitfalls.md`](docs/pitfalls.md) | 坑清单——每个坑的现象、根因、修法 |
 | [`docs/vram-16gb.md`](docs/vram-16gb.md) | **16 GB 档（B50）参数优化**——主力档位 |
 | [`docs/server-config.md`](docs/server-config.md) | **16 GB 档 server 交付配置**——不加 `-ncmoe` 就是最差配置（实测差 15×） |
