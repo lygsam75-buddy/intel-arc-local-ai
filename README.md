@@ -1,5 +1,8 @@
 # Intel Arc 本地 AI 实战手册
 
+**Intel Arc Local AI Handbook** · everything here was measured on our own cards
+(Arc Pro B50 16 GB / B70 32 GB) — with raw logs and machine-readable data to back it up.
+
 在 Intel Arc（Xe / Xe2，A 系列 / B 系列 / Arc Pro B 系列）上跑本地 AI 模型的**实战记录**——
 推理引擎选择、启动参数、踩过的坑，以及本机量出来的数字。
 
