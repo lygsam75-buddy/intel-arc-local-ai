@@ -18,6 +18,9 @@
 | `D:\WorkBuddy\…\intel-arc-ai-cookbook\bench\data` | `bench/data` |
 | `D:\WorkBuddy\…\intel-arc-ai-cookbook\bench\logs` | `bench/logs` |
 
+> 表里那个仓库目录名是**归一化当时**的目录名 —— 这一列记录的是「日志原文里出现过的字符串」，
+> 与当前仓库名（`intel-arc-local-ai`）无关。
+
 **归一化只动了路径字符串，其余字节逐字节未变** —— 包括：
 
 - 行尾符（仍是 `\r\n`，未做任何换行转换）；

@@ -90,7 +90,7 @@
 | 1 | **仓库名** | `intel-arc-local-ai` · 显示名 **Intel Arc Local AI Handbook** |
 | 2 | **公开范围** | **public**（手册的价值就在于被搜到；已扫过无密钥、无绝对路径、无内部产品名） |
 | 3 | **署名** | `lygsam75-buddy`（LICENSE 已写死，与 git 全局身份一致） |
-| 4 | **仓库描述 / topics** | 描述：`Intel Arc Pro B50/B70 本地 AI 实测手册：llama.cpp · ComfyUI · 出图/视频/功耗`；topics：`intel-arc` `xpu` `llama-cpp` `comfyui` `oneapi` `benchmark` `local-llm` |
+| 4 | **仓库描述 / topics** | 描述（英文，好被搜到）：`Field-measured local AI on Arc Pro B50 / B70: llama.cpp, ComfyUI, image · video · audio generation, and power — with raw logs and machine-readable data.`；topics：`intel-arc` `xpu` `llama-cpp` `comfyui` `local-llm` `benchmark` `oneapi` `arc-pro` |
 | 5 | **GitHub 登录** | `gh` 当前**未登录** → 需要一次浏览器授权（见 §5），之后长期有效 |
 
 ---
@@ -108,7 +108,7 @@ git commit -m "initial: Intel Arc 本地 AI 实战手册（B50/B70 实测 + 测�
 # 建库并推送（需先 gh auth login）
 gh auth login                              # 浏览器授权，只需一次
 gh repo create intel-arc-local-ai --public --source . --push \
-  --description "Intel Arc Pro B50/B70 本地 AI 实测手册：llama.cpp · ComfyUI · 出图/视频/功耗"
+  --description "Field-measured local AI on Arc Pro B50 / B70: llama.cpp, ComfyUI, image · video · audio generation, and power — with raw logs and machine-readable data."
 
 # 补 topics
 gh repo edit --add-topic intel-arc,xpu,llama-cpp,comfyui,oneapi,benchmark,local-llm
