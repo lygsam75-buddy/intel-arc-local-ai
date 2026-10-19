@@ -13,14 +13,15 @@
 
 | # | 板块 | 具体文件 | 规模 | 一句话定位（读者为什么要看） |
 |---|---|---|---:|---|
-| 1 | **门面** | `README.md`（**英文，GitHub 默认首页**）<br>`README.zh-CN.md`（中文完整版） | 192 / 396 行 | 英文页：双卡总览倍数表 + 硬件 + 五组核心数字 + 16 篇文档地图 + 未测项。<br>中文页：口径 A/B/C 全表、ComfyUI 各节、槽位结论、目录。<br>**顶部互链**，GitHub 首屏是英文 |
+| 1 | **门面** | `README.md`（**英文，GitHub 默认首页**）<br>`README.zh-CN.md`（中文完整版）<br>`docs/at-a-glance.md` · `docs/at-a-glance.en.md` | 401 / 436 / 98 / 98 行 | **开头四张表**（想干什么 / 该买哪张 / 电费 / 双卡并排）——不用术语，先给结论。<br>再往下：硬件表、**蓝戟 GUNNIR + 功耗墙**（为什么同型号不同板性能不同）、长上下文、H3、出图出音乐、功耗。<br>`at-a-glance` 是更极端的「六张表一页纸」版本，两个 README 首屏都链到它。<br>**顶部互链**，GitHub 首屏是英文 |
 | 2 | **推理侧（llama.cpp）** | `docs/vram-16gb.md`<br>`docs/server-config.md`<br>`docs/slot-comparison.md`<br>`docs/test-rig.md`<br>`docs/strata-b50-linux-prep.md`<br>`bench/README.md` | 442 / 325 / 235 / 267 / 441 / 433 行 | 主力档位参数优化、可直接交付的 server 配置、槽位到底有没有损失、平台规格、在 Ubuntu 上复现的卡点。**`bench/README.md` 是「什么才算一条可比的数字」的口径定义** |
 | 3 | **ComfyUI 侧** | `docs/comfyui-capability.md`<br>`docs/comfyui-h3.md`<br>`docs/comfyui-image.md`<br>`docs/comfyui-power.md` | 399 / 679 / 850 / 322 行 | 能力总表（能装多大 / 出视频 / 出图三问一页答完）→ 视频分辨率 × 时长全矩阵 → 出图与出音乐（含内核变体配对）→ 功耗与电费。**这是全库最有对客价值的一组** |
 | 4 | **坑清单** | `docs/pitfalls.md` | 926 行 | 每个坑的现象 → 根因 → 修法。**含 TDR 2 秒、TIME_WAIT 端口耗尽、XPU 锁页内存、int8 门禁这几条最贵的** |
 | 5 | **测试项台账** | `docs/test-registry.md`<br>`CONTRIBUTING.md` | 441 / 72 行 | 所有测试项的编号 / 状态 / 数据位置 / 复现入口，含**「预判 vs 实测」**和**更正台账**。**这是「数据可信」的唯一凭据** |
 | 6 | **数据与工具** | `bench/data/` 207 个 JSON（2.4 MB）<br>`bench/logs/` 33 份 `llama-server` 原始日志（18 MB）<br>`bench/harness/` 24 个脚本 + 2 个 shell<br>`bench/logs/README.md` | 见左 | machine-readable 原始数据 + 采集脚本 + **日志↔记录对照**。审计入口：`python bench/harness/registry_audit.py` |
 
-**全库合计**：Markdown 17 份 · 6,691 行（中文 16 份 6,499 行 + 英文主 README 192 行）；数据 207 条；日志 33 份；脚本 26 个。**约 21 MB**（日志占 18 MB）。
+**全库合计**：Markdown **19 份 · 7,151 行**（英文 2 份 499 行 = `README.md` 401 + `at-a-glance.en.md` 98；
+中文 17 份 6,652 行）；数据 207 条；日志 33 份；脚本 26 个。**约 21 MB**（日志占 18 MB）。
 
 ### 语言策略：**英文占首屏，中文是权威源**
 
@@ -28,11 +29,12 @@
 |---|---|---|
 | **GitHub 首屏** | **英文**（`README.md`） | GitHub 的默认流量是英文检索与英文读者。**英文读者不会点「简体中文」那条链接，但中文读者一定会点「English」旁边那条** —— 所以首屏给英文，切换成本落在中文读者这边，代价最小 |
 | 仓库名 / description / topics | **英文** | 决定能不能被搜到；`intel-arc` `xpu` `llama-cpp` `comfyui` 是真正的检索词 |
-| **正文与细节** | **中文**（16 份文档 + `README.zh-CN.md`） | 目标读者是国内客户与工程师。**细节只有中文一份**，不产生第二个真相源 |
-| 不做 | 全量双语 | 6,400 行文档每天在改，两份译文必然失步；**失步的译文比没有译文更坏**（读者不知道哪份对） |
+| **双语范围** | 两个 README（**内容对等**）+ `at-a-glance` 双份 | 英文页不是「入口页」而是**同级完整页**：同样的四张总表、同样的五组核心数字、同样的未测项清单。读者不必为了一个数切语言 |
+| **正文与细节（16 份 `docs/`）** | **中文** | 目标读者是国内客户与工程师。**细节只有中文一份，不产生第二个真相源** |
+| 不做 | 16 份 `docs/` 全量双语 | **6,600+ 行**文档每天在改，两份译文必然失步；**失步的译文比没有译文更坏**（读者不知道哪份对） |
 
 > 分工判据：**英文页负责「让人决定要不要看下去」，中文页负责「照着做」**。
-> 英文页只保留最顶层的几组数字，且有中文页做后盾 —— 改数字先改中文，英文只跟最顶层那几条。
+> 改数字的顺序：**先改中文（权威源）→ 再同步两个 README 的顶层表 → `at-a-glance` 最后跟**。
 
 ### 明确「不入库」的东西
 
@@ -52,7 +54,7 @@
 | 1 | `bench/data/` 命名统一 `<日期>_<卡><显存>_<模型>-<量化>-<后端>.json`；视频域 `<日期>_h3_<WxH>_<标记>.json` | ✅ 207 条全部符合 |
 | 2 | 重跑审计：`python bench/harness/registry_audit.py`，看数量 / schema / 取证覆盖率 / 功耗覆盖 / 槽位覆盖 | ✅ `total 207`；comfyui **122**（B70 97 / B50 25）；`timing_breakdown` **120/122**；`log_evidence` **122/122**（`annotated` 120 · `missing` 2） |
 | 3 | 取证回填：`python bench/harness/annotate_comfy_evidence.py --data bench/data --logdir "<标签>=<目录>"`（`--logdir` 可重复给；**三个域都要覆盖**） | ✅ 已回填；两条 `missing` 是日志已被覆盖 / 全轮失败，**不假装做过** |
-| 4 | `README.zh-CN.md`：硬件表、口径 A/B/C 各表、ComfyUI 各节、目录行；`README.md` 英文页的数字与中文页是否一致 | ☑️ 发布当天通读一遍（重点：两个 README 的同一组数字不能打架） |
+| 4 | `README.zh-CN.md`：开头四张总表、硬件表、llama-bench 表、长上下文、ComfyUI 各节、功耗、目录行；`README.md` 英文页与中文页**逐表对齐**；`at-a-glance` 中英两份同数 | ✅ 已按「先中文 → 再英文 → 最后 at-a-glance」重写一遍；**同一组数字三处不能打架** |
 | 5 | `docs/test-registry.md` §1 状态 / §2 覆盖矩阵 / §3 数量 / §5 预判 vs 实测 | ✅ 已同步到 207 / 122 |
 | 6 | 各篇文档里的交叉引用与锚点 | ☑️ **改过小标题的必查**（历史踩过：小标题改了、链接没跟上） |
 | 7 | 体积与单文件上限（GitHub 单文件 100 MB） | ✅ 最大单文件 3.67 MB |
@@ -85,8 +87,8 @@
 | `.gitignore` | ✅ 覆盖 `__pycache__/`、`*.py[cod]`、`.venv/`、`*.gguf`、`*.bin`、`*.exe`、`*.zip`、`*.log`、`local.env`。**`*.log` 有例外**：`!bench/logs/*.log` 放行原始证据 |
 | **孤儿 / 空壳文件** | ✅ 已删 `bench/results.md`（只有 1 行，内容已被 README 口径 A 表覆盖，且无任何引用） |
 | `__pycache__` | ✅ 已物理删除（`.gitignore` 也盖住了） |
-| LICENSE | ⚠️ MIT，copyright **`lygsam75-buddy`** —— **发布前确认这就是要挂的名字** |
-| git 状态 | ☑️ 首次提交待做（见 §5） |
+| LICENSE | ✅ MIT，copyright **`Yonggang Lin (林永刚)`**；README / git 作者已统一为同一署名（email `lygsam75@gmail.com` 用于关联 GitHub 账号） |
+| git 状态 | ✅ 已是 git 仓库（`main`，8 次提交，工作区干净）；`.gitattributes` 定死 `* -text` + 代码走 LF。**只差 push**（见 §5） |
 
 **日志路径归一化的落地细节**（一次性，已完成）：日志原文里的模型目录、llama.cpp 构建目录、工作目录路径，
 把**路径字符串**换成占位符，**其余字节逐字节未动**（含 `\r\n` 行尾、时间戳、`offloaded N/N layers`、
@@ -97,34 +99,45 @@
 
 ## 4. 上线前要定的事（**只有这几项需要你本人拍**）
 
-| # | 事项 | 建议默认 |
+| # | 事项 | 结论 |
 |---|---|---|
-| 1 | **仓库名** | `intel-arc-local-ai` · 显示名 **Intel Arc Local AI Handbook** |
-| 2 | **公开范围** | **public**（手册的价值就在于被搜到；已扫过无密钥、无绝对路径、无内部产品名） |
-| 3 | **署名** | `lygsam75-buddy`（LICENSE 已写死，与 git 全局身份一致） |
-| 4 | **仓库描述 / topics** | 描述（英文，好被搜到）：`Field-measured local AI on Arc Pro B50 / B70: llama.cpp, ComfyUI, image · video · audio generation, and power — with raw logs and machine-readable data.`；topics：`intel-arc` `xpu` `llama-cpp` `comfyui` `local-llm` `benchmark` `oneapi` `arc-pro` |
-| 5 | **GitHub 登录** | `gh` 当前**未登录** → 需要一次浏览器授权（见 §5），之后长期有效 |
+| 1 | **仓库名** | ✅ 已定：`intel-arc-local-ai` · 显示名 **Intel Arc Local AI Handbook** |
+| 2 | **公开范围** | ✅ **public**（手册的价值就在于被搜到；已扫过无密钥、无绝对路径、无内部产品名） |
+| 3 | **署名** | ✅ 已定：**Yonggang Lin（林永刚）** · `lygsam75@gmail.com` —— LICENSE、两个 README、git 作者三处一致 |
+| 4 | **仓库描述 / topics** | ✅ 已定。描述（英文，好被搜到）：`Field-measured local AI on Arc Pro B50 / B70: llama.cpp, ComfyUI, image · video · audio generation, and power — with raw logs and machine-readable data.`；topics：`intel-arc` `xpu` `llama-cpp` `comfyui` `local-llm` `benchmark` `oneapi` `arc-pro` |
+| 5 | **对外定位** | ✅ 已定：**让更多人知道 Intel 这张卡能用、而且用得不错**，并**记住板子是蓝戟 GUNNIR 做的**。判据是**功耗墙**——公版卡功耗墙更低、性能有所保留，所以功耗数据不是附赠指标，是性能上限的直接依据（见 `README.zh-CN.md` 对应小节） |
+| 6 | **GitHub 登录** | ☑️ **唯一需要你本人动手的一步**：`gh` 当前未登录 → 一次浏览器授权（见 §5），之后长期有效 |
 
 ---
 
 ## 5. 首次发布步骤
 
+### 已做完（不用再动）
+
 ```bash
-cd <仓库根目录>
+git init -b main                    # ✅
+git config core.autocrlf false      # ✅ 配合 .gitattributes 的 * -text
+git add -A && git commit            # ✅ 已有 10 次提交，工作区干净
+```
 
-git init -b main
-git add -A
-git status --short --untracked-files=all   # 核对：无 .workbuddy/、无 *.gguf、无 __pycache__、无仓库外日志
-git commit -m "initial: Intel Arc 本地 AI 实战手册（B50/B70 实测 + 测试项备案）"
+> **行尾策略是取证结论的一部分**：日志入库前核对过「路径归一化、其余字节逐字节未动（含 `\r\n`）」。
+> `core.autocrlf=true` 会把这份结论作废 —— 所以 `.gitattributes` 写死 `* -text`，
+> 只有 `*.py` / `*.sh` 走 `text eol=lf`。**别改成默认值。**
 
-# 建库并推送（需先 gh auth login）
-gh auth login                              # 浏览器授权，只需一次
+### 剩下两步（**第 1 步必须你自己来**）
+
+```bash
+gh auth login          # ← 浏览器授权，只需一次；这一步我代不了
+
 gh repo create intel-arc-local-ai --public --source . --push \
   --description "Field-measured local AI on Arc Pro B50 / B70: llama.cpp, ComfyUI, image · video · audio generation, and power — with raw logs and machine-readable data."
 
-# 补 topics
 gh repo edit --add-topic intel-arc,xpu,llama-cpp,comfyui,oneapi,benchmark,local-llm
 ```
+
+> 本地目录名仍是旧的 `intel-arc-ai-cookbook`（改名时被本会话占用目录，`mv` / `Rename-Item` 都报占用）。
+> **不影响上线** —— GitHub 上的仓库名由 `gh repo create` 决定，与本地目录名无关。
+> 会话结束、目录释放后再改本地目录名即可。
 
 **commit message 规范**（之后每次提交都按这个来）：
 
