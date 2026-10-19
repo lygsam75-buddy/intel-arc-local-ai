@@ -18,7 +18,7 @@
 | 3 | **ComfyUI 侧** | `docs/comfyui-capability.md`<br>`docs/comfyui-h3.md`<br>`docs/comfyui-image.md`<br>`docs/comfyui-power.md` | 399 / 679 / 850 / 322 行 | 能力总表（能装多大 / 出视频 / 出图三问一页答完）→ 视频分辨率 × 时长全矩阵 → 出图与出音乐（含内核变体配对）→ 功耗与电费。**这是全库最有对客价值的一组** |
 | 4 | **坑清单** | `docs/pitfalls.md` | 926 行 | 每个坑的现象 → 根因 → 修法。**含 TDR 2 秒、TIME_WAIT 端口耗尽、XPU 锁页内存、int8 门禁这几条最贵的** |
 | 5 | **测试项台账** | `docs/test-registry.md`<br>`CONTRIBUTING.md` | 441 / 72 行 | 所有测试项的编号 / 状态 / 数据位置 / 复现入口，含**「预判 vs 实测」**和**更正台账**。**这是「数据可信」的唯一凭据** |
-| 6 | **数据与工具** | `bench/data/` 207 个 JSON（2.4 MB）<br>`bench/logs/` 33 份原始日志（18 MB）<br>`bench/harness/` 24 个脚本 + 2 个 shell<br>`bench/logs/README.md` | 见左 | machine-readable 原始数据 + 采集脚本 + **日志↔记录对照**。审计入口：`python bench/harness/registry_audit.py` |
+| 6 | **数据与工具** | `bench/data/` 207 个 JSON（2.4 MB）<br>`bench/logs/` 33 份 `llama-server` 原始日志（18 MB）<br>`bench/harness/` 24 个脚本 + 2 个 shell<br>`bench/logs/README.md` | 见左 | machine-readable 原始数据 + 采集脚本 + **日志↔记录对照**。审计入口：`python bench/harness/registry_audit.py` |
 
 **全库合计**：Markdown 16 份 · 6,411 行；数据 207 条；日志 33 份；脚本 26 个。**约 21 MB**（日志占 18 MB）。
 
