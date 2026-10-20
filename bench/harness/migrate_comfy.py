@@ -422,10 +422,14 @@ def main():
 
     # 两种源格式：
     #   ① bench_*_fresh.json —— 10-14 那批（合并的 JSON，一个文件含多组）
-    #   ② bench_f_h3_<tag>.jsonl —— 2026-10-17 的分辨率扫描（逐条增量，
-    #      **字段名是 `mode` 不是 `role`**，且带 width/height）
+    #   ② bench_f_*.jsonl —— 逐条增量的 H3 采集
+    #      ⚠️ **两种 tag 命名都要认**：历史那批的 tag 以 `h3_` 开头
+    #      （→ `bench_f_h3_1024x576_b70pw.jsonl`），而新卡队列传的 tag 是
+    #      `b60-h3-864x480`（→ `bench_f_b60-h3-864x480.jsonl`）。
+    #      只 glob `bench_f_h3_*.jsonl` 时，B60 三条 H3 一条都迁不回来
+    #      （实测：直接报「没找到 bench_*_fresh.json 或 bench_f_h3_*.jsonl」）。
     files = sorted(glob.glob(os.path.join(a.src, "bench_*_fresh.json")))
-    jsonl_files = sorted(glob.glob(os.path.join(a.src, "bench_f_h3_*.jsonl")))
+    jsonl_files = sorted(glob.glob(os.path.join(a.src, "bench_f_*.jsonl")))
     if a.only:
         files = [f for f in files if a.only in os.path.basename(f)]
         jsonl_files = [f for f in jsonl_files if a.only in os.path.basename(f)]
