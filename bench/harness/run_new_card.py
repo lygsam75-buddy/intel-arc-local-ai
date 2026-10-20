@@ -81,6 +81,62 @@ def need_env(*names):
         sys.exit("缺少环境变量：%s（见本文件顶部「用法」）" % ", ".join(missing))
 
 
+def sycl_candidates():
+    """扫本机 oneAPI 安装布局，返回含 `sycl8.dll` 的 bin 目录。
+
+    只作**诊断提示**用（自检失败时列给用户看），不作为默认值写死——
+    全库不出现本机绝对路径的纪律对脚本一样有效。
+    """
+    import glob as _g
+    roots = ["D:/oneAPI", "D:/oneapi-*", "C:/Program Files (x86)/Intel/oneAPI"]
+    out = []
+    for r in roots:
+        for d in _g.glob(r + "/*/*/bin") + _g.glob(r + "/Library/bin"):
+            if os.path.isfile(os.path.join(d, "sycl8.dll")):
+                out.append(d)
+    return sorted(set(out))
+
+
+def sycl_check(bin_, sycl):
+    """跑 `llama-bench --version` 验证 SYCL 运行时可达，不可达就退出。
+
+    🔴 为什么必须有这道：llama-bench 加载不到运行时 DLL 时**不打印任何错误**，
+    只给退出码 3221225781（`0xC0000135` = STATUS_DLL_NOT_FOUND）。B60 首轮
+    4 项 ctx 全挂在这，而且日志 0 行，只能靠退出码反推。
+
+    判据：`ARC_SYCL_PATH` 指向的目录必须同时含
+      - `sycl8.dll`（⚠️ **不是** `sycl8-preview.dll`，旧安装里只有 preview 版）
+      - `mkl_sycl_blas.5.dll`
+    """
+    exe = os.path.join(bin_, "llama-bench.exe")
+    if not os.path.isfile(exe):
+        sys.exit("找不到 %s" % exe)
+    chk = dict(os.environ)
+    if sycl:
+        chk["PATH"] = sycl + os.pathsep + chk.get("PATH", "")
+    try:
+        r = subprocess.run([exe, "--version"], capture_output=True,
+                           timeout=120, env=chk)
+    except OSError as e:
+        sys.exit("llama-bench 起不来：%s" % e)
+    if r.returncode != 0:
+        msg = [
+            "llama-bench 自检失败（rc=%d）。" % r.returncode,
+            "  最常见原因：ARC_SYCL_PATH 指错目录。判据——该目录必须同时含",
+            "    sycl8.dll（⚠️ 不是 sycl8-preview.dll）和 mkl_sycl_blas.5.dll。",
+            "  当前 ARC_SYCL_PATH=%r" % sycl,
+        ]
+        cands = sycl_candidates()
+        if cands:
+            msg.append("  本机含 sycl8.dll 的目录（可直接用作 ARC_SYCL_PATH）：")
+            msg += ["    " + c for c in cands]
+        else:
+            msg.append("  本机没扫到含 sycl8.dll 的目录，先装/修 oneAPI 基础工具包。")
+        sys.exit("\n".join(msg))
+    print("[自检] llama-bench 可启动，SYCL 运行时可达（ARC_SYCL_PATH=%s）"
+          % (sycl or "<未设，走 PATH>"))
+
+
 def driver_version(model_hint):
     """按型号在显示类里找驱动版本。
 
@@ -304,6 +360,9 @@ def stage_b(q, card, cfg, py):
            "b65": "Intel Arc Pro B65 32G", "b70": "Intel Arc Pro B70 32G"}[card]
     drv = env("ARC_DRIVER") or (driver_version(cfg["needle"]) or "")
     sel = env("ONEAPI_DEVICE_SELECTOR", "opencl:0")
+    # 🔴 先自检再开跑：运行时 DLL 缺失时 llama 全家都是「0 行日志 + rc=3221225781」，
+    # 不先拦一下就会像 B60 首轮那样白跑 4 项才发现全挂。
+    sycl_check(bin_, sycl)
     out = str(REPO / "bench" / "data")
     xb = str(REPO / "bench" / "harness" / "xpu_bench.py")
     scan = str(REPO / "bench" / "harness" / "scan_ncmoe.py")
@@ -331,10 +390,17 @@ def stage_b(q, card, cfg, py):
         bench("%s-%s-base" % (card, quant.lower().replace("_", "")), fn, quant, 0, 1, 1800)
     # B4 上下文天花板：分配不花钱、填满才花钱
     if Path(os.path.join(models, MODEL_35B)).exists():
+        logs = REPO / "bench" / "logs"
+        logs.mkdir(parents=True, exist_ok=True)
         q.run("%s-ctx" % card,
               [py, "-u", ctx, "--bin", bin_, "--model", os.path.join(models, MODEL_35B),
                "--quant", "Q4_0", "--gpu", gpu, "--driver", drv, "--ecc", "off",
-               "--device-selector", sel, "--sycl-path", sycl, "--ncmoe", "0"],
+               "--device-selector", sel, "--sycl-path", sycl, "--ncmoe", "0",
+               "--outdir", out, "--logdir", str(logs), "--tag", "%s-ctx" % card,
+               # 平台身份（T-20 必填）：这些值必须来自实测，不能照规格表编
+               "--slot", "CPU 直连槽",
+               "--chip", env("ARC_CHIP", ""), "--subsys", env("ARC_SUBSYS", ""),
+               "--vbios", env("ARC_VBIOS", ""), "--vram-gib", env("ARC_VRAM_GIB", "")],
               timeout=7200, note="上下文档位扫描")
 
 
@@ -342,6 +408,14 @@ def stage_c(q, card, cfg):
     """ComfyUI：视频 / 出图 / 出音乐。**时间最长**，一项一项来。"""
     need_env("ARC_BENCH_DIR", "ARC_PYTHON")
     bd, py = env("ARC_BENCH_DIR"), env("ARC_PYTHON")
+    # 用户的 ComfyUI 常驻 8188：**不许抢、不许杀**。两个采集脚本都读 COMFY_PORT
+    # （sweep.py 是 import bench_f_h3 拿 PORT 的），所以在这里统一设一次就够。
+    os.environ.setdefault("COMFY_PORT", "8189")
+    # 功耗采样器：power_lib 的解析顺序是 ARC_POWER_SAMPLER → 本目录副本 →
+    # ARC_REPO/bench/harness/... 。采集目录里**没有**副本，不显式指过去就降级成
+    # 「本次不记功耗」——B60 首轮 6 项全丢，而功耗墙是对客核心论据，不能省。
+    os.environ.setdefault("ARC_POWER_SAMPLER",
+                          str(REPO / "bench" / "harness" / "power_sampler.py"))
     h3 = os.path.join(bd, "bench_f_h3.py")
     sw = os.path.join(bd, "sweep.py")
     needle = cfg["needle"]
@@ -454,7 +528,16 @@ def main():
 
 
 def stage_a_light(q, card, cfg, py):
-    """B/C 阶段开跑前的轻量守卫：只断言型号，不重复打印整张体检表。"""
+    """B/C 阶段开跑前的轻量守卫：只断言型号，不重复打印整张体检表。
+
+    ⚠️ **绝不能在这里设 `ONEAPI_DEVICE_SELECTOR=opencl:0`**：ComfyUI 侧
+    （`card_guard.pin_and_verify` → `torch.xpu`）走的是 **Level Zero**，
+    而 `opencl:0` 会把 Level Zero 设备数清零 —— 实测现象就是
+    `[卡型守卫] 没枚举到任何 XPU 设备`（llama.cpp 不受影响，因为它用的是
+    OpenCL 后端，所以同一个环境变量下 B 阶段全过、C 阶段全挂）。
+    llama.cpp 的 selector 由 `xpu_bench.py --device-selector` 单独传给
+    llama-bench，不依赖进程环境。
+    """
     devs, err = xpu_enum(py)
     if devs is None:
         sys.exit("[guard] 枚举失败：%s" % err)
@@ -468,7 +551,8 @@ def stage_a_light(q, card, cfg, py):
         print("[guard] 双卡在机 → ONEAPI_DEVICE_SELECTOR=level_zero:%d（%s）"
               % (idx, hit[0]["name"]))
     else:
-        os.environ.setdefault("ONEAPI_DEVICE_SELECTOR", "opencl:0")
+        # 单卡：清掉可能污染 Level Zero 枚举的 OpenCL selector
+        os.environ.pop("ONEAPI_DEVICE_SELECTOR", None)
     print("[guard] ✅ 型号核对通过：%s %.2f GiB" % (hit[0]["name"], hit[0]["gib"]))
 
 
