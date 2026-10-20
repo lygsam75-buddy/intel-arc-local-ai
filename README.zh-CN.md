@@ -114,6 +114,24 @@ NVIDIA 装个驱动就能跑，Intel 这边得自己补后端：`llama.cpp` 的 
 
 ---
 
+## 我们跑测的这台机器
+
+**一台 2025 年的主流游戏机，没换平台、没加内存，只换了一块显卡。**
+
+| 部件 | 型号 / 规格 |
+|---|---|
+| CPU | AMD **Ryzen 5 9600X**（6C/12T · 带核显 · AVX-512） |
+| 主板 | 技嘉 **B850M FORCE WIFI6E**（AM5 · mATX） |
+| 内存 | **2 × 16 GB DDR5-6400**（**4 槽只用 2**，仍可加） |
+| 显卡 | **Intel Arc Pro B70 32 GB**（蓝戟 GUNNIR · ECC 关 · 可用 31.16 GiB） |
+| 显示输出 | **由核显负责**（2560×1440），独显不驱动显示、显存全给模型 |
+| 系统 | Windows 11 专业版 · 页面文件 **64 / 128 GB** |
+
+为什么不动内存、也不换平台 —— 因为**能改变「能不能用」的只有显存容量这一个变量**。
+完整配置、改造前后、四条路为什么只走这一条 → **[`docs/build.md`](docs/build.md)**
+
+---
+
 ## 这块卡是蓝戟 GUNNIR 做的，而真正决定性能的是**功耗墙**
 
 Intel 的 AI 加速卡同样是**板卡伙伴（AIB）**做板——本机的 B50、B60 与 B70 都是 **蓝戟 GUNNIR** 板
@@ -472,6 +490,7 @@ Krea-2 的 bf16 挂掉是 `UR_RESULT_ERROR_DEVICE_LOST`，两种 `reserve` 下�
 |---|---|
 | [`docs/at-a-glance.md`](docs/at-a-glance.md) · [EN](docs/at-a-glance.en.md) | **一页纸六张表**——小白向汇总，不用术语 |
 | [`docs/install.md`](docs/install.md) | **开始之前：要装什么**——三条路（整合包 / 官方 ComfyUI + XPU 轮子 / 只跑 llama.cpp）+ Linux 上的 Docker 镜像、驱动与 ECC、补丁改哪三处、装完自检 |
+| [`docs/build.md`](docs/build.md) | **我们跑测的这台机器**——完整配置（逐项取证）、从游戏机改造过来只换了显卡、四条路为什么只走这一条 |
 | [`docs/pitfalls.md`](docs/pitfalls.md) | 坑清单——每个坑的现象、根因、修法 |
 | [`docs/vram-16gb.md`](docs/vram-16gb.md) | **16 GB 档（B50）参数优化**——主力档位 |
 | [`docs/server-config.md`](docs/server-config.md) | **server 交付配置**——16 GB 档不加 `-ncmoe` 就是最差配置（实测差 15×）；24 GB 档只差「装得下」 |
