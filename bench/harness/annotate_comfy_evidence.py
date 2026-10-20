@@ -90,6 +90,15 @@ LOG_KEY_ALIASES = {
 # 量化档也要参与索引：同为 `base` 变体，bf16 与 int8 在 B50 上是两轮不同的跑测
 # （`server_sweep_b50.log` vs `server_sweep_b50base.log`）。
 CARD_LOG_KEYS = {
+    # 2026-10-20 B60 上机。日志文件名形如 `sweep_b60.jsonl` / `server_b60.log`
+    # （`--suffix b60`），与 b50/b70 的命名规律一致。
+    "b60-24g": {
+        ("bf16", "base"): ["sweep_b60"],
+        ("fp16", "base"): ["sweep_b60"],
+        ("int8_convrot", "base"): ["sweep_b60"],
+        ("int8_convrot", "sigfix"): ["sweep_b60"],
+        ("int8_convrot", "int8fix"): ["sweep_b60"],
+    },
     "b50-16g": {
         ("bf16", "base"): ["sweep_b50"],
         ("bf16", "k2bf16"): ["sweep_b50k2bf16"],

@@ -59,6 +59,8 @@ SUFFIX_CARD = {
     "kvi8": "b70", "kvi4": "b70",
     # 2026-10-19 功耗专项（文件名 `sweep_b70pw.jsonl`；标记自带卡名）
     "b70pw": "b70",
+    # 2026-10-20 B60 上机（`--suffix b60` → 文件名 `sweep_b60.jsonl`）
+    "b60": "b60",
 }
 
 CARDS = {
@@ -97,6 +99,27 @@ CARDS = {
             "omni_xpu_kernel": "0.2.0b2+torch212.bmg",
             "stack_note": "跑在 python_embeded（torch 2.12），与 B70 2026-10-14 那批"
                           "（torch 2.13 / kernel torch213）**不是同一栈**",
+        },
+    },
+    # 2026-10-20 B60 上机。身份字段来自 gpu_identity.py 实测（DEV_E211 · SUBSYS_25421EF7
+    # · 板厂 1EF7 = GUNNIR · VBIOS 2304140000 · 可见 23.33 GiB）。
+    # 栈＝python_embeded（torch 2.12.0+xpu · provider 0.2.33），与 B50 那批同栈；
+    # kernel 变体以服务端日志的 `omni_xpu_kernel` 行为准，跑完核对后再定稿。
+    "b60": {
+        "gpu": "Intel Arc Pro B60 24G",
+        "chip": "E211",
+        "subsys": "25421EF7",
+        "device_id": "PCI\\VEN_8086&DEV_E211&SUBSYS_25421EF7&REV_00",
+        "board_vendor": "GUNNIR 蓝戟 (PCI vendor 1EF7)",
+        "board_code": "2542",
+        "vram_visible_gib": 23.33,
+        "ecc": "off",
+        "driver": "32.0.101.9150",
+        "stack": {
+            "torch": "2.12",
+            "omni_xpu_kernel": "0.2.0b2+torch212.bmg",
+            "stack_note": "跑在 python_embeded（torch 2.12.0+xpu · provider 0.2.33）；"
+                          "驱动 9150，与 B50/B70 已发布数据的 8976 不同",
         },
     },
 }
@@ -206,6 +229,8 @@ MARK_NOTE = {
 # 但代价很大——实测 `sweep_b70k2retry.jsonl` 就是这样把一次全量迁移顶回来了）。
 # 增量迁移的正确姿势：**把待迁文件 cp 到临时目录**，`--src` 指向临时目录，跑完删掉。
 SUFFIX_MARKS = {
+    "b60": "**B60 24G 首批采集**（2026-10-20 上机；`--suffix b60`；身份实测："
+           "DEV_E211 · SUBSYS_25421EF7 · GUNNIR · 23.33 GiB · 驱动 9150）",
     "b70pw": "**B70 · 功耗专项**（采集器默认带整卡功耗后重采，用于给台账补「功耗 / 能量」"
              "这一维；同一份图同一套栈，只是多了 `power` 字段）",
     "b70m3i8v2": "**B70 · Music 3 · int8 文本编码器档**（TE 8.57 GiB 才装得下 → 唯一能做「真驻留」量化对照的一档）",

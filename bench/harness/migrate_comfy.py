@@ -71,6 +71,21 @@ CARDS = {
         "ecc": "off",
         "driver": "32.0.101.8976",
     },
+    # 2026-10-20 B60 到手上机。**以下字段全部来自 gpu_identity.py / gpu_sysman.py 实测**
+    # （DEV_E211 · SUBSYS_25421EF7 · 板厂 1EF7 = GUNNIR · VBIOS 2304140000 · 23.33 GiB 可见），
+    # 不是照规格表填的。注意 driver 是 9150，与 B50/B70 那两行的 8976 **不同** ——
+    # 跨驱动版本的端到端秒数不可直接并排（见 docs/test-registry.md §5.1 第 5 条）。
+    "b60": {
+        "gpu": "Intel Arc Pro B60 24G",
+        "chip": "E211",
+        "subsys": "25421EF7",
+        "device_id": "PCI\\VEN_8086&DEV_E211&SUBSYS_25421EF7&REV_00",
+        "board_vendor": "GUNNIR 蓝戟 (PCI vendor 1EF7)",
+        "board_code": "2542",
+        "vram_visible_gib": 23.33,
+        "ecc": "off",
+        "driver": "32.0.101.9150",
+    },
 }
 
 # 2026-10-16 之前的历史记录是按单卡（B70）口径迁的，其 env 里缺 device_id/subsys。
@@ -102,7 +117,7 @@ def detect_card(tag, override=None):
             raise SystemExit("未知 --card: %s（可选 %s）" % (override, sorted(CARDS)))
         return override
     low = tag.lower()
-    for key in ("b50", "b70"):
+    for key in ("b50", "b60", "b65", "b70"):
         if key in low:
             return key
     raise SystemExit(
