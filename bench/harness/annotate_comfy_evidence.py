@@ -91,19 +91,29 @@ LOG_KEY_ALIASES = {
 # （`server_sweep_b50.log` vs `server_sweep_b50base.log`）。
 CARD_LOG_KEYS = {
     # 🔴 **B65 上机后必须补两段**（与 migrate_comfy.py 的 CARDS 同步登记）：
-    #   "b65-32g"      → 单卡，日志前缀 `sweep_b65` / `server_b65`
-    #   "b65-dual-32g" → 双卡，日志前缀 `sweep_b65-dual` / `server_b65-dual`
-    # ⚠️ 键名必须与 `find_log` 的**子串匹配**对得上：输出文件名是 `日期_tag.json`，
-    #    tag 里带 `b65-dual`，所以这里也要有 `b65-dual` 段 —— 少了它，双卡记录
-    #    会配到单卡 B65 的日志上（型号一致性校验会拦，但那一批就白跑了）。
-    # 2026-10-20 B60 上机。日志文件名形如 `sweep_b60.jsonl` / `server_b60.log`
+    #   "b65-32g"      → 单卡，日志前缀 `sweepb65` / `server_sweepb65`
+    #   "b65-dual-32g" → 双卡，日志前缀 `sweepb65-dual` / `server_sweepb65-dual`
+    # ⚠️ 键名必须与 `find_log` 的**子串匹配**对得上 —— 输出文件名由
+    #    `card_slug()` 生成（`b65-dual-32g`），所以这里也要有 `b65-dual` 段；
+    #    少了它，双卡记录会配到单卡 B65 的日志上（型号一致性校验会拦，但白跑）。
+    #    另外日志前缀**无下划线**（`sweep{suffix}`），见下面 b60-24g 的说明。
+    # 2026-10-20 B60 上机。日志文件名形如 `sweepb60.jsonl` / `server_sweepb60.log`
     # （`--suffix b60`），与 b50/b70 的命名规律一致。
+    # 🔴 **键名无下划线**：sweep.py 的命名规则是 `sweep{suffix}.jsonl`，
+    # B50/B70 那批的 suffix 自带下划线（`--suffix _b50base`）才成了 `sweep_b50base`。
+    # 曾按 `sweep_b60` 登记 → glob `server_sweep_b60*.log` 找不到实际文件
+    # `server_sweepb60.log`，整批 B60 记录配不到服务日志（实测踩过）。
     "b60-24g": {
-        ("bf16", "base"): ["sweep_b60"],
-        ("fp16", "base"): ["sweep_b60"],
-        ("int8_convrot", "base"): ["sweep_b60"],
-        ("int8_convrot", "sigfix"): ["sweep_b60"],
-        ("int8_convrot", "int8fix"): ["sweep_b60"],
+        ("bf16", "base"): ["sweepb60"],
+        ("fp16", "base"): ["sweepb60"],
+        ("int8_convrot", "base"): ["sweepb60"],
+        ("int8_convrot", "sigfix"): ["sweepb60"],
+        ("int8_convrot", "int8fix"): ["sweepb60"],
+        # 2026-10-20 **每模型独立 suffix**（driver 的 stage_c 派生：q21→`b60`、
+        # krea2→`b60k2`、music3→`b60m3`）。variant 由 jsonl 文件名剥出，
+        # 所以这里按 variant 分条目，才不会和 q21 的 base 撞同一个键。
+        ("int8_convrot", "b60k2"): ["sweepb60k2"],
+        ("int8_convrot", "b60m3"): ["sweepb60m3"],
     },
     "b50-16g": {
         ("bf16", "base"): ["sweep_b50"],
@@ -426,6 +436,15 @@ def find_log(rec, logdirs):
                     # 这批的历史日志叫 `boot_039_*.log`，不是 `server_*` —— 两种前缀都试
                     for pre in ("server_", "boot_"):
                         for f in sorted(Path(d).glob("%s%s*.log" % (pre, k))):
+                            # 🔴 glob 的前缀匹配会**过宽**：键 `sweepb60` 会把
+                            # `server_sweepb60k2.log`（krea2 的日志）一起匹配进来，
+                            # 于是 q21 的记录配到 krea2 的日志上（B60 实测踩过）。
+                            # 判据：去掉 `前缀+键` 后，剩下的必须以 `_` 开头或为空 ——
+                            # `server_sweepb60.log` → 剩 ""（算）；
+                            # `server_sweepb60k2.log` → 剩 "k2"（不算）。
+                            tail = f.stem[len(pre) + len(k):]
+                            if tail and not tail.startswith("_"):
+                                continue
                             if f not in seen:
                                 seen.add(f)
                                 found.append(f)
@@ -444,11 +463,25 @@ def find_log(rec, logdirs):
     for c in cands:
         keys.append(c)
         keys.extend(LOG_KEY_ALIASES.get(c, []))
+    # 🔴 H3 视频组要单独重建键：记录 tag 是 `comfyui-h3-h3_864x480_b60`
+    # （**下划线**分隔、卡型在**后**），而采集器写的日志是
+    # `server_b60-h3-864x480.log`（**连字符**分隔、卡型在**前**）。
+    # 两边格式对不上，直接 glob 永远配不到 —— 从 tag 里抽出卡型与分辨率重建。
+    # 实测：不加这条时 B60 三条 H3 记录全部配到 0 个日志（而日志明明就在
+    # `_bench_f/` 里躺着）。
+    m = re.match(r"comfyui-h3-h3_(\d+x\d+)_(\S+)$", key)
+    if m:
+        keys.append("%s-h3-%s" % (m.group(2), m.group(1)))
     seen, out = set(), []
     for d in logdirs:
         for k in keys:
             for pat in ("server_%s*_r*.log" % k, "server_%s*.log" % k):
                 for f in sorted(Path(d).glob(pat)):
+                    # 与上面同一道边界：`b60-h3-864x480` 不该把
+                    # `b60-h3-864x4800.log` 之类的也捞进来。
+                    tail = f.stem[len("server_") + len(k):]
+                    if tail and not tail.startswith("_") and not tail.startswith("-r"):
+                        continue
                     if f not in seen:
                         seen.add(f)
                         out.append(f)

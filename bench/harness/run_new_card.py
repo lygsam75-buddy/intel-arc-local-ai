@@ -506,15 +506,30 @@ def stage_c(q, card, cfg):
     if card in ("b60", "b65", "b65-dual"):
         h3run("%s-h3-1920x1088" % card, 1920, 1088, 5.0, 6, 1, 1, 14400)
 
+    # C3/C4 出图出音乐：**每个模型一个独立 suffix**。
+    # 🔴 sweep.py 的 jsonl 与 server 日志都是**追加**语义，同一个 suffix 下跑第二个
+    # 模型会被撞车检查直接拦下（B60 首轮实测：q21 占了 `b60`，krea2 与 music3
+    # 双双 rc=1、10 s 就退出的就是这条）。命名沿用 B50/B70 的规律
+    # （`b50base` / `b50m3i8` / `b50k2bf16`）。
+    # ⚠️ Music 3 的 TE 档位**已经在 tag 里**（`music3_{dit}_te{bf16|int8_convrot}`，
+    # 见 sweep.py 的 build_plan），所以 suffix 不必再带 TE —— 换 TE 档位重跑
+    # 不会撞同一个 suffix。
+    SUFFIX_OF = {"q21": "", "krea2": "k2", "music3": "m3"}
+
+    def sw_run(item, only, note, est, extra=()):
+        q.run(item,
+              [py, "-u", sw, "--only", only, "--quant", "int8_convrot",
+               "--expect-card", needle, "--suffix", "%s%s" % (card, SUFFIX_OF[only])]
+              + list(extra),
+              timeout=est, note=note)
+
     # C3 出图：Qwen-Image 2.1 int8（三卡都有对照），Krea-2 int8
-    q.run("%s-img-q21-int8" % card,
-          [py, "-u", sw, "--only", "q21", "--quant", "int8_convrot",
-           "--expect-card", needle, "--suffix", card, "--resolution", "1280x720"],
-          timeout=7200, note="Qwen-Image 2.1 int8 · 1280x720")
-    q.run("%s-img-krea2-int8" % card,
-          [py, "-u", sw, "--only", "krea2", "--quant", "int8_convrot",
-           "--expect-card", needle, "--suffix", card],
-          timeout=7200, note="Krea-2 Turbo int8 · 1024x1024")
+    # ⚠️ Krea-2 的 note **不写死分辨率**：曾写「1024x1024」，实测 sweep.py 跑的是
+    # 1280×720（tag `krea2_int8_convrot_1280x720b60k2`）——note 与数据不符，
+    # 照 note 写文档就会写错。分辨率由 sweep.py 的默认档决定，只写「默认档」。
+    sw_run("%s-img-q21-int8" % card, "q21", "Qwen-Image 2.1 int8 · 1280x720", 7200,
+           extra=["--resolution", "1280x720"])
+    sw_run("%s-img-krea2-int8" % card, "krea2", "Krea-2 Turbo int8 · sweep.py 默认档", 7200)
     # C4 出音乐：TE 档位看容量（≥31 GiB 可用 bf16 TE，24 GB 档要 int8）
     # 🔴 双卡模式**不能**看翻倍后的 vram：ComfyUI/torch.xpu 只用第一张卡，
     # 按 64 GiB 判就会给 bf16 TE，而单张 B65 装不下 —— 白跑一轮 OOM。
@@ -523,10 +538,8 @@ def stage_c(q, card, cfg):
         te = "int8_convrot"
     else:
         te = "bf16" if cfg["vram"][1] > 31 else "int8_convrot"
-    q.run("%s-audio-music3" % card,
-          [py, "-u", sw, "--only", "music3", "--quant", "int8_convrot",
-           "--music-te", te, "--expect-card", needle, "--suffix", card],
-          timeout=7200, note="Music 3 · 120 s · TE=%s" % te)
+    sw_run("%s-audio-music3" % card, "music3", "Music 3 · 120 s · TE=%s" % te, 7200,
+           extra=["--music-te", te])
 
 
 def stage_d(q, card):

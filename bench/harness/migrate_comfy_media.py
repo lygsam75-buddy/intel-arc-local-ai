@@ -66,6 +66,15 @@ SUFFIX_CARD = {
     # （实测：不登记时返回 card=None）。双卡身份仍按**单张 B65** 登记——
     # torch.xpu 只见到一张，别把 2× 的值写进 vram_visible_gib。
     "b65-dual": "b65",
+    # 2026-10-20 **每个模型一个独立 suffix**（driver 的 stage_c 派生）：
+    # q21 → `b60`，krea2 → `b60k2`，music3 → `b60m3`。
+    # 🔴 原因是 sweep.py 的 jsonl / server 日志都是**追加**语义，同一个 suffix
+    # 下跑第二个模型会被撞车检查拦下（B60 首轮 krea2 / music3 双双 rc=1 就是这条）。
+    # Music 3 的 TE 档位已在 tag 里（`_te{bf16|int8_convrot}`），suffix 不带 TE。
+    "b60k2": "b60",
+    "b60m3": "b60",
+    "b65-dualk2": "b65",
+    "b65-dualm3": "b65",
 }
 
 CARDS = {
@@ -243,6 +252,17 @@ SUFFIX_MARKS = {
     "b65-dual": "**双 B65 同时在机**（`--suffix b65-dual`；llama.cpp 走 "
                 "level_zero:0,1 吃到两张，ComfyUI/torch.xpu 只用第一张；"
                 "容量翻倍但 MoE 解码是带宽瓶颈，速度预期与单卡持平）",
+    # 2026-10-20 **每模型独立 suffix**（driver 的 stage_c 派生，`b60` + 模型段）。
+    # 不这么做会被 sweep.py 的撞车检查拦下：jsonl 与 server 日志都是追加语义，
+    # 同一个 suffix 下混模型就拒绝跑（B60 首轮 krea2 / music3 双双 rc=1 挂掉）。
+    "b60k2": "**B60 · Krea-2 Turbo int8**（`--suffix b60k2`，与 q21 的 `b60` 分开；"
+             "1024×1024）",
+    "b60m3": "**B60 · Music 3 · int8 TE**（`--suffix b60m3`；TE 档位另在 tag 里 "
+             "`_teint8_convrot`，120 s 音频）",
+    "b65-dualk2": "**双 B65 · Krea-2**（`--suffix b65-dualk2`；ComfyUI 只用第一张，"
+                  "与单张 B65 同条件对照）",
+    "b65-dualm3": "**双 B65 · Music 3**（`--suffix b65-dualm3`；TE 档位按**单卡**判，"
+                  "容量翻倍对 ComfyUI 无效）",
     "b70pw": "**B70 · 功耗专项**（采集器默认带整卡功耗后重采，用于给台账补「功耗 / 能量」"
              "这一维；同一份图同一套栈，只是多了 `power` 字段）",
     "b70m3i8v2": "**B70 · Music 3 · int8 文本编码器档**（TE 8.57 GiB 才装得下 → 唯一能做「真驻留」量化对照的一档）",
@@ -304,6 +324,35 @@ GIB = 1024 ** 3
 
 def gib(n):
     return round(n / GIB, 3)
+
+
+def card_from_mark(hit):
+    """从内嵌卡名的组合标记里提卡型：`b70k2retry` → `b70`。
+
+    ⚠️ 为什么需要它：`SUFFIX_CARD` 不可能穷举所有组合后缀
+    （`b70same` / `b50k2sig` / `b70k2retry` / `b60k2` / `b65-dualk2` …），
+    漏登一个就让迁移器防呆报错（实测：`sweep_b70k2retry.jsonl` 就这么崩的）。
+    所以对「以 b+卡型数字开头」的标记直接按字头提取；**提取不到返回空串**，
+    交给调用方的防呆去报错——不猜。
+    """
+    m = re.match(r"^(b50|b60|b65|b70)", hit)
+    return m.group(1) if m else ""
+
+
+def card_slug(card):
+    """文件名里的卡型段，形如 `b60-24g` / `b70-32g` / `b65-dual-32g`。
+
+    🔴 容量必须从 CARDS 的 gpu 名取，**不能写死**：这里原来是
+    `16 if card == "b50" else 32`，B60 是 24G 于是被写成 `b60-32g`，
+    与 `CARD_LOG_KEYS` 的键 `b60-24g` 对不上 → annotate 按文件名子串
+    找不到日志段，整批 B60 记录配不到服务日志（实测踩过）。
+    双卡键（`b65-dual`）也走同一函数，slug 自然带上 dual 标识，
+    不会和单卡 `b65-32g` 撞。
+    """
+    gpu = CARDS.get(card, {}).get("gpu", "")
+    m = re.search(r"(\d+)\s*G", gpu)
+    cap = m.group(1) if m else "32"
+    return "%s-%sg" % (card, cap)
 
 
 def pw_resets(p):
@@ -442,8 +491,9 @@ def parse_tag(tag):
             # CARDS 是身份表、等 B65 实测后才填，但 tag 现在就会带上这段）。
             # 不在这里补一刀，parse_tag 就判不出卡型 —— 而本文件 753 行那个
             # 循环有这段赋值，两个循环曾因此不一致（一个判得出、一个判不出）。
-            if not card and hit in SUFFIX_CARD:
-                card = SUFFIX_CARD[hit]
+            # ⚠️ 同样加字头提取兜底：SUFFIX_CARD 穷举不完 `b70k2retry` 这类组合。
+            if not card:
+                card = SUFFIX_CARD.get(hit) or card_from_mark(hit)
             base = base[: -len(hit)].rstrip("_")
             continue
         break
@@ -734,7 +784,11 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--src", required=True, help="_bench_f 目录（含 sweep*.jsonl）")
     ap.add_argument("--outdir", required=True, help="输出目录（bench/data）")
-    ap.add_argument("--card", default="", choices=["", "b50", "b70"],
+    ap.add_argument("--card", default="",
+                    # 动态取，不写死：曾写死 `["", "b50", "b70"]`，B60 上机后想手工
+                    # 指定卡型时它不在可选项里（自动识别正常时用不到，一旦要手工
+                    # 指定就被卡住）。CARDS 加了 b65 / b65-dual 后这里自动跟上。
+                    choices=[""] + sorted(CARDS),
                     help="默认卡型；留空则从 sweep*.jsonl 的文件名后缀判定"
                          "（sweep_b50int8fix.jsonl -> b50 + int8fix）")
     ap.add_argument("--dry-run", action="store_true")
@@ -771,8 +825,10 @@ def main():
                 # 组合标记里内嵌了卡名（`b70same` / `b50k2sig`）→ 剥完就查表取卡型。
                 # ⚠️ 不能放到循环之后：`b70same` 本身就在 SUFFIX_MARKS 里，
                 # 循环会先把它剥成 `variant=b70same` + `stem=sweep`，卡型无处可取。
-                if not card and hit in SUFFIX_CARD:
-                    card = SUFFIX_CARD[hit]
+                # ⚠️ 也不能只信 SUFFIX_CARD：穷举不完所有组合（`b70k2retry`
+                # 就漏过，迁移直接崩），所以加一层按字头提取的兜底。
+                if not card:
+                    card = SUFFIX_CARD.get(hit) or card_from_mark(hit)
                 continue
             break
         if not card:
@@ -788,9 +844,8 @@ def main():
         rows = [json.loads(l) for l in open(p, encoding="utf-8") if l.strip()]
         date = dt.date.fromtimestamp(os.path.getmtime(p)).isoformat()
         for rec in build_records(rows, date, variant, card):
-            name = "%s_%s-%dg_%s%s-comfyui.json" % (
-                rec["date"], card,
-                16 if card == "b50" else 32,
+            name = "%s_%s_%s%s-comfyui.json" % (
+                rec["date"], card_slug(card),
                 rec["tag"].replace("comfyui-", ""),
                 "-%s" % variant if variant != "base" else "")
             print("%-30s -> %-58s %s | ok=%d/%d%s"
