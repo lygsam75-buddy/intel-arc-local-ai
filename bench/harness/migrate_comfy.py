@@ -86,6 +86,15 @@ CARDS = {
         "ecc": "off",
         "driver": "32.0.101.9150",
     },
+    # 🔴 **B65 上机实测后必须登记这两项**（`--card b65` 和 `--card b65-dual` 都要用）：
+    #   "b65"      → 单卡。chip / subsys / device_id / board_vendor / vram_visible_gib
+    #                 全部照 `gpu_identity.py` 实测填，**不许照规格表编**（猜错会让
+    #                 整批记录带上别人的身份）。
+    #   "b65-dual" → 双卡。身份字段仍按**单张**填（torch.xpu 只枚举到一张），
+    #                 另加 `"dual": True` 和 `"cards_in_machine": 2`，让读者一眼
+    #                 看出是双卡跑法；⚠️ 别把 2× 的值写进 vram_visible_gib。
+    # detect_card 已把 `b65-dual` 排在 `b65` 前面防混；CARDS 缺对应项时迁移会
+    # KeyError —— 这是设计上的保护：宁可炸掉，也不静默把双卡数据迁成单卡。
 }
 
 # 2026-10-16 之前的历史记录是按单卡（B70）口径迁的，其 env 里缺 device_id/subsys。
@@ -117,7 +126,11 @@ def detect_card(tag, override=None):
             raise SystemExit("未知 --card: %s（可选 %s）" % (override, sorted(CARDS)))
         return override
     low = tag.lower()
-    for key in ("b50", "b60", "b65", "b70"):
+    # ⚠️ **`b65-dual` 必须排在 `b65` 前面**：这是子串匹配，`b65-dual` 里也含
+    # `b65`，顺序一反双卡数据就会被当成单卡 B65 迁走 —— 不只是日志配对错，
+    # 是整批双卡记录混进单卡数据集，之后再也分不出来（2026-10-20 加双卡模式时发现）。
+    # 同理，将来加任何「卡型-变体」形式的键，都要排在裸卡型前面。
+    for key in ("b50", "b60", "b65-dual", "b65", "b70"):
         if key in low:
             return key
     raise SystemExit(

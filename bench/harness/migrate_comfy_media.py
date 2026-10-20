@@ -61,6 +61,11 @@ SUFFIX_CARD = {
     "b70pw": "b70",
     # 2026-10-20 B60 上机（`--suffix b60` → 文件名 `sweep_b60.jsonl`）
     "b60": "b60",
+    # 2026-10-20 双 B65：`--suffix b65-dual`。⚠️ **必须登记**，
+    # 否则 parse_tag 判不出卡型，`int8_convrot_b65-dual` 会整个残留成 quant
+    # （实测：不登记时返回 card=None）。双卡身份仍按**单张 B65** 登记——
+    # torch.xpu 只见到一张，别把 2× 的值写进 vram_visible_gib。
+    "b65-dual": "b65",
 }
 
 CARDS = {
@@ -231,6 +236,13 @@ MARK_NOTE = {
 SUFFIX_MARKS = {
     "b60": "**B60 24G 首批采集**（2026-10-20 上机；`--suffix b60`；身份实测："
            "DEV_E211 · SUBSYS_25421EF7 · GUNNIR · 23.33 GiB · 驱动 9150）",
+    # 2026-10-20 双 B65（`--suffix b65-dual`）。⚠️ 卡型段必须**两边都登记**：
+    # SUFFIX_CARD（→ 规范卡型 b65）+ SUFFIX_MARKS（本表）。只登记前者时
+    # parse_tag 剥不掉这段，`int8_convrot_b65-dual` 会整个残留成量化档名、
+    # card 判成 None（实测踩过）。双卡跑法的边界见 run_new_card.py 顶部说明。
+    "b65-dual": "**双 B65 同时在机**（`--suffix b65-dual`；llama.cpp 走 "
+                "level_zero:0,1 吃到两张，ComfyUI/torch.xpu 只用第一张；"
+                "容量翻倍但 MoE 解码是带宽瓶颈，速度预期与单卡持平）",
     "b70pw": "**B70 · 功耗专项**（采集器默认带整卡功耗后重采，用于给台账补「功耗 / 能量」"
              "这一维；同一份图同一套栈，只是多了 `power` 字段）",
     "b70m3i8v2": "**B70 · Music 3 · int8 文本编码器档**（TE 8.57 GiB 才装得下 → 唯一能做「真驻留」量化对照的一档）",
@@ -426,6 +438,12 @@ def parse_tag(tag):
                     if base.endswith(v) or base.endswith("_" + v)), "")
         if hit:
             variant = variant or hit == "int8fix"
+            # ⚠️ 卡型段也可能只登记在 SUFFIX_MARKS 里（`b65-dual` 就是：
+            # CARDS 是身份表、等 B65 实测后才填，但 tag 现在就会带上这段）。
+            # 不在这里补一刀，parse_tag 就判不出卡型 —— 而本文件 753 行那个
+            # 循环有这段赋值，两个循环曾因此不一致（一个判得出、一个判不出）。
+            if not card and hit in SUFFIX_CARD:
+                card = SUFFIX_CARD[hit]
             base = base[: -len(hit)].rstrip("_")
             continue
         break

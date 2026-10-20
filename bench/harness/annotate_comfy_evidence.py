@@ -90,6 +90,12 @@ LOG_KEY_ALIASES = {
 # 量化档也要参与索引：同为 `base` 变体，bf16 与 int8 在 B50 上是两轮不同的跑测
 # （`server_sweep_b50.log` vs `server_sweep_b50base.log`）。
 CARD_LOG_KEYS = {
+    # 🔴 **B65 上机后必须补两段**（与 migrate_comfy.py 的 CARDS 同步登记）：
+    #   "b65-32g"      → 单卡，日志前缀 `sweep_b65` / `server_b65`
+    #   "b65-dual-32g" → 双卡，日志前缀 `sweep_b65-dual` / `server_b65-dual`
+    # ⚠️ 键名必须与 `find_log` 的**子串匹配**对得上：输出文件名是 `日期_tag.json`，
+    #    tag 里带 `b65-dual`，所以这里也要有 `b65-dual` 段 —— 少了它，双卡记录
+    #    会配到单卡 B65 的日志上（型号一致性校验会拦，但那一批就白跑了）。
     # 2026-10-20 B60 上机。日志文件名形如 `sweep_b60.jsonl` / `server_b60.log`
     # （`--suffix b60`），与 b50/b70 的命名规律一致。
     "b60-24g": {

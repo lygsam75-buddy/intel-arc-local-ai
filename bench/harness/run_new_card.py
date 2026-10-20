@@ -30,6 +30,24 @@ B60 / B65 到手后要跑的东西与 B50 / B70 是同一套，但**顺序不能
     python bench/harness/run_new_card.py --card b65 --dry-run     # 先看计划
     python bench/harness/run_new_card.py --card b65               # 真跑
     python bench/harness/run_new_card.py --card b65 --stages C    # 只补跑 ComfyUI
+
+双卡模式
+--------
+    python bench/harness/run_new_card.py --card b65-dual          # 两张 B65 同时在机
+
+⚠️ **双卡是「买容量，不买速度」**，跑之前必须知道三条：
+
+1. **llama.cpp 吃得到双卡**（SYCL 后端支持 `level_zero:0,1`）——容量翻倍，
+   能装下原本装不下的档位。
+2. **ComfyUI / torch.xpu 吃不到**，只用第一张（driver 钉 `level_zero:0`）。
+   所以 dual 模式的 ComfyUI 项**仍按单卡容量判档**（如 Music 3 的 TE 档位
+   用 int8 不用 bf16），否则必然 OOM 白跑一轮。
+3. B65 与 B70 同为 608 GB/s，MoE 解码是带宽瓶颈 → **decode 速度预期与单卡
+   持平**。双卡的真实价值只有「装得下」，这一点要作为结论写进报告，
+   不能报成「双卡更快」。
+
+⚠️ 双卡模式下 `bench/data` 里每张卡的 `vram_visible_gib` 等身份字段仍按
+**单张**登记（torch 只见到一张），别把 2× 的值写进去。
 """
 from __future__ import annotations
 
@@ -60,6 +78,17 @@ CARDS = {
                 quants=[("IQ2_M", "Qwen3.6-35B-A3B-UD-IQ2_M.gguf", "10.73"),
                         ("Q3_K_S", "Qwen3.6-35B-A3B-UD-Q3_K_S.gguf", "14.30"),
                         ("Q4_0", "Qwen_Qwen3.6-35B-A3B-Q4_0.gguf", "19.41")]),
+    # 双 B65：**买容量，不买速度**。llama.cpp 的 SYCL 后端吃多设备 selector
+    # （level_zero:0,1），ComfyUI/torch.xpu 只用第一张（钉 level_zero:0）。
+    # B65 与 B70 同为 608 GB/s → MoE 解码速度预期与单卡持平，翻倍的只是
+    # 「装得下的模型体积」。⚠️ vram/tbp 这两项是**按规格推算的告警阈值**
+    # （2×32 GiB、2×200 W），不是实测；实测以 stage A 体检为准，且 vram
+    # 只告警不拦截（ECC / 驱动差异会让可见量浮动）。
+    "b65-dual": dict(needle="B65", vram=(60.0, 66.0), toks=197, bw=608, tbp=400,
+                     dual=True,
+                     quants=[("IQ2_M", "Qwen3.6-35B-A3B-UD-IQ2_M.gguf", "10.73"),
+                             ("Q3_K_S", "Qwen3.6-35B-A3B-UD-Q3_K_S.gguf", "14.30"),
+                             ("Q4_0", "Qwen_Qwen3.6-35B-A3B-Q4_0.gguf", "19.41")]),
     "b70": dict(needle="B70", vram=(30.0, 32.2), toks=367, bw=608, tbp=290,
                 quants=[("IQ2_M", "Qwen3.6-35B-A3B-UD-IQ2_M.gguf", "10.73"),
                         ("Q3_K_S", "Qwen3.6-35B-A3B-UD-Q3_K_S.gguf", "14.30"),
@@ -388,7 +417,13 @@ def stage_b(q, card, cfg, py):
     gpu = {"b50": "Intel Arc Pro B50 LP 16G", "b60": "Intel Arc Pro B60 24G",
            "b65": "Intel Arc Pro B65 32G", "b70": "Intel Arc Pro B70 32G"}[card]
     drv = env("ARC_DRIVER") or (driver_version(cfg["needle"]) or "")
-    sel = env("ONEAPI_DEVICE_SELECTOR", "opencl:0")
+    # 🔴 双卡模式：llama.cpp 的 SYCL 后端吃多设备 selector（0,1），
+    # 而 stage_a_light 给 ComfyUI 钉的是 level_zero:0。两个 backend 各取所需，
+    # 所以这里**覆盖**掉环境里的值。
+    if cfg.get("dual"):
+        sel = "level_zero:0,1"
+    else:
+        sel = env("ONEAPI_DEVICE_SELECTOR", "opencl:0")
     # 🔴 先自检再开跑：运行时 DLL 缺失时 llama 全家都是「0 行日志 + rc=3221225781」，
     # 不先拦一下就会像 B60 首轮那样白跑 4 项才发现全挂。
     sycl_check(bin_, sycl)
@@ -468,7 +503,7 @@ def stage_c(q, card, cfg):
     h3run("%s-h3-864x480" % card, 864, 480, 5.0, 6, 1, 1, 3600)
     # C2 分辨率抽测：容量更大的卡看上限，B65 预期与 B70 一致
     h3run("%s-h3-1280x720" % card, 1280, 720, 5.0, 6, 1, 1, 7200)
-    if card in ("b60", "b65"):
+    if card in ("b60", "b65", "b65-dual"):
         h3run("%s-h3-1920x1088" % card, 1920, 1088, 5.0, 6, 1, 1, 14400)
 
     # C3 出图：Qwen-Image 2.1 int8（三卡都有对照），Krea-2 int8
@@ -481,7 +516,13 @@ def stage_c(q, card, cfg):
            "--expect-card", needle, "--suffix", card],
           timeout=7200, note="Krea-2 Turbo int8 · 1024x1024")
     # C4 出音乐：TE 档位看容量（≥31 GiB 可用 bf16 TE，24 GB 档要 int8）
-    te = "bf16" if cfg["vram"][1] > 31 else "int8_convrot"
+    # 🔴 双卡模式**不能**看翻倍后的 vram：ComfyUI/torch.xpu 只用第一张卡，
+    # 按 64 GiB 判就会给 bf16 TE，而单张 B65 装不下 —— 白跑一轮 OOM。
+    # 容量翻倍只对 llama.cpp（stage_b）有效，对 ComfyUI 一律按单卡判。
+    if cfg.get("dual"):
+        te = "int8_convrot"
+    else:
+        te = "bf16" if cfg["vram"][1] > 31 else "int8_convrot"
     q.run("%s-audio-music3" % card,
           [py, "-u", sw, "--only", "music3", "--quant", "int8_convrot",
            "--music-te", te, "--expect-card", needle, "--suffix", card],
@@ -583,6 +624,20 @@ def stage_a_light(q, card, cfg, py):
     if not hit:
         sys.exit("[guard] ❌ 在位没有 %s（%s）—— 拒绝开跑"
                  % (cfg["needle"], ", ".join(d["name"] for d in devs)))
+    if cfg.get("dual"):
+        # 双卡模式：要求**两张** needle 同时在机。ComfyUI/torch.xpu 不吃多设备
+        # selector，钉 level_zero:0；llama.cpp 的 0,1 由 stage_b 单独给。
+        # 第二张「用不上」这件事要**记下来**，别让读者以为 ComfyUI 也吃到了双卡。
+        if len(hit) < 2:
+            sys.exit("[guard] ❌ 双卡模式要求两张 %s 同时在机，实际在位 %d 张"
+                     "（全部设备：%s）—— 拒绝开跑"
+                     % (cfg["needle"], len(hit), ", ".join(d["name"] for d in devs)))
+        os.environ["ONEAPI_DEVICE_SELECTOR"] = "level_zero:0"
+        print("[guard] 双卡模式：在位 %d × %s；ComfyUI 钉 level_zero:0"
+              "（torch.xpu 不吃多设备，第二张记为用不上）" % (len(hit), hit[0]["name"]))
+        print("[guard] ✅ 型号核对通过：%s %.2f GiB × %d"
+              % (hit[0]["name"], hit[0]["gib"], len(hit)))
+        return
     if len(devs) > 1:
         idx = devs.index(hit[0])
         os.environ["ONEAPI_DEVICE_SELECTOR"] = "level_zero:%d" % idx
