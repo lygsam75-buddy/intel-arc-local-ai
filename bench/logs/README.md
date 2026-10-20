@@ -98,6 +98,7 @@
 | `2026-10-20_c4096-faON-q8.log` | `2026-10-20_b60-ctx_c4096-faON-q8.json` |
 | `2026-10-20_c16384-default.log` | `2026-10-20_b60-ctx_c16384-default.json` |
 | `2026-10-20_c16384-faON-q8.log` | `2026-10-20_b60-ctx_c16384-faON-q8.json` |
+| `2026-10-20_b60-24g-q4_0-vision-nothink.log` | `2026-10-20_b60-24g-q4_0-vision-nothink.json`（多模态真跑，答案核对 PASS） |
 | `_authtest.log` | —（鉴权试错，见 `docs/server-config.md` §4.2） |
 | `ctx-ceiling-run.log` / `longctx-v2-run.log` | —（驱动脚本 stdout） |
 
@@ -109,6 +110,7 @@
 |---|---|---|
 | 真实显存账 | `SYCL0 model buffer size` / `SYCL0 KV buffer size` / `SYCL0 compute buffer size` —— **`SYCL0` 是真显存、`SYCL_Host` 是主机侧，两个数回答不同问题，别混**；fit 默认开时还会打两遍，认后一遍 | `docs/pitfalls.md` 4.5、`bench/README.md` |
 | 层是否上了 GPU | `offloaded N/N layers to GPU` | `docs/pitfalls.md` 1.3 |
+| 视觉塔有没有真的加载 | `loaded multimodal model` —— 只有这一行能证明 mmproj 进了显存；**没有它照样能返回一段流畅但编造的描述** | `docs/server-config.md` §7.2、`docs/pitfalls.md` |
 | fit 是否在跑 | `common_fit_params: successfully fit params to free device memory` | `docs/pitfalls.md` 4.5 / 4.6 |
 | 只看 kv cache 的是哪几层 | `llama_kv_cache: layer … dev = SYCL0` | `docs/pitfalls.md` 4.5 |
 | server 单次请求真实耗时 | `Prompt executed in X seconds` | `docs/server-config.md` §4.2 |
