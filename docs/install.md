@@ -15,6 +15,8 @@
 | **B · 官方 ComfyUI + XPU 轮子** | 想自己控版本、跟着上游走 | 驱动 + Python 3.13 + 3 个 `+xpu` 轮子 + 锁页内存补丁 | — | ComfyUI 每次升级，补丁要重打一遍 |
 | **C · 只跑 llama.cpp** | 只用大模型聊天 / 写代码，不画图出视频 | 驱动 + 一个 zip | **Python 完全不用装** | 没有图形界面，只有命令行和 API |
 
+> 机器是 Linux 的话还有第四条：**Docker 镜像**（§5.1）。它只对 Linux 成立，**Windows 用户用不了**。
+
 项目里的 ComfyUI 数字来自 **0.39.0 栈**（路 B 的形态）。路 A 是 **0.34.0 栈**，
 两者在「int8 能不能原生算」这一条上有实质差别——见
 [`comfyui-capability.md`](comfyui-capability.md) §3.2，**别把两栈的数字混着引用**。
@@ -126,6 +128,11 @@ ComfyUI 的 `comfy/model_management.py` 里，锁页内存上限 `MAX_PINNED_MEM
 - **32 GB 档（B70/B65）、模型整驻** → 开关都行，**不必特意开**
 - **16 GB 档（B50）、需要卸权重** → 才值得打开
 
+**外部佐证（同向）**：做 B70 XPU 镜像的那个第三方项目自己写了两条 ——
+「固定内存最多占用 **90%** 内存」「内存不到 64 GB 就加 `OMNIXPU_PIN_MEMORY=0`，单跑一个 H3 就要固定约 **52 GB**」。
+也就是说 pin 是**拿物理内存换搬运**：不搬运的时候，它只留下占用。
+32 GB 机器上一个 H3 就要 52 GB 锁页 —— 这就是为什么这条在桌面档位不划算。
+
 完整实测见 [`comfyui-h3.md`](comfyui-h3.md) 的「开关组」一节。
 
 ---
@@ -150,6 +157,43 @@ SYCL0   = Intel(R) Arc(TM) Pro B70
 
 两边该选哪个，以及 1.5~1.65× 的差距怎么来的，见
 [`server-config.md`](server-config.md) §8。
+
+---
+
+## 5.1 Linux 上还有第四条路：Docker 镜像（Windows 用不了）
+
+如果机器是 Linux（或 LXC 容器），整个环境可以装进镜像里，一条 `docker run` 起服务。
+这是 Intel 给**生产环境**的路，不是给个人桌面的。
+
+| 镜像 | 里面是什么 | 体积 |
+|---|---|---|
+| `intel/llm-scaler-omni:0.2.0-b1`（[官方](https://github.com/intel/llm-scaler)） | ComfyUI **0.31** + torch **2.11** + `omni_xpu_kernel` | — |
+| `gerrywang/comfyui-b70-xpu:0.1.0-b1`（[第三方增强](https://github.com/igerry/comfyui-b70-xpu)） | 在官方镜像上升级到 ComfyUI **0.39** + torch **2.13** | **10.8 GB / 17 层，实际下载 4.05 GB** |
+
+**「10.8 GB」不等于要下 10.8 GB。** Docker 按层共享，17 层里有相当一部分来自 Intel 官方基础镜像；
+换版本时通常只拉差异层。这也说明**大环境该怎么分发**：不是塞进 Git 仓库（单文件上限 100 MiB），
+而是放镜像仓库 —— 一个 10 GB 的镜像，用户可能只多下几百 MB。
+
+🔴 **Windows 用户用不上**：它要 `--device=/dev/dri`（Linux 的 DRM 设备节点）和
+`--memory=<物理内存>`，仓库明确写 `Requirements: Linux, an Intel Arc B-series GPU with working drivers, Docker`。
+本手册的目标用户是 Windows + 32 GB 内存，所以这条路只对服务器 / Linux 工作站成立。
+
+⚠️ **这两个镜像本项目没有在本机跑过**（本机是 Windows、没有 Docker 环境），此处只作为
+「上游怎么配的」引用，**里面的性能数字一个都没进本手册的表格**。
+
+### 本项目那套 0.39 栈是什么
+
+本手册的出图 / 出视频数字里，标注「0.39 栈」的那批，组件构成是（本机实取）：
+
+| 组件 | 版本 |
+|---|---|
+| ComfyUI | **0.39.0** |
+| torch | **2.12.0+xpu** |
+| `omni_xpu_kernel` | 已装（Intel omni 生态的 XPU 算子） |
+| `comfy_kitchen` | 已装（含 XPU 后端） |
+
+⚠️ **注意它和上面那个镜像不是同一套**：镜像里是 torch **2.13**，本项目这批是 torch **2.12**。
+三个栈（Intel 官方 0.31/2.11 → 第三方镜像 0.39/2.13 → 本项目 0.39/2.12）的数字**不能并排引用**。
 
 ---
 

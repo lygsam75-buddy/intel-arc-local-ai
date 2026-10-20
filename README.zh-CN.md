@@ -470,7 +470,7 @@ Krea-2 的 bf16 挂掉是 `UR_RESULT_ERROR_DEVICE_LOST`，两种 `reserve` 下�
 | 路径 | 内容 |
 |---|---|
 | [`docs/at-a-glance.md`](docs/at-a-glance.md) · [EN](docs/at-a-glance.en.md) | **一页纸六张表**——小白向汇总，不用术语 |
-| [`docs/install.md`](docs/install.md) | **开始之前：要装什么**——三条路（整合包 / 官方 ComfyUI + XPU 轮子 / 只跑 llama.cpp）、驱动与 ECC、补丁改哪三处、装完自检 |
+| [`docs/install.md`](docs/install.md) | **开始之前：要装什么**——三条路（整合包 / 官方 ComfyUI + XPU 轮子 / 只跑 llama.cpp）+ Linux 上的 Docker 镜像、驱动与 ECC、补丁改哪三处、装完自检 |
 | [`docs/pitfalls.md`](docs/pitfalls.md) | 坑清单——每个坑的现象、根因、修法 |
 | [`docs/vram-16gb.md`](docs/vram-16gb.md) | **16 GB 档（B50）参数优化**——主力档位 |
 | [`docs/server-config.md`](docs/server-config.md) | **server 交付配置**——16 GB 档不加 `-ncmoe` 就是最差配置（实测差 15×）；24 GB 档只差「装得下」 |
@@ -500,10 +500,11 @@ Krea-2 的 bf16 挂掉是 `UR_RESULT_ERROR_DEVICE_LOST`，两种 `reserve` 下�
 | **双卡并发** | 未做（第二张卡已在机但没跑并发） | 「双卡并发未测」 |
 | **2560×1440 及以上视频** | 显存与时间成本过高 | 「分辨率测到 1920×1088 为止」 |
 | **长期满载（> 1 h）稳定性** | 只做了单任务峰值 | 「单任务 P90 稳定 290 W，长时未测」 |
-| **Vulkan 后端（B50 / B65 / B70）** | 只在 B60 上跑通，其它卡未测 | 「Vulkan 快 1.65× 是 B60 的实测，别的卡未测」 |
+| **Vulkan 后端（B50 / B65）** | B60 / B70 已实测，B65 未到、B50 已拆 | 「Vulkan 快 **1.65×（B60）/ 1.50×（B70）**；B50 / B65 未测，别外推」 |
 | **Vulkan 上的 bf16 权重** | Arc 的 Vulkan 报 `bf16: 0`，只在 Q4_0 上验过 | 「Vulkan 只验证过 Q4_0」 |
 | **Strata 实跑** | 依赖 Linux 环境 | 「Strata 未跑，只有准备记录」 |
 | **非蓝戟（GUNNIR）板** | 手上没有 | 「只测过蓝戟板」 |
+| **Linux / Docker 镜像路线** | 本机是 Windows，没有 Docker 环境 | 「Intel 官方 `llm-scaler-omni` 与第三方再打包的镜像未在本机跑过，只作来源引用」 |
 
 另有两处历史缺口如实标注、不补数：**B50 的 864×480 那一档取证日志已被后续批次覆盖**
 （记录在库、时间分解永久缺失）；**2026-10-14 那批 B70 出图数据来自换内核之前的栈**，
