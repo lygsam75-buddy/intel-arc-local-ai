@@ -97,6 +97,23 @@ def sycl_candidates():
     return sorted(set(out))
 
 
+def ctx_bad_files(card):
+    """当前 status 不是 ok 的 ctx 产出文件集合。
+
+    ⚠️ 只按**文件名**去重、不看内容：调用方拿它当基线，跑完后重新算一次，
+    差集就是本次新产生的废档。已标 discarded 的历史负结果会进基线，不会误报。
+    """
+    out = set()
+    for p in (REPO / "bench" / "data").glob("*%s-ctx*.json" % card):
+        try:
+            d = json.loads(p.read_text(encoding="utf-8"))
+        except Exception:
+            continue
+        if d.get("status") != "ok":
+            out.add(p.name)
+    return out
+
+
 def sycl_check(bin_, sycl):
     """跑 `llama-bench --version` 验证 SYCL 运行时可达，不可达就退出。
 
@@ -245,7 +262,7 @@ class Queue:
     def done(self, item):
         return self.state[self.card].get(item, {}).get("status") == "ok"
 
-    def run(self, item, argv, timeout, note=""):
+    def run(self, item, argv, timeout, note="", verify=None):
         if self.done(item):
             print("[skip] %-34s 已完成（%s）" % (item, self.state[self.card][item].get("at", "?")))
             return True
@@ -266,17 +283,29 @@ class Queue:
             rc = -1
             print("[warn] 起不来：%s" % e)
         dt = time.time() - t0
+        # 🔴 rc==0 不代表跑成了：ctx_sweep 内部各档 load_failed 也照样返回 0，
+        # B60 首轮 4 条环境错误就是这样被记成 ok 并跳过的。所以 rc==0 后再查一遍产出。
+        bad = None
+        if rc == 0 and verify:
+            try:
+                bad = verify()
+            except Exception as e:
+                bad = "校验本身出错：%s" % e
+        ok = (rc == 0) and not bad
         self.state[self.card][item] = {
-            "status": "ok" if rc == 0 else "fail", "rc": rc,
+            "status": "ok" if ok else "fail", "rc": rc,
             "at": time.strftime("%Y-%m-%d %H:%M:%S"), "sec": round(dt, 1), "argv": argv,
         }
+        if bad:
+            self.state[self.card][item]["verify"] = bad
         STATE.write_text(json.dumps(self.state, ensure_ascii=False, indent=2), encoding="utf-8")
-        if rc != 0:
+        if not ok:
             self.fails.append((item, rc, round(dt, 1)))
-            print("[fail] %s rc=%d（%0.0f s）—— 负结果也要落盘，不中断队列" % (item, rc, dt))
+            print("[fail] %s%s（%0.0f s）—— 负结果也要落盘，不中断队列"
+                  % (item, " rc=0 但产出校验不过：%s" % bad if bad else " rc=%d" % rc, dt))
         else:
             print("[ok]   %s  %0.0f s" % (item, dt))
-        return rc == 0
+        return ok
 
     def summary(self):
         print("\n" + "=" * 78)
@@ -392,6 +421,15 @@ def stage_b(q, card, cfg, py):
     if Path(os.path.join(models, MODEL_35B)).exists():
         logs = REPO / "bench" / "logs"
         logs.mkdir(parents=True, exist_ok=True)
+        # 基线差集：跑前就已是废档的文件（含已标 discarded 的历史负结果）不算，
+        # 跑完后**新出现**的废档才算本次失败。ctx_sweep 内部各档 load_failed 也
+        # 照样返回 0，不查这一下就会把环境错误记成 ok 并跳过（B60 首轮实测踩过）。
+        pre_bad = ctx_bad_files(card)
+
+        def _verify():
+            new = sorted(ctx_bad_files(card) - pre_bad)
+            return ("产出 %d 条非 ok：%s" % (len(new), ", ".join(new[:4]))) if new else None
+
         q.run("%s-ctx" % card,
               [py, "-u", ctx, "--bin", bin_, "--model", os.path.join(models, MODEL_35B),
                "--quant", "Q4_0", "--gpu", gpu, "--driver", drv, "--ecc", "off",
@@ -401,7 +439,7 @@ def stage_b(q, card, cfg, py):
                "--slot", "CPU 直连槽",
                "--chip", env("ARC_CHIP", ""), "--subsys", env("ARC_SUBSYS", ""),
                "--vbios", env("ARC_VBIOS", ""), "--vram-gib", env("ARC_VRAM_GIB", "")],
-              timeout=7200, note="上下文档位扫描")
+              timeout=7200, note="上下文档位扫描", verify=_verify)
 
 
 def stage_c(q, card, cfg):
