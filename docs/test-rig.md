@@ -302,6 +302,7 @@ Level Zero 的 `zesDevicePciGetState`（Sysman）与 Windows 的
   "ram_gb": 32,
   "pagefile_gb": 64,
   "igpu": "AMD Radeon(TM) Graphics (UMA, 512 MB fixed)",
+  "os": "Windows 11 Pro 26H2 (26300.9711)",
   "backend": "SYCL",
   "llama_cpp_commit": "c25030496"
 }
@@ -313,6 +314,8 @@ Level Zero 的 `zesDevicePciGetState`（Sysman）与 Windows 的
 |---|---|---|
 | `cpu` | **AMD Ryzen 5 9600X** · 6 核 / 12 线程 · AM5 | `Win32_Processor` |
 | `cpu_isa` | **AVX-512**（对 CPU 侧 MoE 专家计算有实质加成） | 规格 |
+| `driver` | **32.0.101.9150**（B70 · 2026-10-08 · INF `oem104.inf`）；B50 时期为 32.0.101.8976 | `Win32_VideoController.DriverVersion` |
+| `os` | **Windows 11 专业版 26H2 · Build 26300.9711** | `Win32_OperatingSystem` + `DisplayVersion` |
 | `ram_gb` | **32**（`TotalPhysicalMemory` = 31.1 GiB） | `Win32_ComputerSystem` |
 | `pagefile_gb` | **64**（`<非系统盘>:\pagefile.sys`，初始 65536 MB / 上限 131072 MB，**固定大小、非自动管理**） | `Win32_PageFileUsage` |
 | `vram_gib_visible` | **15.51**（B50，ECC 关闭态） | `torch.xpu.get_device_properties(0).total_memory` |

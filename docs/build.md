@@ -18,13 +18,17 @@
 | **内存** | **2 × 16 GB DDR5-6400** 双通道（型号 `PGD5U64A32XX7-KSWC`） | `Win32_PhysicalMemory` |
 | 内存槽 | **2 槽，已插满**（双通道 2 × 16 GB，想加只能整对换掉） | 实物 / 主板规格 |
 | **显卡** | **Intel Arc Pro B70 32 GB**（蓝戟 GUNNIR · `DEV_E223` / `SUBSYS_27421EF7`） | `gpu_identity.py` |
+| **显卡驱动** | **32.0.101.9150**（驱动日期 2026-10-08 · INF `oem104.inf`） | `Win32_VideoController.DriverVersion` |
 | 显卡可用显存 | **31.16 GiB**（ECC 关闭态） | `torch.xpu…total_memory` |
-| **核显** | AMD `Radeon(TM) Graphics`（UMA）· 固定 512 MB + 动态共享 | `Win32_VideoController` |
+| **核显** | AMD `Radeon(TM) Graphics`（UMA）· 固定 512 MB + 动态共享 · 驱动 **32.0.21045.5002** | `Win32_VideoController` |
 | 显示输出 | **由核显负责**：2560×1440 @ 144 Hz；独显分辨率字段为空 | `CurrentHorizontalResolution` |
 | **硬盘** | WD_BLACK **SN750 SE 1 TB** + WD **500 GB**，均为 NVMe SSD | `Get-PhysicalDisk` |
-| **系统** | **Windows 11 专业版** · Build 26300 | `Win32_OperatingSystem` |
+| **系统** | **Windows 11 专业版 · 26H2 · Build 26300.9711** | `Win32_OperatingSystem` + `DisplayVersion` |
 | 页面文件 | **64 GB 初始 / 128 GB 上限**（固定大小，非自动管理） | `Win32_PageFileUsage` |
 | 电源 / 机箱 | **未登记**（见 §6） | — |
+
+> 🔴 **驱动版本是必记项，不是可选。** 换驱动、换 ECC 状态都要**全量重测** ——
+> 本手册的每一条数字都绑定在 `32.0.101.9150` 这个驱动上。你换成别的版本，数字不可比。
 
 **两条 PCIe 槽**：1 条 **PCIe 5.0 x16**（CPU 直连）+ 1 条 **PCIe 4.0 x4**（芯片组）。
 B70 插的是**CPU 直连槽**。
@@ -32,6 +36,11 @@ B70 插的是**CPU 直连槽**。
 > ⚠️ **内存槽数别用 WMI 查。** 本机 `Win32_PhysicalMemoryArray.MemoryDevices` 报 **4**，
 > 但实物是 **2 槽**；而且两条内存的 `DeviceLocator` 居然都叫 `DIMM 1` —— 这块板的 SMBIOS 填报不准。
 > 槽数以实物 / 主板规格为准。（同理，`MaxCapacityEx` 报的 128 GB 也不要用。）
+
+> ⚠️ **系统版本别只看 `ProductName`。** 注册表
+> `HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion` 的 `ProductName` 在本机仍写 **「Windows 10 Pro」**
+> —— 这是微软一直没改的老键，Win11 上也是这个值。判系统版本要看
+> **`DisplayVersion`（26H2）+ `CurrentBuild`（26300.9711）**，或 `Win32_OperatingSystem.Caption`。
 
 ---
 
