@@ -13,6 +13,8 @@
 >
 > 🧾 **怀疑某个数字 →** 本文每个数都能追到 [`bench/data/`](bench/data/) 里的一个文件，
 > 每条记录自带取证状态。
+>
+> 🔗 仓库：<https://github.com/lygsam75-buddy/intel-arc-local-ai>
 
 **为什么会有这份手册，一句话**：Intel 卡的**硬件不吃亏，吃亏的是「开箱就能用」**——
 `llama.cpp` 的 Intel 后端靠自家 fork 追、`ComfyUI` 原生只给 NVIDIA/AMD 开锁页内存、

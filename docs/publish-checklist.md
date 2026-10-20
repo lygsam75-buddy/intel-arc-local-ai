@@ -1,9 +1,9 @@
 # 上线作业单（GitHub 首发）
 
-> **触发**：2026-10-20 上线（已定）。**不等 B60/B65** —— 卡没到，首版就不包含它们，
-> 在仓库里按「未测」明示，而不是留空让人猜。
+> **触发**：2026-10-20 **已上线** —— <https://github.com/lygsam75-buddy/intel-arc-local-ai>。
+> **不等 B60/B65** —— 卡没到，首版就不包含它们，在仓库里按「未测」明示，而不是留空让人猜。
 >
-> 逐项打勾再推。标 ☑️ 的是发布当天要确认的，标 ✅ 的是已经做过的。
+> 逐项打勾再推。标 ☑️ 的是待确认项，标 ✅ 的是已经做过的。
 
 ---
 
@@ -88,7 +88,7 @@
 | **孤儿 / 空壳文件** | ✅ 已删 `bench/results.md`（只有 1 行，内容已被 README 口径 A 表覆盖，且无任何引用） |
 | `__pycache__` | ✅ 已物理删除（`.gitignore` 也盖住了） |
 | LICENSE | ✅ MIT，copyright **`Yonggang Lin (林永刚)`**；README / git 作者已统一为同一署名（email `lygsam75@gmail.com` 用于关联 GitHub 账号） |
-| git 状态 | ✅ 已是 git 仓库（`main`，8 次提交，工作区干净）；`.gitattributes` 定死 `* -text` + 代码走 LF。**只差 push**（见 §5） |
+| git 状态 | ✅ 已是 git 仓库（`main`）；`.gitattributes` 定死 `* -text` + 代码走 LF；**已推送到 GitHub**（289/289 blob sha 与本地一致） |
 
 **日志路径归一化的落地细节**（一次性，已完成）：日志原文里的模型目录、llama.cpp 构建目录、工作目录路径，
 把**路径字符串**换成占位符，**其余字节逐字节未动**（含 `\r\n` 行尾、时间戳、`offloaded N/N layers`、
@@ -106,7 +106,7 @@
 | 3 | **署名** | ✅ 已定：**Yonggang Lin（林永刚）** · `lygsam75@gmail.com` —— LICENSE、两个 README、git 作者三处一致 |
 | 4 | **仓库描述 / topics** | ✅ 已定。描述（英文，好被搜到）：`Field-measured local AI on Arc Pro B50 / B70: llama.cpp, ComfyUI, image · video · audio generation, and power — with raw logs and machine-readable data.`；topics：`intel-arc` `xpu` `llama-cpp` `comfyui` `local-llm` `benchmark` `oneapi` `arc-pro` |
 | 5 | **对外定位** | ✅ 已定：**让更多人知道 Intel 这张卡能用、而且用得不错**，并**记住板子是蓝戟 GUNNIR 做的**。判据是**功耗墙**——公版卡功耗墙更低、性能有所保留，所以功耗数据不是附赠指标，是性能上限的直接依据（见 `README.zh-CN.md` 对应小节） |
-| 6 | **GitHub 登录** | ☑️ **唯一需要你本人动手的一步**：`gh` 当前未登录 → 一次浏览器授权（见 §5），之后长期有效 |
+| 6 | **GitHub 登录** | ✅ 已解决：`gh` CLI 未登录，改用 **GitHub Desktop 凭据管理器里的 OAuth token**（`GH_TOKEN` 注入 `gh`），发布当天一次通过（见 §5） |
 
 ---
 
@@ -124,16 +124,26 @@ git add -A && git commit            # ✅ 已有 10 次提交，工作区干净
 > `core.autocrlf=true` 会把这份结论作废 —— 所以 `.gitattributes` 写死 `* -text`，
 > 只有 `*.py` / `*.sh` 走 `text eol=lf`。**别改成默认值。**
 
-### 剩下两步（**第 1 步必须你自己来**）
+### 发布执行记录（2026-10-20 已完成）
+
+`gh` CLI **本身未登录**（`gh auth status` → not logged into any GitHub hosts），实际走的是
+**GitHub Desktop 落在 Windows 凭据管理器里的 OAuth token**
+（`GitHub - https://api.github.com/lygsam75-buddy`）→ 以 `GH_TOKEN` 交给 `gh`，等同已登录：
 
 ```bash
-gh auth login          # ← 浏览器授权，只需一次；这一步我代不了
-
+gh auth setup-git --hostname github.com          # 让 git push 走 gh 的凭据助手
 gh repo create intel-arc-local-ai --public --source . --push \
   --description "Field-measured local AI on Arc Pro B50 / B70: llama.cpp, ComfyUI, image · video · audio generation, and power — with raw logs and machine-readable data."
-
-gh repo edit --add-topic intel-arc,xpu,llama-cpp,comfyui,oneapi,benchmark,local-llm
+gh repo edit lygsam75-buddy/intel-arc-local-ai --add-topic ...   # ⚠️ repo edit 要 [OWNER/REPO]，只给名字会报格式错
 ```
+
+**结果**：<https://github.com/lygsam75-buddy/intel-arc-local-ai> · public · `main` ·
+289 文件 · 33 份日志 · 207 条 JSON · 8 个 topics。
+
+**推送后核对**（比「推上去了」更重要的那一步）：把远端 `git/trees/main?recursive=1` 的每个 blob sha
+与本地 `git rev-parse HEAD:<path>` 逐个比对 → **289/289 完全一致**。
+这就是 `.gitattributes` 里 `* -text` 有没有白写的判据 —— blob sha 一致 ⇒ 服务端没做行尾转换 ⇒
+日志「路径归一化、其余字节逐字节未动」的取证结论在线上仍然成立。
 
 > 本地目录名仍是旧的 `intel-arc-ai-cookbook`（改名时被本会话占用目录，`mv` / `Rename-Item` 都报占用）。
 > **不影响上线** —— GitHub 上的仓库名由 `gh repo create` 决定，与本地目录名无关。
@@ -152,11 +162,11 @@ chore:      工具与基建
 
 ## 6. 发布后当天
 
-- ☑️ 两个 README 顶部补上实际仓库地址（现在是纯名字 `intel-arc-local-ai`，发布后换成 `https://github.com/<账号>/intel-arc-local-ai`）
-- ☑️ `docs/test-registry.md` §0 登记发布日期与首个 commit
-- ☑️ 对客材料可以开始引用仓库链接（「性能档案」落地）
-- ☑️ 核对 GitHub 页面上 `bench/logs/` 是否真的可见（`.gitignore` 的 `!` 例外只对已跟踪文件生效，`git add` 时要确认 33 份都在）
-- ☑️ 可选：给 README 加一张仓库首页截图 / 一张功耗曲线，提升第一眼可信度
+- ✅ 两个 README 已换成实际仓库地址 / 纯链接表述（`https://github.com/lygsam75-buddy/intel-arc-local-ai`）
+- ✅ `docs/test-registry.md` §0 已登记发布日期、首个 commit `c83228e` 与 289/289 blob sha 核对结果
+- ✅ 对客材料可以开始引用仓库链接（「性能档案」落地）
+- ✅ 已核对线上 `bench/logs/` 可见：`contents/bench/logs` 返回 **34 项**（33 份日志 + README）
+- ☑️ 可选（未做）：README 首页截图 / 功耗曲线图，提升第一眼可信度
 
 ---
 

@@ -14,6 +14,8 @@ machine-readable data, and a test registry that states what was tested *and what
 >
 > 🧾 **Distrust a number?** Every figure below traces to one file in [`bench/data/`](bench/data/),
 > and each record carries its own evidence status.
+>
+> 🔗 Repository: <https://github.com/lygsam75-buddy/intel-arc-local-ai>
 
 **Why this exists, in one line:** Intel cards do not lose on hardware — they lose on *working out of the
 box*. The Intel backends track upstream one step behind, ComfyUI ships pinned-memory support for
