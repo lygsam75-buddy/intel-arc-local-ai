@@ -41,6 +41,9 @@ KV_ARGS_DEFAULT = []          # 交给 llama.cpp 默认（f16 KV，-fa auto）
 
 # 日志里要摘的行：决定"慢"的机制证据都在这几类里
 PATTERNS = {
+    # 启动横幅：`common_params_print_info: build 11753 (d8d92973c) with Clang 20.1.8 for Windows x86_64`
+    # 这是「这条数据是哪个 build 跑的」唯一的一手证据，跨后端对照全靠它。
+    "engine_build": re.compile(r"build (\d+) \(([0-9a-f]{7,})\) with (.+?) for Windows"),
     "flash_attn":   re.compile(r"flash_attn\s*[:=]\s*(\S+)", re.I),
     "n_ctx":        re.compile(r"n_ctx\s*[:=]\s*(\d+)"),
     "n_ctx_per_seq": re.compile(r"n_ctx_per_seq\s*[:=]\s*(\d+)"),
@@ -147,6 +150,27 @@ def wait_ready(port, timeout, proc):
     return False
 
 
+def probe_version(srv, env=None):
+    """问二进制要版本串：`0.7.0-dev (build 11753, commit d8d92973c)`。
+
+    格式与 xpu_bench.py 的 get_version() 逐字一致 —— 两类记录要能放在同一张表里筛。
+    cwd 必须是 bin 目录，否则 `*-impl.dll` 解析失败、拿不到输出。
+    `env` 要传**跑测那套环境**：老 build（11431）缺 SYCL PATH 时进程直接崩、一个字节都不输出。
+    """
+    for exe in (str(srv), str(srv).replace("llama-server.exe", "llama-bench.exe")):
+        try:
+            out = subprocess.run([exe, "--version"], capture_output=True, text=True,
+                                 timeout=60, encoding="utf-8", errors="replace",
+                                 env=env, cwd=str(Path(exe).parent))
+            blob = (out.stdout or "") + (out.stderr or "")
+            m = re.search(r"version:\s*(\S+.*)", blob)
+            if m:
+                return m.group(1).strip()
+        except Exception:
+            continue
+    return ""
+
+
 def parse_log(path):
     txt = ""
     try:
@@ -245,6 +269,14 @@ def main():
     ap.add_argument("--gpu", default="")
     ap.add_argument("--driver", default="")
     ap.add_argument("--ecc", default="off")
+    ap.add_argument("--backend", default="SYCL",
+                    help="写进记录 env.backend 的后端名。SYCL / Vulkan / ... "
+                         "原先这里硬编码 SYCL，跑 Vulkan 会把记录标成 SYCL —— "
+                         "schema 上看起来合法，实际是错标签")
+    ap.add_argument("--device", default="",
+                    help="llama.cpp 自己的 -dev 设备名（如 Vulkan1）。"
+                         "SYCL 用 ONEAPI_DEVICE_SELECTOR 选卡，Vulkan 只认这个；"
+                         "**Vulkan 下不指定会落到枚举第 0 张卡**（本机是核显）")
     ap.add_argument("--device-selector", default="opencl:0")
     ap.add_argument("--sycl-path", default="")
     ap.add_argument("--port", type=int, default=8099)
@@ -291,7 +323,9 @@ def main():
     print("[ENV] 物理内存 %s GiB · 页面文件上限 %s GiB" % _RAM, flush=True)
 
     env = dict(os.environ)
-    if a.device_selector:
+    # ONEAPI_DEVICE_SELECTOR 只对 SYCL 生效。Vulkan 下留着它的唯一后果是
+    # 记录里多一个「看起来选了卡、其实这个后端根本不看」的字段。
+    if a.device_selector and a.backend.upper().startswith("SYCL"):
         env["ONEAPI_DEVICE_SELECTOR"] = a.device_selector
     if a.sycl_path:
         env["PATH"] = a.sycl_path + os.pathsep + env.get("PATH", "")
@@ -315,6 +349,8 @@ def main():
 
     base = ["-m", a.model, "-ngl", "999", "-ncmoe", str(a.ncmoe),
             "--host", "127.0.0.1", "--port", str(a.port)]
+    if a.device:
+        base += ["-dev", a.device]
     if a.server_verbose:
         base.append("-v")
     if a.extra_args.strip():
@@ -332,10 +368,13 @@ def main():
         # 会被覆盖成这个记录字段字典，导致 Popen(env=...) 拿到 float 报
         # "environment can only contain strings"。
         env_info = {"gpu": a.gpu, "driver": a.driver, "ecc": a.ecc,
-                    "backend": "SYCL", "tool": "llama-server",
-                    "device_selector": a.device_selector,
+                    "backend": a.backend, "tool": "llama-server",
+                    "device_selector": (a.device_selector
+                                        if a.backend.upper().startswith("SYCL") else ""),
                     "sycl_path": a.sycl_path,
                     "ram_gb": _RAM[0], "commit_limit_gb": _RAM[1]}
+        if a.device:
+            env_info["device"] = a.device
         # T-20 平台身份：给了才写，避免造出「看起来有、其实空」的字段
         if a.slot:
             env_info["slot"] = a.slot
@@ -434,6 +473,20 @@ def main():
             kill_tree(proc)
 
         rec["log_scan"] = parse_log(log)
+        # 版本取证。两个来源都写，因为用途不同：
+        #   ① `--version`（1 秒、不占 GPU）→ 规范格式 `<ver> (build N, commit H)`，
+        #      与 xpu_bench.py 的记录逐字对齐，跨记录可并排筛；
+        #   ② 服务端日志横幅 → build / commit / 编译器，是「这条数是哪个 build 跑出来的」的原始证据。
+        # **后端对照的结论（同 build 才可比）全靠这两条撑着**，缺了读的人无法自证。
+        _ver, _banner = probe_version(srv, env), rec["log_scan"].get("engine_build")
+        if _ver:
+            rec["env"]["engine_version"] = _ver
+            rec["env"]["engine_version_source"] = "llama-server --version"
+        if _banner:
+            rec["env"]["engine_build"] = _banner[0]
+            rec["env"]["engine_commit"] = _banner[1]
+            rec["env"]["compiler"] = _banner[2].strip()
+            rec["env"]["build_evidence"] = "server log banner"
         out = outdir / ("%s_%s_%s.json" % (rec["date"], a.tag, name))
         out.write_text(json.dumps(rec, ensure_ascii=False, indent=2),
                        encoding="utf-8")

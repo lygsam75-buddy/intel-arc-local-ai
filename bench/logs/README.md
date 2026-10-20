@@ -99,6 +99,12 @@
 | `2026-10-20_c16384-default.log` | `2026-10-20_b60-ctx_c16384-default.json` |
 | `2026-10-20_c16384-faON-q8.log` | `2026-10-20_b60-ctx_c16384-faON-q8.json` |
 | `2026-10-20_b60-24g-q4_0-vision-nothink.log` | `2026-10-20_b60-24g-q4_0-vision-nothink.json`（多模态真跑，答案核对 PASS） |
+| `2026-10-20_b60vk-c16384.log` | `2026-10-20_b60vk-servercfg_b60vk-c16384.json`（Vulkan 后端交付配置 85.59） |
+| `2026-10-20_b60vk-c65536.log` | `2026-10-20_b60vk-servercfg_b60vk-c65536.json`（Vulkan 64K 85.19） |
+| `2026-10-20_b60vk-c16384-mmproj.log` | `2026-10-20_b60vk-servercfg_b60vk-c16384-mmproj.json`（Vulkan + 视觉塔 84.90） |
+| `2026-10-20_b60vk-vision-nothink.log` | `2026-10-20_b60vk-vision-nothink.json`（Vulkan 多模态真跑，首图 11.34 s，PASS） |
+| `2026-10-20_b60sy11753-c16384.log` | `2026-10-20_b60sy11753-servercfg_b60sy11753-c16384.json`（**同 build SYCL 对照** 51.79） |
+| `2026-10-20_b60sy11753-c65536.log` | `2026-10-20_b60sy11753-servercfg_b60sy11753-c65536.json`（同 build SYCL 64K 52.24） |
 | `_authtest.log` | —（鉴权试错，见 `docs/server-config.md` §4.2） |
 | `ctx-ceiling-run.log` / `longctx-v2-run.log` | —（驱动脚本 stdout） |
 
@@ -115,6 +121,8 @@
 | 只看 kv cache 的是哪几层 | `llama_kv_cache: layer … dev = SYCL0` | `docs/pitfalls.md` 4.5 |
 | server 单次请求真实耗时 | `Prompt executed in X seconds` | `docs/server-config.md` §4.2 |
 | 卡型号取证 | `Device: xpu:0 Intel(R) Arc(TM) Pro B…` | `docs/test-rig.md`、`docs/test-registry.md` T-20 |
+| **这条数是哪个 build 跑的** | `common_params_print_info: build 11753 (d8d92973c) with Clang 20.1.8 for Windows x86_64` —— **只有开 `-v` 才打这一行**（verbosity 3 时没有）。跨后端对照、跨批次对照都要靠它判断「同不同 build」 | `docs/server-config.md` §8.1 |
+| **Vulkan 有没有真的用上 Arc** | 日志里搜不到设备名 → 看 `-dev Vulkan1` 是否在 `server_args` 里，或跑 `llama-bench --list-devices`（**第 0 张是核显**） | `docs/pitfalls.md` 6.1 |
 
 ---
 

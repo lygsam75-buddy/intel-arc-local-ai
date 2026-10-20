@@ -17,7 +17,13 @@
     "chip": "E211",
     "subsys": "25421EF7",
     "vbios": "2304140000",
-    "vram_visible_gib": 23.33
+    "vram_visible_gib": 23.33,
+    "engine_version": "0.6.0-dev (build 11431, commit c25030496)",
+    "compiler": "IntelLLVM 2025.3.3",
+    "engine_version_source": "llama-server --version",
+    "engine_build": "11431",
+    "engine_commit": "c25030496",
+    "build_evidence": "server log banner"
   },
   "model": {
     "name": "Qwen_Qwen3.6-35B-A3B-Q4_0",

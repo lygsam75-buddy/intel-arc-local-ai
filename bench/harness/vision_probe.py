@@ -231,6 +231,10 @@ def scan_log(path):
     except Exception:
         return {}
     out = {"lines": txt.count("\n")}
+    # 版本横幅：跨后端对照靠这一条判断「是不是同一个 build」
+    _b = re.search(r"build (\d+) \(([0-9a-f]{7,})\) with (.+?) for Windows", txt)
+    if _b:
+        out["engine_build"] = [_b.group(1), _b.group(2), _b.group(3).strip()]
     pats = {
         "clip_loaded": re.compile(r"(loaded.*mmproj[^\n]*)", re.I),
         "clip_offload": re.compile(r"(clip[^\n]*(offload|device|SYCL)[^\n]*)", re.I),
@@ -251,6 +255,20 @@ def scan_log(path):
     return out
 
 
+def probe_version(srv, env=None):
+    """问二进制要版本串：`0.7.0-dev (build 11753, commit d8d92973c)`。
+    格式与 xpu_bench.py 的 get_version() 逐字一致。cwd 必须是 bin 目录。"""
+    try:
+        out = subprocess.run([str(srv), "--version"], capture_output=True, text=True,
+                             timeout=60, encoding="utf-8", errors="replace",
+                             env=env, cwd=str(Path(srv).parent))
+        blob = (out.stdout or "") + (out.stderr or "")
+        m = re.search(r"version:\s*(\S+.*)", blob)
+        return m.group(1).strip() if m else ""
+    except Exception:
+        return ""
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--bin", required=True)
@@ -266,6 +284,11 @@ def main():
     ap.add_argument("--vbios", default="")
     ap.add_argument("--vram-gib", type=float, default=0.0)
     ap.add_argument("--device-selector", default="opencl:0")
+    ap.add_argument("--backend", default="SYCL",
+                    help="写进记录 env.backend 的后端名。原先硬编码 SYCL，"
+                         "跑 Vulkan 会把记录标成 SYCL")
+    ap.add_argument("--device", default="",
+                    help="llama.cpp 的 -dev 设备名（Vulkan 只认这个，如 Vulkan1）")
     ap.add_argument("--sycl-path", default="")
     ap.add_argument("--port", type=int, default=8098)
     ap.add_argument("--ncmoe", type=int, default=8)
@@ -308,7 +331,8 @@ def main():
     print("[ENV] 物理内存 %s GiB · 提交上限 %s GiB" % _RAM, flush=True)
 
     env = dict(os.environ)
-    if a.device_selector:
+    # 同 ctx_sweep：ONEAPI_DEVICE_SELECTOR 只对 SYCL 有意义
+    if a.device_selector and a.backend.upper().startswith("SYCL"):
         env["ONEAPI_DEVICE_SELECTOR"] = a.device_selector
     if a.sycl_path:
         env["PATH"] = a.sycl_path + os.pathsep + env.get("PATH", "")
@@ -319,6 +343,8 @@ def main():
            "--cache-type-k", "q8_0", "--cache-type-v", "q8_0",
            "--fit", "off", "-lm", "dio", "--jinja",
            "--mmproj", a.mmproj, "--image-min-tokens", str(a.image_min_tokens)]
+    if a.device:
+        cmd += ["-dev", a.device]
     # -v 默认不开：本轮实测发现 verbose 的「每 token 一行」日志会让 decode
     # 偏低的嫌疑（同配置 -v 35.55 / 无 -v 37.5）。视觉塔证据行是 info 级，
     # 不开 -v 也在，所以默认关掉，保证速度读数与其它配置同口径。
@@ -333,9 +359,11 @@ def main():
     rec = {
         "schema": SCHEMA, "tag": a.tag, "date": dt.date.today().isoformat(),
         "source": "local",
-        "env": {"gpu": a.gpu, "driver": a.driver, "ecc": a.ecc, "backend": "SYCL",
+        "env": {"gpu": a.gpu, "driver": a.driver, "ecc": a.ecc, "backend": a.backend,
                 "tool": "llama-server /v1/chat/completions",
-                "device_selector": a.device_selector, "sycl_path": a.sycl_path,
+                "device_selector": (a.device_selector
+                                    if a.backend.upper().startswith("SYCL") else ""),
+                "sycl_path": a.sycl_path,
                 "ram_gb": _RAM[0], "commit_limit_gb": _RAM[1]},
         "model": {"name": Path(a.model).stem, "quant": a.quant,
                   "size_gib": round(Path(a.model).stat().st_size / 1024**3, 2)},
@@ -439,6 +467,19 @@ def main():
         kill_tree(proc)
 
     rec["log_scan"] = scan_log(log)
+    # 版本取证：格式与 xpu_bench.py 的 get_version() 对齐。
+    # ⚠️ 本脚本默认不开 -v，而**不开 -v 时服务端不打印版本横幅**（实测 verbosity 3 下
+    # `common_params_print_info` 那行不出现）→ 日志里取不到，只能直接问二进制。
+    _ver = probe_version(srv, env)
+    if _ver:
+        rec["env"]["engine_version"] = _ver
+        rec["env"]["engine_version_source"] = "llama-server --version"
+    _b = rec["log_scan"].get("engine_build")
+    if _b:
+        rec["env"]["engine_build"] = _b[0]
+        rec["env"]["engine_commit"] = _b[1]
+        rec["env"]["compiler"] = _b[2]
+        rec["env"]["build_evidence"] = "server log banner"
     out = outdir / ("%s_%s.json" % (rec["date"], a.tag))
     out.write_text(json.dumps(rec, ensure_ascii=False, indent=2), encoding="utf-8")
     print("\n-> %s" % out)
