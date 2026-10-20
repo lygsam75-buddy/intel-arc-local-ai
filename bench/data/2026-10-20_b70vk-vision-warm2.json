@@ -1,0 +1,213 @@
+{
+  "schema": "arc-xpu-vision-probe/1",
+  "tag": "b70vk-vision-warm2",
+  "date": "2026-10-20",
+  "source": "local",
+  "env": {
+    "gpu": "Intel Arc Pro B70 32G",
+    "driver": "9150",
+    "ecc": "off",
+    "backend": "Vulkan",
+    "tool": "llama-server /v1/chat/completions",
+    "device_selector": "",
+    "sycl_path": "",
+    "ram_gb": 31.1,
+    "commit_limit_gb": 95.1,
+    "slot": "CPU 直连槽",
+    "chip": "E223",
+    "subsys": "27421EF7",
+    "vram_visible_gib": 31.16,
+    "engine_version": "0.7.0-dev (build 11753, commit d8d92973c)",
+    "engine_version_source": "llama-server --version"
+  },
+  "model": {
+    "name": "Qwen_Qwen3.6-35B-A3B-Q4_0",
+    "quant": "Q4_0",
+    "size_gib": 19.41
+  },
+  "mmproj": {
+    "file": "mmproj-Qwen3.6-35B-A3B-Q8_0.gguf",
+    "size_gib": 0.57
+  },
+  "ncmoe": 0,
+  "ctx": 16384,
+  "image_min_tokens": 1024,
+  "server_args": [
+    "-m",
+    "<模型目录>/Qwen_Qwen3.6-35B-A3B-Q4_0.gguf",
+    "-ngl",
+    "999",
+    "-ncmoe",
+    "0",
+    "--host",
+    "127.0.0.1",
+    "--port",
+    "8098",
+    "-c",
+    "16384",
+    "--parallel",
+    "1",
+    "--cache-type-k",
+    "q8_0",
+    "--cache-type-v",
+    "q8_0",
+    "--fit",
+    "off",
+    "-lm",
+    "dio",
+    "--jinja",
+    "--mmproj",
+    "<模型目录>/mmproj-Qwen3.6-35B-A3B-Q8_0.gguf",
+    "--image-min-tokens",
+    "1024",
+    "-dev",
+    "Vulkan1"
+  ],
+  "log": "bench\\logs\\2026-10-20_b70vk-vision-warm2.log",
+  "test_image": {
+    "path": "bench\\data\\assets\\vision_test.png",
+    "w": 640,
+    "h": 360,
+    "bytes": 3207,
+    "expected": [
+      "red",
+      "green",
+      "blue"
+    ]
+  },
+  "prompt": "List the shapes in this image. For each one give its color. Answer in one short line, left to right.",
+  "load_s": 14.6,
+  "vram_after_load": {
+    "pid": 6964,
+    "name": "llama-server.exe",
+    "vram_dedicated_mb": 20001.8,
+    "vram_shared_mb": 2.6,
+    "ram_working_set_mb": 502.0,
+    "ram_commit_mb": 21149.7,
+    "ram_page_faults": 261188
+  },
+  "runs": [
+    {
+      "rep": 0,
+      "wall_s": 4.15,
+      "answer": "",
+      "reasoning_head": "The user wants me to identify the shapes and their colors in the provided image.\n1.  **Scan the image from left to right.**\n2.  **First object (left):** It's a square. The color is red.\n3.  **Second object (middle):** It's a circle. The color is green.\n4.  **Third object (right):** It's a square. Th",
+      "message_keys": [
+        "content",
+        "reasoning_content",
+        "role"
+      ],
+      "finish_reason": "length",
+      "decode_tok_s": 103.37278183772867,
+      "prompt_tok_s": 347.108424362075,
+      "prompt_n": 1111,
+      "predicted_n": 96,
+      "usage": {
+        "completion_tokens": 96,
+        "prompt_tokens": 1111,
+        "total_tokens": 1207,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      }
+    },
+    {
+      "rep": 1,
+      "wall_s": 0.94,
+      "answer": "",
+      "reasoning_head": "The user wants me to identify the shapes and their colors in the provided image.\n1.  **Scan the image from left to right.**\n2.  **First object (left):** It's a square. The color is red.\n3.  **Second object (middle):** It's a circle. The color is green.\n4.  **Third object (right):** It's a square. Th",
+      "message_keys": [
+        "content",
+        "reasoning_content",
+        "role"
+      ],
+      "finish_reason": "length",
+      "decode_tok_s": 109.33414355688139,
+      "prompt_tok_s": 99.8851320980872,
+      "prompt_n": 4,
+      "predicted_n": 96,
+      "usage": {
+        "completion_tokens": 96,
+        "prompt_tokens": 1111,
+        "total_tokens": 1207,
+        "prompt_tokens_details": {
+          "cached_tokens": 1107
+        }
+      }
+    },
+    {
+      "rep": 2,
+      "wall_s": 0.94,
+      "answer": "",
+      "reasoning_head": "The user wants me to identify the shapes and their colors in the provided image.\n1.  **Scan the image from left to right.**\n2.  **First object (left):** It's a square. The color is red.\n3.  **Second object (middle):** It's a circle. The color is green.\n4.  **Third object (right):** It's a square. Th",
+      "message_keys": [
+        "content",
+        "reasoning_content",
+        "role"
+      ],
+      "finish_reason": "length",
+      "decode_tok_s": 107.89789905754026,
+      "prompt_tok_s": 108.86131069018072,
+      "prompt_n": 4,
+      "predicted_n": 96,
+      "usage": {
+        "completion_tokens": 96,
+        "prompt_tokens": 1111,
+        "total_tokens": 1207,
+        "prompt_tokens_details": {
+          "cached_tokens": 1107
+        }
+      }
+    }
+  ],
+  "vram_after_probe": {
+    "pid": 6964,
+    "name": "llama-server.exe",
+    "vram_dedicated_mb": 20082.8,
+    "vram_shared_mb": 13.6,
+    "ram_working_set_mb": 637.8,
+    "ram_commit_mb": 21352.8,
+    "ram_page_faults": 369277
+  },
+  "decode_tok_s": 106.87,
+  "prompt_tok_s": 185.28,
+  "image_prompt_n": 1111,
+  "content_check": {
+    "expected_colors": [
+      "red",
+      "green",
+      "blue"
+    ],
+    "found": [
+      "red",
+      "green"
+    ],
+    "pass": false,
+    "answers": [
+      "",
+      "",
+      ""
+    ],
+    "reasoning_heads": [
+      "The user wants me to identify the shapes and their colors in the provided image.\n1.  **Scan the image from left to right.**\n2.  **First object (left):** It's a square. The color is red.\n3.  **Second object (middle):** It's a circle. The color is green.\n4.  **Third object (right):** It's a square. Th",
+      "The user wants me to identify the shapes and their colors in the provided image.\n1.  **Scan the image from left to right.**\n2.  **First object (left):** It's a square. The color is red.\n3.  **Second object (middle):** It's a circle. The color is green.\n4.  **Third object (right):** It's a square. Th",
+      "The user wants me to identify the shapes and their colors in the provided image.\n1.  **Scan the image from left to right.**\n2.  **First object (left):** It's a square. The color is red.\n3.  **Second object (middle):** It's a circle. The color is green.\n4.  **Third object (right):** It's a square. Th"
+    ],
+    "reason": "answer_truncated_in_reasoning",
+    "reason_source": "derived from runs[]: answer 全空 + reasoning_head 非空 + finish_reason == length；n_predict=96 全部花在思考里",
+    "answers_note": "模型已正确读出 red/green（第三个在截断处），不是视觉失败；答案核对见 *-nothink"
+  },
+  "status": "active",
+  "log_scan": {
+    "lines": 63,
+    "clip_loaded": [
+      "loaded multimodal model, '<模型目录>/mmproj-Qwen3.6-35B-A3B-Q8_0.gguf'"
+    ],
+    "mmproj_note": [
+      "mmproj-Qwen3.6-35B-A3B-Q8_0.gguf'"
+    ],
+    "key_lines": [
+      "0.13.647.510 I srv    load_model: loaded multimodal model, '<模型目录>/mmproj-Qwen3.6-35B-A3B-Q8_0.gguf'"
+    ]
+  }
+}

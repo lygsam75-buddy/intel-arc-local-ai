@@ -293,7 +293,7 @@ def main():
     ap.add_argument("--port", type=int, default=8098)
     ap.add_argument("--ncmoe", type=int, default=8)
     ap.add_argument("--ctx", type=int, default=16384)
-    ap.add_argument("--n-predict", type=int, default=96)
+    ap.add_argument("--n-predict", type=int, default=256)
     ap.add_argument("--reps", type=int, default=3)
     ap.add_argument("--image", default="")
     ap.add_argument("--image-min-tokens", type=int, default=1024)
@@ -463,6 +463,21 @@ def main():
             print("\n[核对] 期望 %s / 命中 %s  -> %s"
                   % (img_info["expected"], hit,
                      "PASS" if rec["content_check"]["pass"] else "FAIL"))
+            # 判「答不出来」还是「答了但被截断」：content 全空而 reasoning 有内容、
+            # 且 finish_reason == length → 是 -n 太小把答案截在思考里，**不是**视觉失败。
+            # 这个误判真发生过（B70 首轮 4 组全 FAIL，模型其实已经把图看对）。
+            if not rec["content_check"]["pass"]:
+                empty_ans = all(not (r.get("answer") or "").strip() for r in good)
+                has_rea = any((r.get("reasoning_head") or "").strip() for r in good)
+                truncated = any(r.get("finish_reason") == "length" for r in good)
+                if empty_ans and has_rea:
+                    rec["content_check"]["reason"] = (
+                        "answer_truncated_in_reasoning" if truncated
+                        else "answer_only_in_reasoning")
+                    print("[!] content 为空、reasoning 有内容（finish_reason=%s）→ " 
+                          "这是 -n 太小把答案截在思考里，不是视觉失败；" 
+                          "要核对答案请加 --no-think 或调大 --n-predict"
+                          % sorted({r.get("finish_reason") for r in good}))
             rec["status"] = "active" if good else "probe_failed"
         kill_tree(proc)
 

@@ -105,6 +105,18 @@
 | `2026-10-20_b60vk-vision-nothink.log` | `2026-10-20_b60vk-vision-nothink.json`（Vulkan 多模态真跑，首图 11.34 s，PASS） |
 | `2026-10-20_b60sy11753-c16384.log` | `2026-10-20_b60sy11753-servercfg_b60sy11753-c16384.json`（**同 build SYCL 对照** 51.79） |
 | `2026-10-20_b60sy11753-c65536.log` | `2026-10-20_b60sy11753-servercfg_b60sy11753-c65536.json`（同 build SYCL 64K 52.24） |
+| `2026-10-20_b70vk-c16384.log` | `2026-10-20_b70vk-servercfg_b70vk-c16384.json`（B70 Vulkan 交付配置 113.18） |
+| `2026-10-20_b70vk-c65536.log` | `2026-10-20_b70vk-servercfg_b70vk-c65536.json`（B70 Vulkan 64K 113.55） |
+| `2026-10-20_b70vk-c16384-mmproj.log` | `2026-10-20_b70vk-servercfg_b70vk-c16384-mmproj.json`（B70 Vulkan + 视觉塔 113.40） |
+| `2026-10-20_b70sy11753-c16384.log` | `2026-10-20_b70sy11753-servercfg_b70sy11753-c16384.json`（**B70 同 build SYCL 对照** 75.23） |
+| `2026-10-20_b70sy11753-c65536.log` | `2026-10-20_b70sy11753-servercfg_b70sy11753-c65536.json`（B70 SYCL 64K 76.57） |
+| `2026-10-20_b70sy11753-c16384-mmproj.log` | `2026-10-20_b70sy11753-servercfg_b70sy11753-c16384-mmproj.json`（B70 SYCL + 视觉塔 77.01） |
+| `2026-10-20_b70vk-vision-cold.log` | `2026-10-20_b70vk-vision-cold.json`（Vulkan 多模态首图 7.88 s；`-n 96` 把答案截在 reasoning 里，判定见 `reason` 字段） |
+| `2026-10-20_b70vk-vision-warm2.log` | `2026-10-20_b70vk-vision-warm2.json`（Vulkan 暖态首图 **4.15 s**，同截断情形） |
+| `2026-10-20_b70vk-vision-nothink.log` | `2026-10-20_b70vk-vision-nothink.json`（Vulkan `--no-think` 真跑，首图 5.89 s，PASS） |
+| `2026-10-20_b70sy-vision-cold.log` | `2026-10-20_b70sy-vision-cold.json`（SYCL 多模态首图 19.19 s，同截断情形） |
+| `2026-10-20_b70sy-vision-warm2.log` | `2026-10-20_b70sy-vision-warm2.json`（SYCL 暖态首图 **7.59 s**，同截断情形） |
+| `2026-10-20_b70sy-vision-nothink.log` | `2026-10-20_b70sy-vision-nothink.json`（SYCL `--no-think` 真跑，首图 6.30 s，PASS） |
 | `_authtest.log` | —（鉴权试错，见 `docs/server-config.md` §4.2） |
 | `ctx-ceiling-run.log` / `longctx-v2-run.log` | —（驱动脚本 stdout） |
 
