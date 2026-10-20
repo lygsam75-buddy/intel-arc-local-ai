@@ -4,6 +4,7 @@
 
 **Intel Arc Local AI Handbook** —— 在 Intel Arc Pro **B50（16 GB）**、**B60（24 GB）** 与 **B70（32 GB）** 上跑本地 AI
 的**实战记录**：`llama.cpp` on SYCL、`ComfyUI` 出图 / 出视频 / 出音乐，以及背后真实的功耗。
+**所有数字来自同一台机器 —— 一台 2025 年的主流游戏机，只换了显卡（[测试机配置](docs/build.md)）。**
 
 不是厂商文档，也不是教程复述。**只记录自己跑通了的配置和实测结果**，原始日志、machine-readable 数据、
 测试项台账都在库里。
@@ -13,6 +14,9 @@
 >
 > 🧾 **怀疑某个数字 →** 本文每个数都能追到 [`bench/data/`](bench/data/) 里的一个文件，
 > 每条记录自带取证状态。
+>
+> 🖥️ **这些数字是哪台机器跑的 → [测试机配置](docs/build.md)。** 一台 2025 年的主流游戏机，
+> 受内存涨价与主板扩展限制，不换不扩充，只换了一块 32 GB 的卡。
 >
 > 🔗 仓库：<https://github.com/lygsam75-buddy/intel-arc-local-ai>
 
