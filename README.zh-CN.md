@@ -155,6 +155,7 @@ python bench/harness/gpu_sysman.py     # 看整卡功耗域的 defaultLimit（mW
 | ECC 开关是否影响算力 | **不影响，只影响容量**。实测差异都在 6% 内，关 ECC 反而略快 |
 | 怎么自检 | `torch.xpu.get_device_properties(0).total_memory` → 关 ECC 应报 ~31.16 GiB（B70）/ ~15.51 GiB（B50） |
 | 怎么读 ECC 状态 | `python bench/harness/gpu_sysman.py`（Level Zero Sysman）。⚠️ 枚举值两代编号相反，**定论看物理容量，不看枚举值** |
+| **核显与独显** | 本机是**核显 + 独显共存**。**核显不占独显显存**（torch 报满额 31.16 GiB，两者物理隔离），但它拿**系统内存**当显存 —— 实测桌面负载下约占 **0.9 GB**。所以「32 GB 内存」要扣掉这一块；纯独显机器会更宽裕。反过来说桌面、浏览器、视频播放全在核显上，B70 上只有 ComfyUI 一个进程、占 70 MB。见 [`test-rig.md`](docs/test-rig.md) |
 
 > 做任何性能记录前先登记显存口径，否则跨记录无法比较。
 

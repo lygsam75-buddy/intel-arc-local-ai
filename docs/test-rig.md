@@ -12,8 +12,55 @@
 | 主板 | 技嘉 **B850M FORCE WIFI6E**（micro-ATX） | 决定下面两个槽的规格 |
 | 扩展槽 1 | **PCIe 5.0 x16**（CPU 直连） | 主槽，满链路 |
 | 扩展槽 2 | **PCIe 4.0 x4**（芯片组直连） | 从槽，带宽 ≈ 主槽的 1/4 |
-| 被测主力卡 | **Intel Arc Pro B50 LP 16G** | 实测可用 **15.51 GiB** |
+| 被测主力卡 | **Intel Arc Pro B70 32G**（在位 · CPU 直连槽） | 实测可用 **31.16 GiB**（ECC 关）；B50 已拆 |
+| 内存 | **2 × 16 GB DDR5-6400**（双通道） | Windows 可见 **31.11 GiB** |
+| 显示适配器 | **核显 + 独显共存**：AMD Radeon(TM) Graphics（UMA）+ 被测 Arc Pro B70 | 见下方专节，**影响复现** |
+| 页面文件 | 初始 64 GB / 最大 128 GB | 32 GB 内存机的硬性配套 |
 | 平台 | AMD AM5（Ryzen） | **支持 AVX-512**，对 CPU 侧 MoE 专家计算有实质加成 |
+
+### 核显与独显共存：两套显存互不占用，但核显吃系统内存
+
+本机是**核显 + 独显**的组合，不是「只有一张独显」的机器。这件事直接影响复现，必须登记：
+
+| 适配器 | 身份 | 「显存」从哪来 | 实测 |
+|---|---|---|---|
+| AMD Radeon(TM) Graphics | 核显（`uma: 1` 统一内存） | **系统内存**：BIOS 固定分配 **512 MB** + Windows 按需动态共享 | 桌面负载下适配器级：专用 462 MB + 共享 432 MB ≈ **0.9 GB**；进程级合计约 **1.1 GB** |
+| Intel Arc(TM) Pro B70 Graphics | 独显（被测卡） | 自带 32 GB GDDR6 | ECC 关时可用 **31.16 GiB**；桌面空闲时只有 ComfyUI 一个进程占 **70 MB** |
+
+**怎么确认哪块卡在跑桌面**（按 LUID 把进程归到适配器上实测）：
+
+| 适配器（LUID） | 上面跑着什么 |
+|---|---|
+| 核显 `0x14E3F` | `dwm`（桌面合成）· 浏览器 · 视频播放器 —— **桌面全在这** |
+| B70 `0x166F8` | 只有 `python`（ComfyUI 进程），**70 MB** |
+
+**两条，别记反：**
+
+1. ✅ **核显不会占独显的显存。** 两者物理隔离 —— `torch.xpu` 报 B70 的 `total_memory`
+   是满额 **31.16 GiB**，一点没被核显分走。所以「显存装不装得下」的判断不受核显影响。
+2. ⚠️ **但核显会吃掉系统内存。** 它没有自己的显存，桌面合成、浏览器硬件加速、视频解码
+   全靠从系统内存里划出来的那一块。所以**「32 GB 内存」里，可供 ComfyUI 卸载权重和
+   页面文件使用的，是扣掉核显占用之后的部分**。
+
+**和「只有一个独显」的机器差在哪：**
+
+| | 核显 + 独显（本机） | 只有独显 |
+|---|---|---|
+| 系统内存 | 少掉核显那一块（0.5~1 GB 起，桌面负载越重越多） | **全部可给 CPU 侧**，换页空间更宽裕 |
+| 独显显存 | 满额留给计算 | 桌面合成要吃几百 MB，还会争 GPU 时间 |
+
+→ **读者若是纯独显机器**（核显禁用 / 服务器无核显），同样 32 GB 会比这里宽裕一些，
+16 GB 档「装不下」的那条线可能略微松动；反过来，**BIOS 里把核显 UMA 调大**
+（1G / 2G / 4G）会让系统内存更紧，更早进换页区。
+
+> 反向也成立：**核显共存不等于拖累**。桌面跑在核显上，B70 才能整块留给计算 ——
+> 实测桌面 + 浏览器 + 视频播放全在核显那侧，B70 上只有 ComfyUI 一个进程、占 **70 MB**。
+> ⚠️ 但本项目**没做「禁用核显」的对照实验**，所以不给「该不该禁」的建议，
+> 只登记两者共存时的事实。真要比，得在同一个任务上对跑两次。
+
+> 取证方式（不依赖 GUI）：
+> `Get-CimInstance Win32_VideoController` 看适配器与 `AdapterRAM`；
+> `llama-bench --list-devices` 看 `uma:` 标志；`torch.xpu...total_memory` 看独显可用量。
 
 > ⚠️ **「哪张卡放在哪个槽」不是本项目的结论依据，别再当成前提引用。**
 >
@@ -125,7 +172,7 @@ python bench/harness/gpu_sysman.py     # 看「固件」段
 
 ---
 
-## Intel Arc Pro B50 LP 16G（已装机，2026-10-15 实测）
+## Intel Arc Pro B50 LP 16G（已拆；2026-10-15 实测记录）
 
 用于 16GB 档专项（见 `vram-16gb.md`）。
 
@@ -242,6 +289,7 @@ Level Zero 的 `zesDevicePciGetState`（Sysman）与 Windows 的
   "cpu_isa": "AVX-512",
   "ram_gb": 32,
   "pagefile_gb": 64,
+  "igpu": "AMD Radeon(TM) Graphics (UMA, 512 MB fixed)",
   "backend": "SYCL",
   "llama_cpp_commit": "c25030496"
 }
@@ -256,6 +304,12 @@ Level Zero 的 `zesDevicePciGetState`（Sysman）与 Windows 的
 | `ram_gb` | **32**（`TotalPhysicalMemory` = 31.1 GiB） | `Win32_ComputerSystem` |
 | `pagefile_gb` | **64**（`<非系统盘>:\pagefile.sys`，初始 65536 MB / 上限 131072 MB，**固定大小、非自动管理**） | `Win32_PageFileUsage` |
 | `vram_gib_visible` | **15.51**（B50，ECC 关闭态） | `torch.xpu.get_device_properties(0).total_memory` |
+| `igpu` | **AMD Radeon(TM) Graphics**（UMA；BIOS 固定 512 MB + 动态共享） | `Win32_VideoController` 的 `AdapterRAM`（512 MB）+ `llama-bench --list-devices` 的 `uma: 1` |
+
+> ⚠️ **`igpu` 不是可选项。** 核显没有独立显存，它的「显存」就是**系统内存** ——
+> 所以在核显 + 独显的机器上，`ram_gb` 里能给模型卸载 / 页面文件用的部分，
+> 是扣掉核显占用之后的（实测桌面负载下约 0.9 GB）。只看 `ram_gb: 32` 会高估可用内存。
+> 纯独显机器记 `"igpu": null`，并注明「无核显」。
 
 > ⚠️ **页面文件在系统盘之外（`<非系统盘>`），且是固定 64 GB、没开自动管理。**
 > 32 GB 内存的机器上这是**唯一可扩展的"内存"**，所以它的大小与所在卷必须随数据一起记录：
