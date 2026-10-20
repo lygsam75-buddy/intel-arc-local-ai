@@ -25,3 +25,6 @@ venv/
 # 本地环境覆盖
 local.env
 *.local.json
+
+# 新卡跑测队列的进度记账（本机状态，不入库）
+.new_card_state.json

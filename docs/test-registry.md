@@ -376,10 +376,18 @@ bench/data/<日期>_<卡><显存>_<模型>-<量化>-<后端>.json
 
 ### 5.1 前置（每张卡必做，不过就往下跑等于白跑）
 
+> ⚡ **一条命令跑完整个队列**（体检 → llama.cpp → ComfyUI，失败不中断、按项记账可续跑）：
+> `python bench/harness/run_new_card.py --card b65`（`--dry-run` 先看计划，
+> `--stages A,B,C` 挑阶段，`--force` 清掉完成标记重跑）。
+> **它不自动跑 `migrate_*.py`** —— 迁移器会覆盖取证字段，归档永远留给人确认（`--stages D` 打印清单）。
+
 1. 装驱动 → `torch.xpu.get_device_properties(0).total_memory` 记录**关 ECC 后**可用量；
 2. `sycl-ls` 确认枚举顺序，写清 `ONEAPI_DEVICE_SELECTOR`；
 3. 确认看门狗已停（`stop_model.ps1`，flag 6 小时过期），宿主内存不是刚腾出来的 1 分钟内；
 4. 本台账登记一行：日期 / 卡 / 显存口径 / 驱动 / 后端。
+5. 🔴 **驱动版本必须记**：本机驱动在 2026-10-20 已是 `32.0.101.9150`，而已发布的
+   B50/B70 全部数据采于 `32.0.101.8976`。跨驱动版本的**端到端秒数不可直接比**，
+   跨卡倍数要在**同一驱动**下重测一个锚点才成立。
 
 ### 5.2 逐项要跑什么（改 `--gpu` / `--tag` 即可，命令模板在 `docs/slot-comparison.md` §5 与 `bench/README.md`）
 
