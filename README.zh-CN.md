@@ -16,9 +16,10 @@
 >
 > 🔗 仓库：<https://github.com/lygsam75-buddy/intel-arc-local-ai>
 
-**为什么会有这份手册，一句话**：Intel 卡的**硬件不吃亏，吃亏的是「开箱就能用」**——
-`llama.cpp` 的 Intel 后端靠自家 fork 追、`ComfyUI` 原生只给 NVIDIA/AMD 开锁页内存、
-新引擎的首发支持列表里通常没有 Intel。这里记的就是把每个坑填平之后、真正跑得通的那套配置。
+**为什么会有这份手册，一句话**：Intel 卡的**硬件不吃亏，吃亏的是开箱不能直接用**——
+NVIDIA 装个驱动就能跑，Intel 这边得自己补后端：`llama.cpp` 的 Intel 后端靠自家 fork 追、
+`ComfyUI` 原生只给 NVIDIA/AMD 开锁页内存、新引擎的首发支持列表里通常没有 Intel。
+这里记的就是把每个坑填平之后、真正跑得通的那套配置。
 
 ---
 
