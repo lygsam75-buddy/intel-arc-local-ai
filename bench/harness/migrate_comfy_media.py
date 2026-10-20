@@ -191,6 +191,27 @@ MARK_STACK = {
     "b70m3v2": "int8fix",
     "b70m3i8v2": "int8fix",
     "b70pw": "int8fix",
+    # 2026-10-20 新卡队列（run_new_card.py 驱动）起的批次。这批的 suffix 里
+    # **没有栈标记**（`--suffix b60` / `b60k2` / `b60m3`，只编码卡型+模型），
+    # 但跑的确实是 int8fix 栈：driver 不设 OMNIXPU_INT8_COMPUTE / SIGFIX，
+    # 而 custom_nodes/omni_int8fix.py 两个开关默认都是 '1'（该文件 63/77 行），
+    # 服务日志 `[int8fix] (1) ... -> True` + `(2) int8_linear 已适配` +
+    # `Native ops: convrot_w4a4, int8_tensorwise, asym_w4a8_int8, w6a8_int8`
+    # 三处直接印证（b60 三个 server 日志均已核）。
+    # ⚠️ 不映射的后果：`sweepb60k2` 的 variant 变成字符串 `b60k2`，
+    #   STACK_VARIANTS['b60k2'] → KeyError，整批迁移硬崩（实测踩过）。
+    "b60": "int8fix", "b60k2": "int8fix", "b60m3": "int8fix",
+}
+# 文件名里**完全不带栈标记**的新卡队列批次（`sweepb60.jsonl` → 卡型被 CARDS
+# 分支先剥掉，SUFFIX_MARKS 无标记可剥 → variant 停在默认 "base"）。
+# 这类批次的实际栈同样由 omni_int8fix.py 的默认值决定（两开关默认开），
+# 依据同上。→ 判据是「卡型属于新卡队列且文件名无栈标记」，
+# **不是猜**：b50/b70 历史批次的文件名都带显式标记（base/sigfix/int8fix），
+# 不在这张表里，不会被误升级。
+CARD_DEFAULT_STACK = {
+    "b60": "int8fix",
+    # B65 / 双 B65 上机后同理（driver 同样不设那两个开关）；
+    # 届时随 CARDS 身份登记一起启用，不提前放空映射。
 }
 MARK_NOTE = {
     "m3i8": "Music 3 · **DiT int8 + 文本编码器 int8**（bf16 TE 为 15.56 GiB，超 B50 整卡 15.51 GiB；int8 TE 为 8.56 GiB，装得下）",
@@ -237,6 +258,13 @@ MARK_NOTE = {
     "k2base": "Krea-2 · **基线**（两个开关都关，shim 完全不装）—— 2×2 的基线格。Krea-2 不走签名不适用的那条路径，能跑",
     "m3sig": "Music 3 · **只签名适配**（能力声明关闭）—— 与 int8fix 组构成 2×2",
     "prov031": "**分离点 · torch 2.12 环境 + provider 0.2.31**（只降 provider，torch 与 kernel 不动）",
+    # 2026-10-20 新卡队列。这批 suffix 只编码「卡型 + 模型」，不编码栈 ——
+    # 栈恒为 int8fix（driver 不设开关、omni_int8fix.py 默认两开关全开，
+    # 服务日志三处印证，见 MARK_STACK 里 b60 条注释）。
+    # 这里写「跑的是什么」，不写过程叙事（迁移姿势是工具链细节，不进数据）。
+    "b60": "**B60 24G · Qwen-Image 2.1 int8**（qwen3vl_8b_int8_convrot 文本编码器）",
+    "b60k2": "**B60 24G · Krea-2 Turbo int8 · 1280×720**（sweep.py 默认分辨率档）",
+    "b60m3": "**B60 24G · Music 3 · 120 s · DiT int8 + 文本编码器 int8_convrot**",
 }
 # ⚠️ 这个脚本**没有 `--only`**：一次跑就是整个 `--src` 目录。
 # 所以只要目录里混着一个从没登记过的后缀，**整次迁移硬失败**（判不出卡型就报错退出是对的，
@@ -256,7 +284,7 @@ SUFFIX_MARKS = {
     # 不这么做会被 sweep.py 的撞车检查拦下：jsonl 与 server 日志都是追加语义，
     # 同一个 suffix 下混模型就拒绝跑（B60 首轮 krea2 / music3 双双 rc=1 挂掉）。
     "b60k2": "**B60 · Krea-2 Turbo int8**（`--suffix b60k2`，与 q21 的 `b60` 分开；"
-             "1024×1024）",
+             "分辨率由 sweep.py 默认档决定，实测 tag 为 1280×720）",
     "b60m3": "**B60 · Music 3 · int8 TE**（`--suffix b60m3`；TE 档位另在 tag 里 "
              "`_teint8_convrot`，120 s 音频）",
     "b65-dualk2": "**双 B65 · Krea-2**（`--suffix b65-dualk2`；ComfyUI 只用第一张，"
@@ -831,6 +859,14 @@ def main():
                     card = SUFFIX_CARD.get(hit) or card_from_mark(hit)
                 continue
             break
+        # 新卡队列的批次文件名只带卡型（`sweepb60.jsonl`），卡型被上面的 CARDS
+        # 分支先剥掉后，SUFFIX_MARKS 无标记可剥 → variant 停在 "base"。
+        # 但实测这批跑的是 int8fix 栈（omni_int8fix.py 两开关默认开，
+        # 服务日志三处印证，见 MARK_STACK 里 b60 条注释）。
+        # 不补这一刀的后果：记录写成「两开关全关」，而日志写明开着
+        # → **对客材料里的假声明**，比 KeyError 更危险（那个至少会崩）。
+        if variant == "base" and card in CARD_DEFAULT_STACK:
+            variant = CARD_DEFAULT_STACK[card]
         if not card:
             # 历史命名没有卡型后缀（2026-10-14 那批）。不是猜：对应服务日志里
             # `Device: xpu:0 Intel(R) Arc(TM) Pro B70 Graphics` + `Total VRAM 31907 MB`

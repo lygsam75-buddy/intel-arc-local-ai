@@ -87,6 +87,17 @@
 | `2026-10-16_deliver-c65536.log` | `2026-10-16_b50-16g-q4_0-servercfg_deliver-c65536.json` |
 | `2026-10-16_first-c16384.log` | `2026-10-16_b50-16g-q4_0-c16384-repeat_first-c16384.json` |
 | `2026-10-16_second-c16384.log` | `2026-10-16_b50-16g-q4_0-c16384-repeat_second-c16384.json` |
+| `2026-10-20_b60-c16384.log` | `2026-10-20_b60-servercfg_b60-c16384.json`（口径 B 交付配置） |
+| `2026-10-20_b60-c16384-mmproj.log` | `2026-10-20_b60-servercfg_b60-c16384-mmproj.json` |
+| `2026-10-20_b60-c16384-ncmoe8.log` | `2026-10-20_b60-servercfg-ncmoe8_b60-c16384-ncmoe8.json` |
+| `2026-10-20_b60-c32768.log` | `2026-10-20_b60-servercfg_b60-c32768.json` |
+| `2026-10-20_b60-c65536.log` | `2026-10-20_b60-servercfg_b60-c65536.json` |
+| `2026-10-20_b60-c131072.log` | `2026-10-20_b60-servercfg_b60-c131072.json` |
+| `2026-10-20_b60-c262144.log` | `2026-10-20_b60-servercfg_b60-c262144.json` |
+| `2026-10-20_c4096-default.log` | `2026-10-20_b60-ctx_c4096-default.json` |
+| `2026-10-20_c4096-faON-q8.log` | `2026-10-20_b60-ctx_c4096-faON-q8.json` |
+| `2026-10-20_c16384-default.log` | `2026-10-20_b60-ctx_c16384-default.json` |
+| `2026-10-20_c16384-faON-q8.log` | `2026-10-20_b60-ctx_c16384-faON-q8.json` |
 | `_authtest.log` | —（鉴权试错，见 `docs/server-config.md` §4.2） |
 | `ctx-ceiling-run.log` / `longctx-v2-run.log` | —（驱动脚本 stdout） |
 
@@ -96,7 +107,7 @@
 
 | 要找 | 搜什么 | 看哪份文档 |
 |---|---|---|
-| 真实显存账 | `SYCL0 model buffer size` / `KV buffer size` —— **fit 默认开时打两遍，认后一遍** | `docs/pitfalls.md` 4.5、`bench/README.md` |
+| 真实显存账 | `SYCL0 model buffer size` / `SYCL0 KV buffer size` / `SYCL0 compute buffer size` —— **`SYCL0` 是真显存、`SYCL_Host` 是主机侧，两个数回答不同问题，别混**；fit 默认开时还会打两遍，认后一遍 | `docs/pitfalls.md` 4.5、`bench/README.md` |
 | 层是否上了 GPU | `offloaded N/N layers to GPU` | `docs/pitfalls.md` 1.3 |
 | fit 是否在跑 | `common_fit_params: successfully fit params to free device memory` | `docs/pitfalls.md` 4.5 / 4.6 |
 | 只看 kv cache 的是哪几层 | `llama_kv_cache: layer … dev = SYCL0` | `docs/pitfalls.md` 4.5 |

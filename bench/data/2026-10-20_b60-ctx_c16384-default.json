@@ -10,7 +10,7 @@
     "backend": "SYCL",
     "tool": "llama-server",
     "device_selector": "opencl:0",
-    "sycl_path": "D:/oneapi-dpcpp/Library/bin;F:/oneMKL_pkg",
+    "sycl_path": "<SYCL 运行时目录>;<oneMKL 目录>",
     "ram_gb": 31.1,
     "commit_limit_gb": 95.1,
     "slot": "CPU 直连槽",
@@ -30,15 +30,55 @@
     "-c",
     "16384"
   ],
-  "log": "D:\\WorkBuddy\\2026-10-15-09-22-59\\intel-arc-ai-cookbook\\bench\\logs\\2026-10-20_c16384-default.log",
-  "load_s": 2.0,
-  "status": "discarded",
-  "exit_code": 3221225781,
+  "log": "..\\logs\\2026-10-20_c16384-default.log",
+  "load_s": 14.5,
+  "warmup": {
+    "rep": 0,
+    "wall_s": 2.67,
+    "decode_tok_s": 51.37968617125861,
+    "prompt_tok_s": 67.47042978663774,
+    "prompt_n": 13,
+    "predicted_n": 128
+  },
+  "probes": [
+    {
+      "rep": 0,
+      "wall_s": 1.91,
+      "decode_tok_s": 52.30989482957987,
+      "prompt_tok_s": 58.33539937872799,
+      "prompt_n": 4,
+      "predicted_n": 96
+    },
+    {
+      "rep": 1,
+      "wall_s": 2.03,
+      "decode_tok_s": 52.34807009251096,
+      "prompt_tok_s": 52.0230462094708,
+      "prompt_n": 4,
+      "predicted_n": 102
+    },
+    {
+      "rep": 2,
+      "wall_s": 2.11,
+      "decode_tok_s": 50.464096526932245,
+      "prompt_tok_s": 55.91277606933184,
+      "prompt_n": 4,
+      "predicted_n": 103
+    }
+  ],
+  "decode_tok_s": 51.71,
+  "decode_min": 50.46,
+  "decode_max": 52.35,
+  "decode_n": 3,
+  "early_stop": 3,
+  "prompt_tok_s": 55.42,
+  "spread_pct": 3.6,
+  "status": "active",
   "log_scan": {
     "ok": true,
-    "lines": 0,
-    "key_lines": []
-  },
-  "discard_reason": "环境错误，非 B60 能力结论：llama-server 加载不到 SYCL 运行时 DLL，以 0xC0000135（3221225781）退出，日志 0 行（log_scan.lines=0）。根因是本次 ARC_SYCL_PATH 指向的目录缺 mkl_sycl_blas.5.dll——sycl8.dll 与 mkl_sycl_blas.5.dll 分散在两个 oneAPI 目录，必须同时在 PATH 里（本文件 env.sycl_path 保留了当时的错误取值作证据）。已在 run_new_card.py 的 stage_b 加跑前自检（llama-bench --version），失败即退出并给出判据与本机候选目录；B60 上下文档位需在自检通过后重跑。本文件留档作反面对照。",
-  "superseded_by": null
+    "lines": 58,
+    "key_lines": [
+      "0.13.415.971 I srv    load_model: initializing, n_slots = 4, n_ctx_slot = 16384, kv_unified = 'true'"
+    ]
+  }
 }

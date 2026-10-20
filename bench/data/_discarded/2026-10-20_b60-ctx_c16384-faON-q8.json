@@ -1,0 +1,51 @@
+{
+  "schema": "arc-xpu-ctx-sweep/1",
+  "tag": "b60-ctx::c16384-faON-q8",
+  "date": "2026-10-20",
+  "source": "local",
+  "env": {
+    "gpu": "Intel Arc Pro B60 24G",
+    "driver": "32.0.101.9150",
+    "ecc": "off",
+    "backend": "SYCL",
+    "tool": "llama-server",
+    "device_selector": "opencl:0",
+    "sycl_path": "D:/oneapi-dpcpp/Library/bin;F:/oneMKL_pkg",
+    "ram_gb": 31.1,
+    "commit_limit_gb": 95.1,
+    "slot": "CPU 直连槽",
+    "chip": "E211",
+    "subsys": "25421EF7",
+    "vbios": "OPROM CODE VERSION:2304140000_OPROM DATA VERSION:2304140000",
+    "vram_visible_gib": 23.33
+  },
+  "model": {
+    "name": "Qwen_Qwen3.6-35B-A3B-Q4_0",
+    "quant": "Q4_0",
+    "size_gib": 19.41
+  },
+  "config_name": "c16384-faON-q8",
+  "ncmoe": 0,
+  "server_args": [
+    "-c",
+    "16384",
+    "-fa",
+    "on",
+    "-ctk",
+    "q8_0",
+    "-ctv",
+    "q8_0"
+  ],
+  "log": "D:\\WorkBuddy\\2026-10-15-09-22-59\\intel-arc-ai-cookbook\\bench\\logs\\2026-10-20_c16384-faON-q8.log",
+  "load_s": 2.0,
+  "status": "discarded",
+  "exit_code": 3221225781,
+  "log_scan": {
+    "ok": true,
+    "lines": 0,
+    "key_lines": []
+  },
+  "discard_reason": "环境错误，非 B60 能力结论：llama-server 加载不到 SYCL 运行时 DLL，以 0xC0000135（3221225781）退出，日志 0 行（log_scan.lines=0）。根因是本次 ARC_SYCL_PATH 指向的目录缺 mkl_sycl_blas.5.dll——sycl8.dll 与 mkl_sycl_blas.5.dll 分散在两个 oneAPI 目录，必须同时在 PATH 里（本文件 env.sycl_path 保留了当时的错误取值作证据）。已在 run_new_card.py 的 stage_b 加跑前自检（llama-bench --version），失败即退出并给出判据与本机候选目录；B60 上下文档位需在自检通过后重跑。本文件留档作反面对照。",
+  "superseded_by": "2026-10-20_b60-ctx_c16384-faON-q8.json",
+  "superseded_note": "同档位于 SYCL 运行时路径修复后重跑：4 档全部 active，decode 50.91~51.71 tok/s"
+}

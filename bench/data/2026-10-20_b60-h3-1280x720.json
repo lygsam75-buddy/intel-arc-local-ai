@@ -1,0 +1,406 @@
+{
+  "schema": "comfyui-xpu-bench/1",
+  "domain": "comfyui-video",
+  "date": "2026-10-20",
+  "tag": "b60-h3-1280x720",
+  "status": "active",
+  "source": "local",
+  "tool": "bench_f_h3.py + ComfyUI /prompt + /history",
+  "batch": "B50 出视频分辨率天花板扫描（cold 单轮）",
+  "samples": [
+    {
+      "mode": "cold",
+      "ok": true,
+      "server_sec": 429.06,
+      "last_sit": "46.02 s/it",
+      "sampling_sec": 276.12,
+      "sampling_sec_per_step": 46.02,
+      "n_load": 4,
+      "vram_post_gib": null,
+      "power": {
+        "card_domain": 1,
+        "card_limit_mw": 200000,
+        "avg_w": 115.9,
+        "p50_w": 146.6,
+        "p90_w": 150.5,
+        "peak_w": 167.4,
+        "min_w": 34.9,
+        "energy_j": 49996.5,
+        "span_sec": 430.3,
+        "samples": 431,
+        "counter_resets": 0,
+        "peak_basis": "1s",
+        "domains": {
+          "0": {
+            "avg_w": 84.1,
+            "p50_w": 110.0,
+            "p90_w": 111.7,
+            "peak_w": 117.5,
+            "min_w": 17.6,
+            "energy_j": 36282.9,
+            "span_sec": 430.3,
+            "samples": 431,
+            "counter_resets": 0,
+            "peak_basis": "1s"
+          },
+          "1": {
+            "avg_w": 115.9,
+            "p50_w": 146.6,
+            "p90_w": 150.5,
+            "peak_w": 167.4,
+            "min_w": 34.9,
+            "energy_j": 49996.5,
+            "span_sec": 430.3,
+            "samples": 431,
+            "counter_resets": 0,
+            "peak_basis": "1s"
+          },
+          "2": {
+            "avg_w": 5.5,
+            "p50_w": 5.6,
+            "p90_w": 8.5,
+            "peak_w": 22.6,
+            "min_w": 0.0,
+            "energy_j": 2373.8,
+            "span_sec": 430.3,
+            "samples": 431,
+            "counter_resets": 0,
+            "peak_basis": "1s"
+          },
+          "3": {
+            "avg_w": 61.9,
+            "p50_w": 89.5,
+            "p90_w": 91.3,
+            "peak_w": 97.0,
+            "min_w": 0.0,
+            "energy_j": 26714.1,
+            "span_sec": 430.3,
+            "samples": 431,
+            "counter_resets": 0,
+            "peak_basis": "1s"
+          }
+        },
+        "busy_threshold_w": 160.0,
+        "busy_share": 0.067
+      }
+    },
+    {
+      "mode": "fresh",
+      "ok": true,
+      "server_sec": 427.31,
+      "last_sit": "45.46 s/it",
+      "sampling_sec": 272.76,
+      "sampling_sec_per_step": 45.46,
+      "n_load": 4,
+      "vram_post_gib": null,
+      "power": {
+        "card_domain": 1,
+        "card_limit_mw": 200000,
+        "avg_w": 116.7,
+        "p50_w": 147.0,
+        "p90_w": 151.1,
+        "peak_w": 167.5,
+        "min_w": 34.9,
+        "energy_j": 50120.3,
+        "span_sec": 429.3,
+        "samples": 429,
+        "counter_resets": 1,
+        "peak_basis": "1s",
+        "domains": {
+          "0": {
+            "avg_w": 84.7,
+            "p50_w": 110.1,
+            "p90_w": 111.8,
+            "peak_w": 117.4,
+            "min_w": 17.8,
+            "energy_j": 36448.3,
+            "span_sec": 429.3,
+            "samples": 430,
+            "counter_resets": 0,
+            "peak_basis": "1s"
+          },
+          "1": {
+            "avg_w": 116.7,
+            "p50_w": 147.0,
+            "p90_w": 151.1,
+            "peak_w": 167.5,
+            "min_w": 34.9,
+            "energy_j": 50120.3,
+            "span_sec": 429.3,
+            "samples": 429,
+            "counter_resets": 1,
+            "peak_basis": "1s"
+          },
+          "2": {
+            "avg_w": 5.4,
+            "p50_w": 5.3,
+            "p90_w": 8.1,
+            "peak_w": 22.6,
+            "min_w": 0.0,
+            "energy_j": 2338.2,
+            "span_sec": 429.3,
+            "samples": 430,
+            "counter_resets": 0,
+            "peak_basis": "1s"
+          },
+          "3": {
+            "avg_w": 60.1,
+            "p50_w": 86.9,
+            "p90_w": 88.2,
+            "peak_w": 88.6,
+            "min_w": 0.0,
+            "energy_j": 25855.1,
+            "span_sec": 429.3,
+            "samples": 430,
+            "counter_resets": 0,
+            "peak_basis": "1s"
+          }
+        },
+        "busy_threshold_w": 160.0,
+        "busy_share": 0.068
+      }
+    },
+    {
+      "mode": "cached",
+      "ok": true,
+      "server_sec": 437.27,
+      "last_sit": "46.43 s/it",
+      "sampling_sec": 278.58,
+      "sampling_sec_per_step": 46.43,
+      "n_load": 4,
+      "vram_post_gib": null,
+      "power": {
+        "card_domain": 1,
+        "card_limit_mw": 200000,
+        "avg_w": 114.6,
+        "p50_w": 146.6,
+        "p90_w": 150.6,
+        "peak_w": 167.5,
+        "min_w": 35.0,
+        "energy_j": 50590.4,
+        "span_sec": 440.4,
+        "samples": 441,
+        "counter_resets": 0,
+        "peak_basis": "1s",
+        "domains": {
+          "0": {
+            "avg_w": 82.9,
+            "p50_w": 109.6,
+            "p90_w": 111.4,
+            "peak_w": 117.4,
+            "min_w": 17.9,
+            "energy_j": 36587.9,
+            "span_sec": 440.4,
+            "samples": 441,
+            "counter_resets": 0,
+            "peak_basis": "1s"
+          },
+          "1": {
+            "avg_w": 114.6,
+            "p50_w": 146.6,
+            "p90_w": 150.6,
+            "peak_w": 167.5,
+            "min_w": 35.0,
+            "energy_j": 50590.4,
+            "span_sec": 440.4,
+            "samples": 441,
+            "counter_resets": 0,
+            "peak_basis": "1s"
+          },
+          "2": {
+            "avg_w": 5.4,
+            "p50_w": 5.5,
+            "p90_w": 8.5,
+            "peak_w": 22.6,
+            "min_w": 0.0,
+            "energy_j": 2376.2,
+            "span_sec": 440.4,
+            "samples": 441,
+            "counter_resets": 0,
+            "peak_basis": "1s"
+          },
+          "3": {
+            "avg_w": 58.8,
+            "p50_w": 86.5,
+            "p90_w": 88.5,
+            "peak_w": 88.7,
+            "min_w": 0.0,
+            "energy_j": 25942.8,
+            "span_sec": 440.4,
+            "samples": 441,
+            "counter_resets": 0,
+            "peak_basis": "1s"
+          }
+        },
+        "busy_threshold_w": 160.0,
+        "busy_share": 0.063
+      }
+    }
+  ],
+  "summary": {
+    "n_total": 3,
+    "n_ok": 3,
+    "n_fail": 0,
+    "server_sec_mean": 431.21,
+    "power": {
+      "basis": "整卡电源域 · 能耗计数器求差 · 均值覆盖整轮（含装载）",
+      "card_domain": 1,
+      "card_limit_mw": 200000,
+      "n_rounds": 3,
+      "avg_w_min": 114.6,
+      "avg_w_max": 116.7,
+      "p90_w_min": 150.5,
+      "p90_w_max": 151.1,
+      "peak_w_max": 167.5,
+      "peak_basis": "1s",
+      "energy_j_max": 50590.4,
+      "counter_resets_max": 1,
+      "busy_share_mean": 0.066
+    }
+  },
+  "workload": {
+    "model": "MiniMax H3",
+    "task": "image-to-video",
+    "steps": 6,
+    "duration_sec": 5.0,
+    "frames": 124,
+    "fps": 24,
+    "duration_sec_exact": 5.167,
+    "selector_megapixels": null,
+    "width": 1280,
+    "height": 720,
+    "resolution": "1280x720",
+    "dit_file": "minimax_h3_fl2va_pruned_int8_convrot.safetensors",
+    "text_encoder_file": "qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors",
+    "sampler": "euler",
+    "scheduler": "simple"
+  },
+  "env": {
+    "gpu": "Intel Arc Pro B60 24G",
+    "chip": "E211",
+    "subsys": "25421EF7",
+    "device_id": "PCI\\VEN_8086&DEV_E211&SUBSYS_25421EF7&REV_00",
+    "board_vendor": "GUNNIR 蓝戟 (PCI vendor 1EF7)",
+    "board_code": "2542",
+    "vram_visible_gib": 23.33,
+    "ecc": "off",
+    "driver": "32.0.101.9150",
+    "cpu": "AMD Ryzen 5 9600X",
+    "ram_gb": 32,
+    "os": "Windows",
+    "attention_backend": "sdpa (CUTE 关闭；CUTE 开着跑 H3 音频封装必崩)",
+    "stack_variant": "int8fix",
+    "int8fix_env": {
+      "OMNIXPU_INT8_COMPUTE": "1",
+      "OMNIXPU_INT8_SIGFIX": "1"
+    },
+    "env_confidence": {
+      "gpu": "recorded",
+      "vram_visible_gib": "recorded",
+      "ecc": "recorded",
+      "cpu": "recorded",
+      "ram_gb": "recorded",
+      "os": "recorded",
+      "width": "recorded",
+      "height": "recorded",
+      "resolution": "recorded",
+      "steps": "recorded",
+      "attention_backend": "recorded",
+      "chip": "recorded",
+      "subsys": "recorded",
+      "device_id": "recorded",
+      "board_vendor": "recorded",
+      "board_code": "recorded",
+      "driver": "inferred",
+      "reserve_vram_gb": "inferred"
+    },
+    "env_evidence": "AIB 身份由服务器日志的 `Device: xpu:0 ...` 行直接证明：Intel(R) Arc(TM) Pro B60 Graphics 出现在 <bench_f>\\server_b60-h3-1280x720.log。这四字段原为按注册表 PCI 枚举推断（backfill_aib.py），今有运行日志佐证，故 env_confidence 升为 recorded。"
+  },
+  "log_evidence": {
+    "status": "annotated",
+    "note": "本记录的时间分解与卡型号由 3 条服务器日志取证（<bench_f>\\server_b60-h3-1280x720.log）：每条日志的 `Prompt executed in X seconds` 均与对应样本的 server_sec 在 1.0s 容差内对上，确认是同一轮；日志中的 `Device: xpu:0 ...` 行是卡型号的直接证据。"
+  },
+  "timing_breakdown": {
+    "note": "按样本分列（同一组内不同步数/轮次）",
+    "runs": [
+      {
+        "source": "<bench_f>\\server_b60-h3-1280x720.log",
+        "prompt_executed_sec": 429.08,
+        "matched_sample": {
+          "steps": null,
+          "round": null,
+          "server_sec": 429.06
+        },
+        "dit_load_mode": "partially",
+        "dit_loaded_mb": 12148,
+        "dit_offloaded_mb": 7847,
+        "steps": 6,
+        "step_sec_trace": [
+          60,
+          44,
+          43,
+          43,
+          43,
+          43
+        ],
+        "sampling_sec": 276,
+        "sampling_sec_per_step": 46.0,
+        "fixed_overhead_sec": 153.1,
+        "sampling_share_pct": 64.3,
+        "overhead_base": "samples.server_sec (端到端)"
+      },
+      {
+        "source": "<bench_f>\\server_b60-h3-1280x720.log",
+        "prompt_executed_sec": 427.33,
+        "matched_sample": {
+          "steps": null,
+          "round": null,
+          "server_sec": 429.06
+        },
+        "dit_load_mode": "partially",
+        "dit_loaded_mb": 12148,
+        "dit_offloaded_mb": 7847,
+        "steps": 6,
+        "step_sec_trace": [
+          57,
+          43,
+          43,
+          43,
+          43,
+          43
+        ],
+        "sampling_sec": 272,
+        "sampling_sec_per_step": 45.33,
+        "fixed_overhead_sec": 157.1,
+        "sampling_share_pct": 63.4,
+        "overhead_base": "samples.server_sec (端到端)"
+      },
+      {
+        "source": "<bench_f>\\server_b60-h3-1280x720.log",
+        "prompt_executed_sec": 437.29,
+        "matched_sample": {
+          "steps": null,
+          "round": null,
+          "server_sec": 429.06
+        },
+        "dit_load_mode": "partially",
+        "dit_loaded_mb": 12148,
+        "dit_offloaded_mb": 7847,
+        "steps": 6,
+        "step_sec_trace": [
+          62,
+          44,
+          43,
+          43,
+          43,
+          43
+        ],
+        "sampling_sec": 278,
+        "sampling_sec_per_step": 46.33,
+        "fixed_overhead_sec": 151.1,
+        "sampling_share_pct": 64.8,
+        "overhead_base": "samples.server_sec (端到端)"
+      }
+    ]
+  }
+}

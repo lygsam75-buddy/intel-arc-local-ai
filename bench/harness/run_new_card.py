@@ -114,12 +114,24 @@ def sycl_candidates():
     """扫本机 oneAPI 安装布局，返回含 `sycl8.dll` 的 bin 目录。
 
     只作**诊断提示**用（自检失败时列给用户看），不作为默认值写死——
-    全库不出现本机绝对路径的纪律对脚本一样有效。
+    全库不出现本机绝对路径的纪律对脚本一样有效。所以这里**枚举盘符再搜**：
+    把某台机器的安装根写进代码既不可移植，也等于把本机布局泄进仓库。
     """
     import glob as _g
-    roots = ["D:/oneAPI", "D:/oneapi-*", "C:/Program Files (x86)/Intel/oneAPI"]
+    import string
+    roots = []
+    for dl in string.ascii_uppercase:
+        drive = dl + ":/"
+        if not os.path.isdir(drive):
+            continue
+        for pat in ("oneAPI*", "oneapi*", "intel*", "Intel*"):
+            roots += _g.glob(drive + pat)
+    for std in ("C:/Program Files (x86)/Intel/oneAPI",
+                "C:/Program Files/Intel/oneAPI"):
+        if os.path.isdir(std):
+            roots.append(std)
     out = []
-    for r in roots:
+    for r in sorted(set(roots)):
         for d in _g.glob(r + "/*/*/bin") + _g.glob(r + "/Library/bin"):
             if os.path.isfile(os.path.join(d, "sycl8.dll")):
                 out.append(d)
@@ -127,10 +139,19 @@ def sycl_candidates():
 
 
 def ctx_bad_files(card):
-    """当前 status 不是 ok 的 ctx 产出文件集合。
+    """当前跑废了的 ctx 产出文件集合（按**文件名**）。
 
     ⚠️ 只按**文件名**去重、不看内容：调用方拿它当基线，跑完后重新算一次，
     差集就是本次新产生的废档。已标 discarded 的历史负结果会进基线，不会误报。
+
+    🔴 判据必须是「status 不在成功集里」，**不是 `!= "ok"`**：
+    ctx_sweep 从来不写 "ok"，它写三种状态（ctx_sweep.py 349/394 行）：
+      `active`       —— 量到了 decode_tok_s，成功
+      `load_failed`  —— 模型加载失败（环境错误）
+      `probe_failed` —— 加载了但没量出 decode（探针失败）
+    按 `!= "ok"` 判会把**每一档都**报成废档（B60 重跑实测：4 档全部
+    decode 50.9~51.7 tok/s 成功，却被判 4 条非 ok）。B50 那条
+    `probe_failed` 才是真负结果，两种状态必须分开。
     """
     out = set()
     for p in (REPO / "bench" / "data").glob("*%s-ctx*.json" % card):
@@ -138,7 +159,7 @@ def ctx_bad_files(card):
             d = json.loads(p.read_text(encoding="utf-8"))
         except Exception:
             continue
-        if d.get("status") != "ok":
+        if d.get("status") not in ("active", "ok"):
             out.add(p.name)
     return out
 
@@ -150,9 +171,12 @@ def sycl_check(bin_, sycl):
     只给退出码 3221225781（`0xC0000135` = STATUS_DLL_NOT_FOUND）。B60 首轮
     4 项 ctx 全挂在这，而且日志 0 行，只能靠退出码反推。
 
-    判据：`ARC_SYCL_PATH` 指向的目录必须同时含
-      - `sycl8.dll`（⚠️ **不是** `sycl8-preview.dll`，旧安装里只有 preview 版）
-      - `mkl_sycl_blas.5.dll`
+    判据：`ARC_SYCL_PATH` 是**分号分隔的目录列表**，必须**一起**覆盖两个 DLL ——
+      - `sycl8.dll`（⚠️ **不是** `sycl8-preview.dll`，旧安装里只有 preview 版）→ 在 compiler 的 bin
+      - `mkl_sycl_blas.5.dll` → 在 mkl 的 bin
+    ⚠️ **这两个通常不在同一个目录**（B60 首轮就栽在这：只给了 compiler 的 bin，
+    `ggml-sycl.dll` 依赖的 mkl 那半找不到 → 静默失败）。所以正确形态是
+    `<compiler 目录>/bin;<mkl 目录>/bin`，不是「一个什么都齐的目录」。
     """
     exe = os.path.join(bin_, "llama-bench.exe")
     if not os.path.isfile(exe):
@@ -168,14 +192,18 @@ def sycl_check(bin_, sycl):
     if r.returncode != 0:
         msg = [
             "llama-bench 自检失败（rc=%d）。" % r.returncode,
-            "  最常见原因：ARC_SYCL_PATH 指错目录。判据——该目录必须同时含",
-            "    sycl8.dll（⚠️ 不是 sycl8-preview.dll）和 mkl_sycl_blas.5.dll。",
+            "  最常见原因：ARC_SYCL_PATH 没同时覆盖两个 DLL。它是分号分隔的",
+            "  目录列表，必须一起含：",
+            "    sycl8.dll（⚠️ 不是 sycl8-preview.dll）      → 通常在 <compiler>/bin",
+            "    mkl_sycl_blas.5.dll                        → 通常在 <mkl>/bin",
+            "  即形如 \"<compiler>/bin;<mkl>/bin\"。",
             "  当前 ARC_SYCL_PATH=%r" % sycl,
         ]
         cands = sycl_candidates()
         if cands:
-            msg.append("  本机含 sycl8.dll 的目录（可直接用作 ARC_SYCL_PATH）：")
+            msg.append("  本机含 sycl8.dll 的目录（取其中一个配进列表）：")
             msg += ["    " + c for c in cands]
+            msg.append("  另一半（mkl 目录）用同样的方式扫 mkl_sycl_blas.5.dll 定位。")
         else:
             msg.append("  本机没扫到含 sycl8.dll 的目录，先装/修 oneAPI 基础工具包。")
         sys.exit("\n".join(msg))

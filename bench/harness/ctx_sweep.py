@@ -55,6 +55,24 @@ PATTERNS = {
     "swa":          re.compile(r"swa\s*[:=]\s*(\S+)", re.I),
 }
 
+# 分配行的**设备维度**。上面的 PATTERNS 是「同类行取最后一条」，而 `-v` 日志里
+# 每个 buffer 会打两行：SYCL0（真显存里那部分）与 SYCL_Host（主机侧那部分），
+# 最后一条**永远**是 SYCL_Host —— 于是 ncmoe=0 的配置会把 18,731.34 MiB 的
+# 模型记成 272.81 MiB（B60 实测，差 68 倍），记录读起来像「模型根本没上卡」。
+#
+# 两个数回答的是不同问题，不能只留一个：
+#   `*_buf`      = 真显存里那部分 → 决定「装不装得下」
+#   `*_buf_host` = 主机内存里那部分 → `ncmoe>0` 时被卸下专家的落点，
+#                  经 WDDM 共享显存回读，所以它同时在 xpu_vram 的 shared 里出现
+# → 键名直说归属，不留「一个数两个含义」。本字典在 PATTERNS 之后跑，覆盖同名键；
+#   SYCL 行不存在时（换后端）自动退回 PATTERNS 的通用匹配。
+DEV_BUF = {
+    "model_buf":        re.compile(r"SYCL0\s+model buffer size\s*=\s*([\d.]+)\s*MiB"),
+    "model_buf_host":   re.compile(r"SYCL_Host\s+model buffer size\s*=\s*([\d.]+)\s*MiB"),
+    "compute_buf":      re.compile(r"SYCL0\s+compute buffer size\s*=\s*([\d.]+)\s*MiB"),
+    "compute_buf_host": re.compile(r"SYCL_Host\s+compute buffer size\s*=\s*([\d.]+)\s*MiB"),
+}
+
 
 def host_mem():
     """返回 (物理内存 GiB, 提交上限 GiB)。
@@ -140,6 +158,12 @@ def parse_log(path):
         hits = pat.findall(txt)
         if hits:
             out[key] = hits[-1] if isinstance(hits[-1], str) else list(hits[-1])
+    # 设备维度的分配行覆盖上面的通用匹配（见 DEV_BUF 的注释：通用匹配取到的是
+    # SYCL_Host 那条，会把模型显存占用记小一两个数量级）
+    for key, pat in DEV_BUF.items():
+        hits = pat.findall(txt)
+        if hits:
+            out[key] = hits[-1]
     # 整段摘出来给人工复核，不做二次推断
     keep = [ln for ln in txt.splitlines()
             if re.search(r"KV buffer|compute buffer|model buffer|flash_attn|"
