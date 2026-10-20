@@ -23,6 +23,24 @@ NVIDIA 装个驱动就能跑，Intel 这边得自己补后端：`llama.cpp` 的 
 
 ---
 
+## 开始之前：要装什么
+
+**唯一必装的只有一样——Intel Arc Pro 驱动。** 其余按你走哪条路决定：
+
+| 你的目标 | 要装 | 不用装 |
+|---|---|---|
+| 当天就出图，不想碰命令行 | 驱动 + 一个整合包（6.0 GB，解压双击即用） | torch、XPU 运行库、补丁、Python——**包里全自带** |
+| 自己控版本、跟着上游走 | 驱动 + Python 3.13 + 3 个 `+xpu` 轮子 + 一个锁页内存补丁 | — |
+| 只用大模型聊天 / 写代码 | 驱动 + 一个 llama.cpp 压缩包 | **Python 完全不用装** |
+
+> 驱动版本、轮子的确切版本号、补丁改哪三处、装完怎么自检、装不上对照表 →
+> **[`docs/install.md`](docs/install.md)**。
+>
+> 顺带一句：那个「锁页内存提速 19%」的说法**别照抄**——实测在模型整驻显存时只有 **±0.1%**，
+> 只有需要反复卸载权重时才有意义。见 `docs/install.md` §4.2。
+
+---
+
 ## 表 1 · 你想干的事，这三张卡干得怎么样
 
 | 你想干什么 | B50（¥3,499 · 16G） | B60（¥6,099 · 24G） | B70（¥11,999 · 32G） | 结论 |
@@ -452,6 +470,7 @@ Krea-2 的 bf16 挂掉是 `UR_RESULT_ERROR_DEVICE_LOST`，两种 `reserve` 下�
 | 路径 | 内容 |
 |---|---|
 | [`docs/at-a-glance.md`](docs/at-a-glance.md) · [EN](docs/at-a-glance.en.md) | **一页纸六张表**——小白向汇总，不用术语 |
+| [`docs/install.md`](docs/install.md) | **开始之前：要装什么**——三条路（整合包 / 官方 ComfyUI + XPU 轮子 / 只跑 llama.cpp）、驱动与 ECC、补丁改哪三处、装完自检 |
 | [`docs/pitfalls.md`](docs/pitfalls.md) | 坑清单——每个坑的现象、根因、修法 |
 | [`docs/vram-16gb.md`](docs/vram-16gb.md) | **16 GB 档（B50）参数优化**——主力档位 |
 | [`docs/server-config.md`](docs/server-config.md) | **server 交付配置**——16 GB 档不加 `-ncmoe` 就是最差配置（实测差 15×）；24 GB 档只差「装得下」 |
