@@ -493,6 +493,16 @@ def stage_b(q, card, cfg, py):
             new = sorted(ctx_bad_files(card) - pre_bad)
             return ("产出 %d 条非 ok：%s" % (len(new), ", ".join(new[:4]))) if new else None
 
+        # 🔴 平台身份走 ARC_* 环境变量。**没设就直接落负结果**，别让 argparse
+        # 自己报「invalid float value: ''」——那种报错看不出是「少设了变量」
+        # 还是「卡有问题」（2026-10-21 B65 首轮就是这么白丢一项，rc=2、1 s 就退）。
+        missing = [k for k in ("ARC_CHIP", "ARC_SUBSYS", "ARC_VRAM_GIB")
+                   if not env(k, "").strip()]
+        if missing:
+            print("\n[skip] %s-ctx  缺 %s：ctx 扫描要平台身份（chip / subsys / 物理显存）"
+                  % (card, " / ".join(missing)))
+            print("       先 export 再重跑，例如 ARC_CHIP=E222 ARC_SUBSYS=27441EF7 ARC_VRAM_GIB=31.16")
+            return
         q.run("%s-ctx" % card,
               [py, "-u", ctx, "--bin", bin_, "--model", os.path.join(models, MODEL_35B),
                "--quant", "Q4_0", "--gpu", gpu, "--driver", drv, "--ecc", "off",
