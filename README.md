@@ -30,15 +30,22 @@ record of what actually ran after the pits were filled in.
 
 ## Table 1 — What you want to do, and what these cards do
 
-| What you want to do | B50 (¥3,499 · 16 GB) | B60 (¥6,099 · 24 GB) | B70 (¥18,999 · 32 GB) | Verdict |
-|---|---|---|---|---|
-| Chat with a 35B model | **37.6 tok/s** | **52.4 tok/s** | **75.9 tok/s** | All three fine — pick by budget |
-| Generate a 1280×720 image | **52 s** | **18 s** | **11 s** | B60 is already close to B70 |
-| Generate a 5-second 480p video | **6.6 min** | **3.7 min** | **2.5 min** | All three can do it |
-| Generate a 5-second 1080p video | **38 min** | **22 min** | **14 min** | All three can — you just wait |
+| What you want to do | B50 (¥3,499 · 16 GB) | B60 (¥6,099 · 24 GB) | B65 (¥9,499 · 32 GB) | B70 (¥18,999 · 32 GB) | Verdict |
+|---|---|---|---|---|---|
+| Chat with a 35B model | **37.6 tok/s** | **52.4 tok/s** | **53.1 tok/s** | **75.9 tok/s** | All four fine — pick by budget |
+| Generate a 1280×720 image | **52 s** | **18 s** | **16 s** | **11 s** | B60 / B65 are already close to B70 |
+| Generate a 5-second 480p video | **6.6 min** | **3.7 min** | **3.3 min** | **2.5 min** | All four can do it |
+| Generate a 5-second 1080p video | **38 min** | **22 min** | **22 min** | **14 min** | All four can — you just wait |
 
 > **What is tok/s?** How many word-chunks the model emits per second. Bigger is faster.
 > 37 is already faster than most people read; 75 is roughly double that.
+>
+> 🔴 **The B65 column is not a copy-paste error — it really is about a B60**: 53.1 vs 52.4 tok/s,
+> 22.1 vs 22.3 min at 1080p. Both cards have the **same 20 Xe2 cores** (B60 is BMG-G21, B65 is BMG-G31 —
+> different dies, same core count), so the extra ¥3,400 buys **8 GB more VRAM (24 → 32 GB)**, not speed.
+> Its three video figures are warm runs (198.12 / 394.06 / 1,326.17 s), the 16.1 s image figure is the
+> resident steady state, and 53.09 tok/s is the `llama-bench` figure — **the seven-prompt
+> `llama-server` delivery table was not run on B65**.
 
 ## Table 2 — Which card to buy
 
@@ -52,12 +59,12 @@ record of what actually ran after the pits were filled in.
 
 ## Table 3 — Electricity
 
-| | B50 16 GB | B60 24 GB | B70 32 GB |
-|---|---:|---:|---:|
-| Idle | not measured | not measured | **51 W** (like a light bulb) |
-| Full load | 70 W (spec sheet, not measured) | **150.5–154.3 W** (H3 P90; TBP 200 W, **never hits the wall**) | **290 W** (measured, holds steady) |
-| One hour at full load | about **¥0.05** | about **¥0.10** | about **¥0.20** |
-| One 5-second 720p video | not measured | about **¥0.01** (50 kJ) | about **¥0.01** (58 kJ) |
+| | B50 16 GB | B60 24 GB | B65 32 GB | B70 32 GB |
+|---|---:|---:|---:|---:|
+| Idle | not measured | not measured | not measured | **51 W** (like a light bulb) |
+| Full load | 70 W (spec sheet, not measured) | **150.5–154.3 W** (H3 P90; TBP 200 W, **never hits the wall**) | **201–204 W** (P90, **pinned to the 200 W wall** — only 0.4–1.8% above `defaultLimit`) | **290 W** (measured, holds steady) |
+| One hour at full load | about **¥0.05** | about **¥0.10** | about **¥0.14** | about **¥0.20** |
+| One 5-second 720p video | not measured | about **¥0.01** (50 kJ) | about **¥0.01** (65 kJ) | about **¥0.01** (58 kJ) |
 
 At **¥0.7 per kWh**. **Electricity is not the cost — the PSU and cooling are.** For a 290 W card,
 budget a 550 W PSU or better.
