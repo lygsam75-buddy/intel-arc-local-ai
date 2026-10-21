@@ -364,7 +364,7 @@ MiniMax H3 · 6 步 · 5 s（124 帧 @ 24 fps）· int8 DiT + nvfp4 文本编码
 | 驱动 | **`32.0.101.9150`** |
 | 显存口径 | ECC **关** · 可见 **31.16 GiB**（`Total VRAM 31907 MB`）· 功耗墙 `200000 mW` |
 | 测试机 | Ryzen 5 9600X · B850M · **2×16 GB DDR5-6400（两槽已插满）** · 显示器由核显输出 → **独显整块给模型** |
-| 原始记录 | 聊天 `bench/data/2026-10-21_b65-{q4-0-base,q3ks-base,iq2m-base,q4-0-ncmoe8,q4-0-vulkan}.json`；长上下文 `2026-10-21_b65-ctx_{c4096,c16384}-{default,faON-q8}.json`；出图/出音乐 `2026-10-21_b65-32g_*_convrot-{int8fix,b65k2,b65m3,b65m3res2}-comfyui.json`；视频 `bench_f_b65-h3-*.jsonl` + `power_b65-h3-*.csv` + `server_b65-h3-*.log` |
+| 原始记录 | 聊天 `bench/data/2026-10-21_b65-{q4-0-base,q3ks-base,iq2m-base,q4-0-ncmoe8,q4-0-vulkan}.json`；长上下文 `2026-10-21_b65-ctx_{c4096,c16384}-{default,faON-q8}.json`；出图/出音乐 `2026-10-21_b65-32g_*_convrot-{int8fix,b65k2,b65m3,b65m3res2}-comfyui.json`；**视频 `bench/data/2026-10-21_b65-32g_minimax-h3-int8_convrot-b65h3-{864x480,1280x720,1920x1088}-comfyui.json`**（各 3 条 cold/fresh/cached，含 `timing_breakdown` 的装载方式与卸载量） |
 
 **复现前提**：装什么、驱动与 ECC、补丁改哪三处 → [`../install.md`](../install.md)；
 整机配置与「只换显卡」的由来 → [`../build.md`](../build.md)。
