@@ -170,7 +170,7 @@ Vulkan1 = Intel(R) Arc(TM) Pro B70  (matrix cores: KHR_coopmat)
 SYCL0   = Intel(R) Arc(TM) Pro B70
 ```
 
-两边该选哪个，以及 1.5~1.65× 的差距怎么来的，见
+两边该选哪个，以及 1.5~1.7× 的差距怎么来的，见
 [`server-config.md`](server-config.md) §8。
 
 ---

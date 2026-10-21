@@ -82,6 +82,10 @@ SUFFIX_CARD = {
     "b60m3": "b60",
     "b65-dualk2": "b65",
     "b65-dualm3": "b65",
+    # 2026-10-21 B65 Music 3 的 reserve-vram 补测（`--reserve-vram 2`，其余逐字相同）。
+    # 目的：B65 在 reserve 4 下每轮都 `loads=3`（三个组件全重装），
+    # 与 B70 的 `loads=0` 不可比 → 松一档看是否转为驻留。
+    "b65m3res2": "b65",
 }
 
 CARDS = {
@@ -141,6 +145,28 @@ CARDS = {
             "omni_xpu_kernel": "0.2.0b2+torch212.bmg",
             "stack_note": "跑在 python_embeded（torch 2.12.0+xpu · provider 0.2.33）；"
                           "驱动 9150，与 B50/B70 已发布数据的 8976 不同",
+        },
+    },
+    # 2026-10-21 B65 上机。身份字段来自 `gpu_identity` 实测（DEV_E222 · SUBSYS_27441EF7
+    # · 板厂 1EF7 = GUNNIR · 可见 31.16 GiB），与 B70 的 E223 **只差 1**，认卡必须看 subsys。
+    # 栈版本取自 site-packages 的 dist-info（不是报告头部那行写死的模板文字）：
+    # `omni_xpu_kernel-0.2.0b2+torch212.bmg` / `comfy_kitchen-0.2.37` /
+    # `comfy_kitchen_xpu_runtime-0.2.33`。
+    "b65": {
+        "gpu": "Intel Arc Pro B65 32G",
+        "chip": "E222",
+        "subsys": "27441EF7",
+        "device_id": "PCI\\VEN_8086&DEV_E222&SUBSYS_27441EF7&REV_00",
+        "board_vendor": "GUNNIR 蓝戟 (PCI vendor 1EF7)",
+        "board_code": "2744",
+        "vram_visible_gib": 31.16,
+        "ecc": "off",
+        "driver": "32.0.101.9150",
+        "stack": {
+            "torch": "2.12",
+            "omni_xpu_kernel": "0.2.0b2+torch212.bmg",
+            "stack_note": "跑在 python_embeded（torch 2.12.0+xpu · provider 0.2.33 · "
+                          "comfy_kitchen 0.2.37）；驱动 9150，与 B70 已发布数据的 8976 不同",
         },
     },
 }
@@ -208,6 +234,14 @@ MARK_STACK = {
     # ⚠️ 不映射的后果：`sweepb60k2` 的 variant 变成字符串 `b60k2`，
     #   STACK_VARIANTS['b60k2'] → KeyError，整批迁移硬崩（实测踩过）。
     "b60": "int8fix", "b60k2": "int8fix", "b60m3": "int8fix",
+    # 2026-10-21 B65 单卡队列，同理（driver 的 stage_c 不设那两个开关）。
+    # ⚠️ 只往 SUFFIX_MARKS 登记而漏了本表，后果同样是 KeyError ——
+    # 登记 SUFFIX_MARKS 只解决「剥不剥得掉」，剥下来之后还得能查到栈。
+    "b65": "int8fix", "b65k2": "int8fix", "b65m3": "int8fix",
+    "b65m3res2": "int8fix",
+    # ⚠️ 双卡批次 `b65-dual` 必须在 `b65` **前面**被匹配到（子串关系），
+    # 否则 `b65` 先命中，`-dual` 残留成量化档名。见 SUFFIX_CARD 的排序说明。
+    "b65-dual": "int8fix",
 }
 # 文件名里**完全不带栈标记**的新卡队列批次（`sweepb60.jsonl` → 卡型被 CARDS
 # 分支先剥掉，SUFFIX_MARKS 无标记可剥 → variant 停在默认 "base"）。
@@ -275,6 +309,14 @@ MARK_NOTE = {
     "b60": "**B60 24G · Qwen-Image 2.1 int8**（qwen3vl_8b_int8_convrot 文本编码器）",
     "b60k2": "**B60 24G · Krea-2 Turbo int8 · 1280×720**（sweep.py 默认分辨率档）",
     "b60m3": "**B60 24G · Music 3 · 120 s · DiT int8 + 文本编码器 int8_convrot**",
+    # 2026-10-21 B65 单卡（同 B70 的 BMG-G31 芯片，Xe2 核心 20 vs 32）。
+    # 三条都只写「跑的是什么」——分辨率不写死，以 tag 实测为准。
+    "b65": "**B65 32G · Qwen-Image 2.1 int8**（qwen3vl_8b_int8_convrot 文本编码器）",
+    "b65k2": "**B65 32G · Krea-2 Turbo int8**（分辨率由 sweep.py 默认档决定，实测 tag 为 1280×720）",
+    "b65m3": "**B65 32G · Music 3 · DiT int8 + 文本编码器 int8_convrot**",
+    "b65m3res2": "**B65 32G · Music 3 · `--reserve-vram 2` 补测**"
+                 "（与 b65m3 只差这一项：reserve 4 下三个组件每轮全部重装，"
+                 "松一档看能不能驻留；TE 仍是 bf16）",
 }
 # ⚠️ 这个脚本**没有 `--only`**：一次跑就是整个 `--src` 目录。
 # 所以只要目录里混着一个从没登记过的后缀，**整次迁移硬失败**（判不出卡型就报错退出是对的，
@@ -297,6 +339,20 @@ SUFFIX_MARKS = {
              "分辨率由 sweep.py 默认档决定，实测 tag 为 1280×720）",
     "b60m3": "**B60 · Music 3 · int8 TE**（`--suffix b60m3`；TE 档位另在 tag 里 "
              "`_teint8_convrot`，120 s 音频）",
+    # 2026-10-21 B65 单卡的每模型后缀。⚠️ **必须在两边都登记**：
+    # SUFFIX_CARD 只管「剥下来之后对应哪张卡」，能不能剥下来看的是本表。
+    # 原先这里写着「不用登记，通用卡型正则已能剥 b65」——**那是错的**：
+    # `sweepb65k2` 不以任何卡型结尾，剥不掉 k2 就判不出卡型（实测报
+    # 「认不出卡型（sweepb65k2.jsonl）」）。b60k2 / b60m3 当初就是这么登记的。
+    "b65k2": "**B65 · Krea-2 Turbo int8**（`--suffix b65k2`，与 q21 的 `b65` 分开；"
+             "分辨率由 sweep.py 默认档决定，实测 tag 为 1280×720）",
+    "b65m3": "**B65 · Music 3**（`--suffix b65m3`；TE 档位另在 tag 里 "
+             "`_tebf16` / `_teint8_convrot`，120 s 音频）",
+    # 2026-10-21 B65 Music 3 的 reserve 档位补测。⚠️ 长度必须让它在
+    # `b65m3` 之前命中（SUFFIX_MARKS 按长度降序匹配），否则 `res2` 会残留。
+    "b65m3res2": "**B65 · Music 3 · `--reserve-vram 2`**（`--suffix b65m3res2`；"
+                 "与 b65m3 只差 reserve 这一项，用于分离「装不下 → 每轮重装」"
+                 "与「算力差距」）",
     "b65-dualk2": "**双 B65 · Krea-2**（`--suffix b65-dualk2`；ComfyUI 只用第一张，"
                   "与单张 B65 同条件对照）",
     "b65-dualm3": "**双 B65 · Music 3**（`--suffix b65-dualm3`；TE 档位按**单卡**判，"
@@ -551,7 +607,55 @@ def resolve_seed(key, role, idx_in_role):
     return s
 
 
-def build_records(rows, date, variant, card):
+def detect_reserve(jsonl_path, override=None):
+    """确定这一批实际的 `--reserve-vram`。返回 (值 or None, 出处)。
+
+    🔴 为什么必须这么做：本函数原来把 `reserve_vram_gb` 写死成 4（标 `inferred`）。
+    一旦有人换档位重跑（2026-10-21 的 `--reserve-vram 2` 补测），
+    记录里就会写着一个**没跑过的配置**——比缺字段危险得多。
+
+    取值优先级（先准后宽）：
+      1. `--reserve-vram` 命令行覆盖 —— 采集批次脚本是权威出处，人明确给了就用它；
+      2. jsonl 行里的 `reserve_vram` 字段（2026-10-21 起 sweep.py 会写）；
+      3. 同目录 `server_<stem>.log` 的启动命令行（ComfyUI 自己的日志通常**不含**参数，
+         所以这一条只在别的采集器把命令行回显进去时才命中）；
+      4. 都没有 → None，调用方退回写死的 4 并标 `inferred`。
+    """
+    if override is not None:
+        return override, "--reserve-vram 参数"
+
+    stem, _ = os.path.splitext(os.path.basename(jsonl_path))
+    d = os.path.dirname(jsonl_path)
+
+    # 2) jsonl 自带字段
+    try:
+        with open(jsonl_path, encoding="utf-8") as f:
+            first = next((l for l in f if l.strip()), "")
+        if first:
+            v = json.loads(first).get("reserve_vram")
+            if isinstance(v, (int, float)):
+                return v, "jsonl.reserve_vram"
+    except (OSError, ValueError):
+        pass
+
+    # 3) 服务端日志的启动命令行
+    cand = os.path.join(d, "server_%s.log" % stem)
+    if os.path.isfile(cand):
+        vals = set()
+        with open(cand, encoding="utf-8", errors="replace") as f:
+            for line in f:
+                for m in re.finditer(r"--reserve-vram\s+([0-9]+(?:\.[0-9]+)?)", line):
+                    vals.add(float(m.group(1)))
+        # 多个不同的值 = 这次跑过不止一个档位 → 不猜
+        if len(vals) == 1:
+            v = vals.pop()
+            return (int(v) if v == int(v) else v), os.path.basename(cand)
+
+    return None, None
+
+
+
+def build_records(rows, date, variant, card, reserve=None):
     """把同一 (tag) 的样本聚成一条记录。`card` 决定 env 里的卡身份。"""
     groups = {}
     for r in rows:
@@ -709,7 +813,7 @@ def build_records(rows, date, variant, card):
             "board_vendor": "inferred", "driver": "inferred", "board_code": "inferred",
             "width": "recorded", "height": "recorded", "resolution": "recorded",
             "steps": "recorded", "cfg": "recorded",
-            "reserve_vram_gb": "inferred",
+            "reserve_vram_gb": "recorded" if reserve is not None else "inferred",
             "seed": "inferred",
         }
 
@@ -795,7 +899,10 @@ def build_records(rows, date, variant, card):
             "envvars": dict(ENV_BASE, **({"OMNIXPU_INT8_COMPUTE": "1"}
                                          if variant == "int8fix" else {})),
             "workload": wl,
-            "reserve_vram_gb": 4,
+            # 读得到服务端命令行就用实际值（`recorded`），读不到才退回写死的 4（`inferred`）。
+            # 2026-10-21 起：`--reserve-vram 2` 的补测与 `4` 的历史批次同时存在，
+            # 写死会让两条记录看起来配置相同 —— 那是错的口径。
+            "reserve_vram_gb": 4 if reserve is None else reserve,
             "samples": samples,
             "summary": summary,
             "notes": (
@@ -829,6 +936,16 @@ def main():
                     choices=[""] + sorted(CARDS),
                     help="默认卡型；留空则从 sweep*.jsonl 的文件名后缀判定"
                          "（sweep_b50int8fix.jsonl -> b50 + int8fix）")
+    ap.add_argument("--only", default=None,
+                    # 增量迁移用：只处理文件名含该子串的 sweep*.jsonl。
+                    # 没有它就只能整目录重跑，而这个目录里躺着 B50/B60/B70 的历史批次，
+                    # 整目录重跑既慢、又会把已回填的取证字段再抹一遍。
+                    help="只处理文件名含该子串的 sweep*.jsonl（增量迁移用）")
+    ap.add_argument("--reserve-vram", type=float, default=None,
+                    # 批次级覆盖：采集时用的 `--reserve-vram` 是多少就填多少。
+                    # 🔴 不填的话记录会写死 4 并标 inferred —— 换了档位的补测
+                    # （如 2026-10-21 的 reserve 2）就会在数据里变成「跑的是 4」。
+                    help="这一批采集时用的 --reserve-vram（不填则尝试自动判定，最后退回 4）")
     ap.add_argument("--dry-run", action="store_true")
     a = ap.parse_args()
 
@@ -838,7 +955,12 @@ def main():
 
     n = 0
     # 自动发现：sweep.jsonl / sweep_int8fix.jsonl / sweep_b50sigfix.jsonl / sweep_b50base.jsonl …
-    for p in sorted(glob.glob(os.path.join(a.src, "sweep*.jsonl"))):
+    srcs = sorted(glob.glob(os.path.join(a.src, "sweep*.jsonl")))
+    if a.only:
+        srcs = [p for p in srcs if a.only in os.path.basename(p)]
+        if not srcs:
+            raise SystemExit("--only %r 没匹配到任何 sweep*.jsonl" % a.only)
+    for p in srcs:
         fn = os.path.basename(p)
         stem = fn[: -len(".jsonl")]
         # 反复剥尾部的标记段：`sweep_b50int8fix` → 剥 int8fix、b50；
@@ -889,7 +1011,12 @@ def main():
                 "或把文件名改成 sweep_<卡型>[int8fix|sigfix|base].jsonl。" % fn)
         rows = [json.loads(l) for l in open(p, encoding="utf-8") if l.strip()]
         date = dt.date.fromtimestamp(os.path.getmtime(p)).isoformat()
-        for rec in build_records(rows, date, variant, card):
+        # 确定这一批实际的 `--reserve-vram`（命令行覆盖 / jsonl 字段 / 服务端日志 / 退回 4）
+        reserve, reserve_src = detect_reserve(p, a.reserve_vram)
+        print("    reserve-vram=%s（出处：%s）"
+              % (reserve if reserve is not None else "4（写死的 inferred）",
+                 reserve_src or "无"))
+        for rec in build_records(rows, date, variant, card, reserve=reserve):
             name = "%s_%s_%s%s-comfyui.json" % (
                 rec["date"], card_slug(card),
                 rec["tag"].replace("comfyui-", ""),

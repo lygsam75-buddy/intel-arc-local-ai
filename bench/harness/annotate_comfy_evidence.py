@@ -103,6 +103,10 @@ CARD_LOG_KEYS = {
         ("int8_convrot", "int8fix"): ["sweepb65"],
         ("int8_convrot", "b65k2"): ["sweepb65k2"],
         ("int8_convrot", "b65m3"): ["sweepb65m3"],
+        # 2026-10-21 补测：Music 3 换 `--reserve-vram 2`。**必须单独登记**——
+        # `sweepb65m3` 的 glob 会把 `server_sweepb65m3res2.log` 一起捞进来，
+        # 而 tail 检查（剩 `res2`）又把它剔掉，于是 res2 记录配到 0 个日志（实测踩到）。
+        ("int8_convrot", "b65m3res2"): ["sweepb65m3res2"],
     },
     # 2026-10-20 B60 上机。日志文件名形如 `sweepb60.jsonl` / `server_sweepb60.log`
     # （`--suffix b60`），与 b50/b70 的命名规律一致。
@@ -595,6 +599,25 @@ def one_breakdown(ev):
     return tb
 
 
+def write_json(path, obj):
+    """写回记录，**保留原文件行尾**。
+
+    🔴 `Path.write_text()` 在 Windows 上会把每个 `\\n` 翻成 `\\r\\n`
+    （默认 `newline=None`）—— 2026-10-21 实测：只跑一次取证，
+    20 个原本纯 LF 的 `bench/data/*.json` 整篇变成 553 行「全删全加」，
+    `git diff` 一片红。`.gitattributes` 是 `* -text`，行尾原样进库，
+    所以这里必须按原文件自己的行尾写回。
+    """
+    p = Path(path)
+    raw = p.read_bytes()
+    text = json.dumps(obj, ensure_ascii=False, indent=2)   # 无尾换行
+    if b"\r\n" in raw:
+        data = text.replace("\n", "\r\n").encode("utf-8")
+    else:
+        data = text.encode("utf-8")
+    p.write_bytes(data)
+
+
 def annotate(rec_path, logdirs, dry_run=False):
     rec = json.loads(Path(rec_path).read_text(encoding="utf-8"))
     if rec.get("schema") != "comfyui-xpu-bench/1":
@@ -648,8 +671,7 @@ def annotate(rec_path, logdirs, dry_run=False):
                              "**因此本记录的时间分解不可用，不假装取证做过。**"
                              % (len(logdirs), len(ok_rounds))),
                 }
-                Path(rec_path).write_text(
-                    json.dumps(rec, ensure_ascii=False, indent=2), encoding="utf-8")
+                write_json(rec_path, rec)
             return {"status": "no_log", "wrote": "missing"}
         return {"status": "no_log"}
 
@@ -684,10 +706,18 @@ def annotate(rec_path, logdirs, dry_run=False):
     if len(tbs) == 1:
         rec["timing_breakdown"] = tbs[0]
     else:
-        rec["timing_breakdown"] = {
+        # 🔴 **合并，不要整块覆盖。** 迁移器写进去的 `timing_breakdown` 可能带
+        # `one_breakdown` 等更细的组件分解；直接赋一个新 dict 会把它们抹掉
+        # （2026-10-21 实测：只补取证，10-14 那批记录短了 2.6 KB，全是丢的组件账）。
+        # 本次算出来的只有 `note` + `runs` 两项，其余键原样留着。
+        new_tb = {
             "note": "按样本分列（同一组内不同步数/轮次）",
             "runs": tbs,
         }
+        old_tb = rec.get("timing_breakdown")
+        if isinstance(old_tb, dict):
+            new_tb = {**old_tb, **new_tb}
+        rec["timing_breakdown"] = new_tb
 
     # ⚠️ **必须是 dict，不是裸字符串**：迁移器（`migrate_comfy.py` /
     # `migrate_upgrade_ab.py`）写的是 `{"status": …}`，这里若写字符串，
@@ -706,8 +736,7 @@ def annotate(rec_path, logdirs, dry_run=False):
 
     rec.pop("_path", None)
     if not dry_run:
-        Path(rec_path).write_text(json.dumps(rec, ensure_ascii=False, indent=2),
-                                  encoding="utf-8")
+        write_json(rec_path, rec)
     return {"status": "annotated", "n": len(hits), "tbs": tbs}
 
 
