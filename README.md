@@ -75,9 +75,16 @@ record of what actually ran after the pits were filled in.
 | Video · 5 s · 480p | 6.6 min | 3.7 min | **3.3 min** | **2.5 min** |
 | Video · 5 s · 1080p | 38 min | 22 min | **22 min** | **14 min** |
 | Full-load power (measured P90) | 70 W (spec, not measured) | 151–154 W | **201–204 W** | **290 W** |
-| Fits entirely in VRAM? | No (H3 moves 13 GB every sampling step) | Images yes, H3 no | **Images yes, H3 no** | Images yes; H3 **480p yes, swaps from 1080p** |
+| Fits entirely in VRAM? | No (H3 moves 13 GB every sampling step) | Images yes; **H3 partial at all three sizes** | Images yes; **H3 480p / 720p yes, partial from 1080p** | Images yes; **H3 480p / 720p yes, partial from 1536×864** |
 
 > "Swaps" = one move between DiT and text encoder per round; the B50 moves every sampling step. Evidence in each card sheet §6 / §8.
+>
+> 🔴 **Whether a model fits does not depend on how strong the card is — only on "DiT size vs the VRAM available at that moment."**
+> And available VRAM is set by **resolution** (1080p activations and VAE buffers eat about half of it). So **two cards with the same
+> capacity and the same `--reserve-vram` must reach the same verdict**: B65 and B70 are both 31.16 GiB, and their measured usable
+> VRAM is **bit-for-bit identical** at every size — `24500.72 MB` at 864×480, `20491.93 → 20441.81 MB` at 1280×720, and
+> `12762.74 MB` at 1920×1088 (`7564.24 MB` offloaded). **B65 is not one notch worse than B70 on H3**; its 1080p run is 1.58× slower
+> because of **20 vs 32 cores**, not because the model does not fit.
 > ⚠️ **The 16 / 20 / 20 / 32 ladder only applies across B60–B70**: the B50's usual setting cannot hold Q4_0 and
 > runs with `-ncmoe 8`, and even the resident IQ2_M build only reaches **46 tok/s (+22%)** — so **do not
 > extrapolate its 37.6 from the core count.** Details in the [B50 sheet §3](docs/cards/B50-README.md).
