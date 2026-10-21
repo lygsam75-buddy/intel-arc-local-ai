@@ -455,7 +455,7 @@ language-independent. Two English entry points exist: this page and
 | 5 | [`docs/slot-comparison.md`](docs/slot-comparison.md) | PCIe slot A/B — slot penalty (−2.9%) is smaller than slot noise (13.9%) |
 | 6 | [`docs/test-rig.md`](docs/test-rig.md) | Test platform spec, AIB identity table, what must be recorded |
 | 7 | [`docs/comfyui-capability.md`](docs/comfyui-capability.md) | **Capability matrix**: how big a model fits, video, image — three questions, one page |
-| 8 | [`docs/comfyui-h3.md`](docs/comfyui-h3.md) | H3 video: resolution × duration matrix, 32 GB vs 16 GB |
+| 8 | [`docs/comfyui-h3.md`](docs/comfyui-h3.md) | H3 video: **four cards × six resolutions in one table** (720p: 4.6 / 6.6 / 7.1 / 11.2 min), plus duration and power cost |
 | 9 | [`docs/comfyui-image.md`](docs/comfyui-image.md) | Qwen-Image 2.1 / Krea-2 / Music 3, including the kernel-variant A/B |
 | 10 | [`docs/comfyui-power.md`](docs/comfyui-power.md) | **Power and energy** — watts, joules per job, cost and cooling |
 | 11 | [`docs/pitfalls.md`](docs/pitfalls.md) | **900+ lines of pits**: symptom → root cause → fix |

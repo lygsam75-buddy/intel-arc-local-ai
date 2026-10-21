@@ -86,6 +86,14 @@ SUFFIX_CARD = {
     # 目的：B65 在 reserve 4 下每轮都 `loads=3`（三个组件全重装），
     # 与 B70 的 `loads=0` 不可比 → 松一档看是否转为驻留。
     "b65m3res2": "b65",
+    # 2026-10-21 B65 补测（能力/容量表里 B65 那几列写着「未测」的格子）。
+    # 每项一个后缀 —— sweep.py 的 jsonl 与 server 日志都是追加语义，
+    # 同 suffix 混模型会被撞车检查直接拦下（B60 首轮就是这么双双 rc=1 的）。
+    "b65q21b16": "b65",      # Qwen-Image 2.1 · DiT bf16 · 1280×720
+    "b65q21r2k": "b65",      # Qwen-Image 2.1 · int8 · 2048×2048
+    "b65k2b16": "b65",       # Krea-2 Turbo · bf16 · 1024×1024
+    "b65m3f16": "b65",       # Music 3 · DiT fp16 + TE bf16
+    "b65m3i8te8": "b65",     # Music 3 · DiT int8 + TE int8
 }
 
 CARDS = {
@@ -242,6 +250,13 @@ MARK_STACK = {
     # ⚠️ 双卡批次 `b65-dual` 必须在 `b65` **前面**被匹配到（子串关系），
     # 否则 `b65` 先命中，`-dual` 残留成量化档名。见 SUFFIX_CARD 的排序说明。
     "b65-dual": "int8fix",
+    # 2026-10-21 B65 补测五组（driver 不设开关，栈仍是 int8fix）。
+    # ⚠️ 别只往 SUFFIX_MARKS 登记：剥下来了还得在这张表里查得到栈，否则 KeyError。
+    "b65q21b16": "int8fix",
+    "b65q21r2k": "int8fix",
+    "b65k2b16": "int8fix",
+    "b65m3f16": "int8fix",
+    "b65m3i8te8": "int8fix",
 }
 # 文件名里**完全不带栈标记**的新卡队列批次（`sweepb60.jsonl` → 卡型被 CARDS
 # 分支先剥掉，SUFFIX_MARKS 无标记可剥 → variant 停在默认 "base"）。
@@ -317,6 +332,15 @@ MARK_NOTE = {
     "b65m3res2": "**B65 32G · Music 3 · `--reserve-vram 2` 补测**"
                  "（与 b65m3 只差这一项：reserve 4 下三个组件每轮全部重装，"
                  "松一档看能不能驻留；TE 仍是 bf16）",
+    "b65q21b16": "**B65 32G · Qwen-Image 2.1 · DiT bf16 · 1280×720**"
+                 "（与已测的 int8 同栈构成 bf16 vs int8 对照）",
+    "b65q21r2k": "**B65 32G · Qwen-Image 2.1 · int8 · 2048×2048**"
+                 "（补齐稳态三轮与换提示词，此前这一档只有首轮）",
+    "b65k2b16": "**B65 32G · Krea-2 Turbo · bf16 · 1024×1024**"
+                "（DiT 24.48 + TE 8.27 + VAE 0.24 = 32.98 GiB > 31.16 GiB，"
+                "整装不下；这一格量的是卸载代价）",
+    "b65m3f16": "**B65 32G · Music 3 · DiT fp16 + 文本编码器 bf16**（20.34 GiB，装得下）",
+    "b65m3i8te8": "**B65 32G · Music 3 · DiT int8 + 文本编码器 int8**（11.10 GiB）",
 }
 # ⚠️ 这个脚本**没有 `--only`**：一次跑就是整个 `--src` 目录。
 # 所以只要目录里混着一个从没登记过的后缀，**整次迁移硬失败**（判不出卡型就报错退出是对的，
@@ -353,6 +377,15 @@ SUFFIX_MARKS = {
     "b65m3res2": "**B65 · Music 3 · `--reserve-vram 2`**（`--suffix b65m3res2`；"
                  "与 b65m3 只差 reserve 这一项，用于分离「装不下 → 每轮重装」"
                  "与「算力差距」）",
+    # 2026-10-21 B65 补测五组。⚠️ 本表按**长度降序**匹配，这些都比 `b65` 长，
+    # 不会被通用段截胡；但仍须与 SUFFIX_CARD / MARK_STACK / MARK_NOTE 四处同步登记，
+    # 缺一处就是 KeyError 或判不出卡型。
+    "b65q21b16": "**B65 · Qwen-Image 2.1 · DiT bf16 · 1280×720**（`--suffix b65q21b16`）",
+    "b65q21r2k": "**B65 · Qwen-Image 2.1 · int8 · 2048×2048**（`--suffix b65q21r2k`；"
+                 "补稳态与换提示词，此前只有首轮）",
+    "b65k2b16": "**B65 · Krea-2 Turbo · bf16 · 1024×1024**（`--suffix b65k2b16`）",
+    "b65m3f16": "**B65 · Music 3 · DiT fp16 + TE bf16**（`--suffix b65m3f16`）",
+    "b65m3i8te8": "**B65 · Music 3 · DiT int8 + TE int8**（`--suffix b65m3i8te8`）",
     "b65-dualk2": "**双 B65 · Krea-2**（`--suffix b65-dualk2`；ComfyUI 只用第一张，"
                   "与单张 B65 同条件对照）",
     "b65-dualm3": "**双 B65 · Music 3**（`--suffix b65-dualm3`；TE 档位按**单卡**判，"

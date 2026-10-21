@@ -391,6 +391,12 @@ FILENAME_LOG_KEYS = {
     "c3S": ["clean3_sdpa"],
     # 10-14 那批跨了四个日志（v3/v4 是主批，clean2/clean3_sdpa 是后补的重测）
     "039": ["039_v3", "039_v4", "clean2_sdpa", "clean3_sdpa"],
+    # 2026-10-21 B65 补测的五组（出图 bf16 / 出图 2048² / Krea-2 bf16 / Music 3 两档）
+    "b65q21b16": ["sweepb65q21b16"],
+    "b65q21r2k": ["sweepb65q21r2k"],
+    "b65k2b16": ["sweepb65k2b16"],
+    "b65m3f16": ["sweepb65m3f16"],
+    "b65m3i8te8": ["sweepb65m3i8te8"],
 }
 
 

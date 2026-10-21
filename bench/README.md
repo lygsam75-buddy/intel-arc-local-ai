@@ -10,6 +10,9 @@
 > 采集脚本里机器相关的路径走环境变量（`ARC_REPO` / `ARC_MODELS` / `ARC_LLAMA_BIN` /
 > `ARC_SYCL_PATH` / `ARC_PYTHON` / `ARC_MODEL_OFF_FLAG`），别硬编码。
 
+> **`bench/notes/` 是过程性工程笔记**（为什么这么判、当年的拆解与负结果），**不是客户文档**；
+> 对外结论一律在 `docs/`。
+
 ---
 
 ## 每次记录必须登记的东西
