@@ -226,14 +226,15 @@ python bench/harness/gpu_sysman.py     # 看整卡功耗域的 defaultLimit（mW
 **Arc Pro B70 本体 32 GB。ECC 开着时应用只可见 27.25 GB。**
 关掉 ECC（IGS → Graphics → ECC → 关闭 → 重启）→ 可用 **31 GB**（实测 31,920.4 MB / 31.16 GiB）。
 
-**三张卡的可见容量**（ECC 全关）：B70 **31.16 GiB**（31,920.4 MB）· B60 **23.33 GiB**（23,894 MB）· B50 **15.51 GiB**（15,882 MB）。
-**判断「装不装得下」一律拿这三个数，别用 32 / 24 / 16 这种标称值**——标称与可用之间差 0.7~0.9 GiB，而 16 GB 档的生死线正好卡在这半 GiB 上。
+**四张卡的可见容量**（ECC 全关）：B70 **31.16 GiB**（31,920.4 MB）· B65 **31.16 GiB**（31,907 MB，同容量）·
+B60 **23.33 GiB**（23,894 MB）· B50 **15.51 GiB**（15,882 MB）。
+**判断「装不装得下」一律拿这几个数，别用 32 / 24 / 16 这种标称值**——标称与可用之间差 0.7~0.9 GiB，而 16 GB 档的生死线正好卡在这半 GiB 上。
 
 | 事项 | 口径 |
 |---|---|
 | ECC 出厂状态 | ★ **Intel 驱动里默认关闭，要人工到 IGS 打开**。所以「只认 27.25 GB」不是默认态，而是 ECC 被开过 |
 | ECC 开关是否影响算力 | **不影响，只影响容量**。实测差异都在 6% 内，关 ECC 反而略快 |
-| 怎么自检 | `torch.xpu.get_device_properties(0).total_memory` → 关 ECC 应报 ~31.16 GiB（B70）/ ~23.33 GiB（B60）/ ~15.51 GiB（B50） |
+| 怎么自检 | `torch.xpu.get_device_properties(0).total_memory` → 关 ECC 应报 ~31.16 GiB（B70 / B65）/ ~23.33 GiB（B60）/ ~15.51 GiB（B50） |
 | 怎么读 ECC 状态 | `python bench/harness/gpu_sysman.py`（Level Zero Sysman）。⚠️ 枚举值两代编号相反，**定论看物理容量，不看枚举值** |
 | **核显与独显** | **推荐配置：显示器插主板（核显）口，独显整块留给计算。** 实测核显在输出 2560×1440、B70 的分辨率字段为空，B70 上只有 ComfyUI 一个进程占 70 MB、显存满额 31.16 GiB。代价是核显拿系统内存当显存（桌面负载下约 0.9 GB），所以「32 GB 内存」要扣这一块。见 [`test-rig.md`](docs/test-rig.md) |
 
