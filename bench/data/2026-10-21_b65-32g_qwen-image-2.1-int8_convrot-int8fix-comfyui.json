@@ -66,7 +66,7 @@
     "batch_mark_note": "",
     "comfyui_patch": "OMNIXPU_INT8_COMPUTE=1 + OMNIXPU_INT8_SIGFIX=1",
     "comfyui_patch_note": "① 能力声明：把 ComfyUI 上游 comfy/model_management.py 里 `if is_intel_xpu(): return False`（supports_int8_compute）翻成 True，使 convrot_w4a4 / w6a8_int8 / asym_w4a8_int8 从 emulated 转 native。② 签名适配：XPU provider 里 vendored 的 comfy_kitchen（0.2.31/0.2.33 快照）的 int8_linear 只有 8 参，而 ComfyUI 0.39 按 12 参契约调用 → 适配层补齐缺失的 4 个可选关键字。**2026-10-16 实测：对 Qwen-Image 2.1，② 是能不能跑的分界线，① 不给速度。****这是与基线不同的软件栈，不可并排引用。**",
-    "env_evidence": "AIB 身份由服务器日志的 `Device: xpu:0 ...` 行直接证明：Intel(R) Arc(TM) Pro B65 Graphics 出现在 <<工具目录>>\\server_sweepb65.log。这四字段原为按注册表 PCI 枚举推断（backfill_aib.py），今有运行日志佐证，故 env_confidence 升为 recorded。",
+    "env_evidence": "AIB 身份由服务器日志的 `Device: xpu:0 ...` 行直接证明：Intel(R) Arc(TM) Pro B65 Graphics 出现在 <工具目录>\\server_sweepb65.log。这四字段原为按注册表 PCI 枚举推断（backfill_aib.py），今有运行日志佐证，故 env_confidence 升为 recorded。",
     "driver_evidence": "32.0.101.9150 由 Win32_PnPSignedDriver 实测；DriverDate 2026-10-08，早于本批跑测日 2026-10-21 且期间未重装驱动。ComfyUI 服务日志不打印驱动版本，故这一项不是从当批日志读出。"
   },
   "envvars": {
@@ -446,7 +446,7 @@
     "note": "按样本分列（同一组内不同步数/轮次）",
     "runs": [
       {
-        "source": "<<工具目录>>\\server_sweepb65.log",
+        "source": "<工具目录>\\server_sweepb65.log",
         "prompt_executed_sec": 62.08,
         "matched_sample": {
           "steps": null,
@@ -492,7 +492,7 @@
         "overhead_base": "samples.server_sec (端到端)"
       },
       {
-        "source": "<<工具目录>>\\server_sweepb65.log",
+        "source": "<工具目录>\\server_sweepb65.log",
         "prompt_executed_sec": 16.14,
         "matched_sample": {
           "steps": null,
@@ -535,7 +535,7 @@
         "overhead_base": "samples.server_sec (端到端)"
       },
       {
-        "source": "<<工具目录>>\\server_sweepb65.log",
+        "source": "<工具目录>\\server_sweepb65.log",
         "prompt_executed_sec": 16.19,
         "matched_sample": {
           "steps": null,
@@ -578,7 +578,7 @@
         "overhead_base": "samples.server_sec (端到端)"
       },
       {
-        "source": "<<工具目录>>\\server_sweepb65.log",
+        "source": "<工具目录>\\server_sweepb65.log",
         "prompt_executed_sec": 16.85,
         "matched_sample": {
           "steps": null,
@@ -624,6 +624,6 @@
   },
   "log_evidence": {
     "status": "annotated",
-    "note": "本记录的时间分解与卡型号由 4 条服务器日志取证（<<工具目录>>\\server_sweepb65.log）：每条日志的 `Prompt executed in X seconds` 均与对应样本的 server_sec 在 1.0s 容差内对上，确认是同一轮；日志中的 `Device: xpu:0 ...` 行是卡型号的直接证据。"
+    "note": "本记录的时间分解与卡型号由 4 条服务器日志取证（<工具目录>\\server_sweepb65.log）：每条日志的 `Prompt executed in X seconds` 均与对应样本的 server_sec 在 1.0s 容差内对上，确认是同一轮；日志中的 `Device: xpu:0 ...` 行是卡型号的直接证据。"
   }
 }

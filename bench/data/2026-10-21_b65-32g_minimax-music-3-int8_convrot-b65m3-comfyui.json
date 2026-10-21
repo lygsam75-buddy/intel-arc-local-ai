@@ -64,7 +64,7 @@
       "OMNIXPU_INT8_SIGFIX": "1"
     },
     "batch_mark_note": "**B65 32G · Music 3 · DiT int8 + 文本编码器 int8_convrot**",
-    "env_evidence": "AIB 身份由服务器日志的 `Device: xpu:0 ...` 行直接证明：Intel(R) Arc(TM) Pro B65 Graphics 出现在 <<工具目录>>\\server_sweepb65m3.log。这四字段原为按注册表 PCI 枚举推断（backfill_aib.py），今有运行日志佐证，故 env_confidence 升为 recorded。",
+    "env_evidence": "AIB 身份由服务器日志的 `Device: xpu:0 ...` 行直接证明：Intel(R) Arc(TM) Pro B65 Graphics 出现在 <工具目录>\\server_sweepb65m3.log。这四字段原为按注册表 PCI 枚举推断（backfill_aib.py），今有运行日志佐证，故 env_confidence 升为 recorded。",
     "driver_evidence": "32.0.101.9150 由 Win32_PnPSignedDriver 实测；DriverDate 2026-10-08，早于本批跑测日 2026-10-21 且期间未重装驱动。ComfyUI 服务日志不打印驱动版本，故这一项不是从当批日志读出。"
   },
   "envvars": {
@@ -442,7 +442,7 @@
     "note": "按样本分列（同一组内不同步数/轮次）",
     "runs": [
       {
-        "source": "<<工具目录>>\\server_sweepb65m3.log",
+        "source": "<工具目录>\\server_sweepb65m3.log",
         "prompt_executed_sec": 309.98,
         "matched_sample": {
           "steps": null,
@@ -496,7 +496,7 @@
         "overhead_base": "samples.server_sec (端到端)"
       },
       {
-        "source": "<<工具目录>>\\server_sweepb65m3.log",
+        "source": "<工具目录>\\server_sweepb65m3.log",
         "prompt_executed_sec": 301.17,
         "matched_sample": {
           "steps": null,
@@ -550,7 +550,7 @@
         "overhead_base": "samples.server_sec (端到端)"
       },
       {
-        "source": "<<工具目录>>\\server_sweepb65m3.log",
+        "source": "<工具目录>\\server_sweepb65m3.log",
         "prompt_executed_sec": 236.51,
         "matched_sample": {
           "steps": null,
@@ -604,7 +604,7 @@
         "overhead_base": "samples.server_sec (端到端)"
       },
       {
-        "source": "<<工具目录>>\\server_sweepb65m3.log",
+        "source": "<工具目录>\\server_sweepb65m3.log",
         "prompt_executed_sec": 225.08,
         "matched_sample": {
           "steps": null,
@@ -661,6 +661,6 @@
   },
   "log_evidence": {
     "status": "annotated",
-    "note": "本记录的时间分解与卡型号由 4 条服务器日志取证（<<工具目录>>\\server_sweepb65m3.log）：每条日志的 `Prompt executed in X seconds` 均与对应样本的 server_sec 在 1.0s 容差内对上，确认是同一轮；日志中的 `Device: xpu:0 ...` 行是卡型号的直接证据。"
+    "note": "本记录的时间分解与卡型号由 4 条服务器日志取证（<工具目录>\\server_sweepb65m3.log）：每条日志的 `Prompt executed in X seconds` 均与对应样本的 server_sec 在 1.0s 容差内对上，确认是同一轮；日志中的 `Device: xpu:0 ...` 行是卡型号的直接证据。"
   }
 }
