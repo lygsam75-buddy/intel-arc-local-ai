@@ -84,12 +84,14 @@ budget a 550 W PSU or better.
 | Arc Pro **B65** 32G | 31.16 GiB | 608 GB/s | 197 | 200 W | ¥9,499 | `E222` | GUNNIR `SUBSYS_27441EF7` |
 | Arc Pro **B70** 32G | 31.16 GiB | 608 GB/s | 367 | 290 W | ¥11,999 | `E223` | GUNNIR `SUBSYS_27421EF7` |
 
-All four cards above have been measured on this rig. 🔴 **B65 shares B70's 608 GB/s, but it does *not*
-decode at the same speed** — same llama.cpp build (11753, `d8d92973c`), same flags, only the card swapped:
-**B70 75.97 tok/s, B65 53.09, B60 52.25** (prefill 1,010 / 670 / 670). So decode tracks **TOPS and
-power** (367→197 TOPS, 290→200 W), not bandwidth, and B65 lands almost exactly on B60. We do **not**
-state the mechanism: separating "SYCL path" from "200 W power wall" needs a B65 Vulkan run we have not
-done yet. See [B65 card sheet §3.2](docs/cards/B65-README.md).
+All four cards above have been measured on this rig. 🔴 **B65 shares B70's 608 GB/s but not its speed** —
+same llama.cpp build (11753, `d8d92973c`), same flags, only the card swapped: **B70 75.97 tok/s,
+B65 53.09, B60 52.25** (prefill 1,010 / 670 / 670). **The reason is the core count**: B65 and B70 are the
+same BMG-G31 die with **20 vs 32 Xe2 cores** (0.625), and the measured ratios are **0.66× prefill /
+0.70× decode** — same order, nothing left to explain. The old claim was wrong because it treated
+**memory bandwidth as a compute ceiling**: 608 GB/s is how fast data moves, the Xe2 cores are how fast it
+computes, and MoE decode at this size is core-limited. The ¥2,500 buys **12 cores and a 90 W higher
+wall**, not "a cheaper B70 with the same bandwidth". See [B65 card sheet §3.2](docs/cards/B65-README.md).
 
 > VRAM figures assume **ECC off** (Intel's default; ECC is opt-in via IGS and costs ~4 GB of capacity).
 > With ECC on, B70 shows **27.25 GB** to applications. ECC does not change compute — measured
