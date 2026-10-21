@@ -46,6 +46,65 @@ record of what actually ran after the pits were filled in.
 > Its three video figures are warm runs (198.12 / 394.06 / 1,326.17 s), the 16.1 s image figure is the
 > resident steady state, and 53.09 tok/s is the `llama-bench` figure — **the seven-prompt
 > `llama-server` delivery table was not run on B65**.
+---
+
+## Table 1b — All four cards in one place (specs + measured + money)
+
+> **If you only want one glance, read this section.** Three small blocks together cover everything: specs from the
+> vendor sheet, measurements from this rig, money at **¥0.7/kWh** and today's prices. **The three blocks are different
+> kinds of number — do not subtract across them.** Sources for each cell are Tables 2–4b and the per-card sheets.
+
+**① Specs (vendor sheet)**
+
+| | B50 16G | B60 24G | B65 32G | B70 32G |
+|---|---:|---:|---:|---:|
+| Price (2026-10-21) | ¥3,499 | ¥6,099 | ¥9,499 | **¥18,999** |
+| VRAM | 16 GB | 24 GB | 32 GB | 32 GB |
+| **Visible to apps** (ECC off) | 15.51 GiB | 23.33 GiB | 31.16 GiB | 31.16 GiB |
+| Bandwidth | 224 GB/s | 456 GB/s | **608 GB/s** | **608 GB/s** |
+| Xe2 cores | not verified | **20** | **20** | **32** |
+| INT8 TOPS | 170 | 197 | 197 | **367** |
+| TBP | 70 W | 200 W | 200 W | 290 W |
+
+**② Measured (same machine, only the card swapped)**
+
+| | B50 16G | B60 24G | B65 32G | B70 32G |
+|---|---:|---:|---:|---:|
+| Chat decode · 35B-A3B Q4_0 | 37.6 tok/s | 52.4 tok/s | **53.1 tok/s** | **75.9 tok/s** |
+| Image · Qwen-Image 2.1 INT8 · 1280×720 | 52 s | 17.3–18.8 s | **16.1 s** | **10.6 s** |
+| Video · 5 s · 480p | 6.6 min | 3.7 min | **3.3 min** | **2.5 min** |
+| Video · 5 s · 1080p | 38 min | 22 min | **22 min** | **14 min** |
+| Full-load power (measured P90) | 70 W (spec, not measured) | 151–154 W | **201–204 W** | **290 W** |
+| Fits entirely in VRAM? | No (H3 moves 13 GB every sampling step) | Images yes, H3 no | **Images yes, H3 no** | Images yes; H3 **480p yes, swaps from 1080p** |
+
+> "Swaps" = one move between DiT and text encoder per round; the B50 moves every sampling step. Evidence in each card sheet §6 / §8.
+
+> Same bar, one look (same model, same quant):
+
+```
+B50  37.6 tok/s  ████████
+B60  52.4 tok/s  ███████████
+B65  53.1 tok/s  ███████████
+B70  75.9 tok/s  ████████████████
+```
+
+**③ Money (¥0.7/kWh, prices as of 2026-10-21)**
+
+| | B50 16G | B60 24G | B65 32G | B70 32G |
+|---|---:|---:|---:|---:|
+| Price per tok/s | **≈ ¥93** (cheapest) | ≈ ¥116 | ≈ ¥179 | ≈ ¥250 (**most expensive after the hike**) |
+| One hour at full load | about 5 fen | about 10 fen | about 14 fen | about 20 fen |
+| One 5-second 1080p clip | not measured | about 3.5 fen (181 kJ) | about **4.7 fen** (240 kJ) | about **4.3 fen** (218.6 kJ) |
+
+> 🔴 **The last row is the counter-intuitive one**: B65 draws 30% less power than B70 yet **costs more per 1080p
+> clip** (240 vs 219 kJ) — because it is slower (1,326 s vs 842 s). **Per task, a lower-power card does not save
+> money.** The 200 W only wins if the card sits idle-loaded for long stretches.
+>
+> ⚠️ **Price per tok/s flipped completely when the price moved**: at the old ¥11,999 street price B70 was ≈ ¥158
+> (cheaper than B65); after the 2026-10-21 official hike to ¥18,999 it is ≈ ¥250, 40% above B65. **Re-read this
+> table before quoting a price.**
+
+---
 
 ## Table 2 — Which card to buy
 
