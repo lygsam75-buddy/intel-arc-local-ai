@@ -20,13 +20,13 @@
     "ecc": "off",
     "driver": "32.0.101.8976",
     "stack": {
-      "torch": "2.13",
-      "omni_xpu_kernel": "0.2.0b2+torch213.bmg",
-      "stack_note": "2026-10-14 采集，跑在 python_embeded_torch213"
+      "torch": "2.12",
+      "omni_xpu_kernel": "0.2.0b2+torch212.bmg",
+      "stack_note": "2026-10-17 采集，跑在 python_embeded（torch 2.12.0+xpu · kernel torch212.bmg · provider 0.2.33），与 B50 2026-10-16 那批同代码同栈。证据是原始日志 server_sweep_b70sig.log 里的 `pytorch version: 2.12.0+xpu` 与 `omni_xpu_kernel 0.2.0b2+torch212.bmg` 两行；本记录原填的 2.13 / torch213 是迁移时从 2026-10-14 那批带过来的，2026-10-20 按日志更正。"
     },
-    "torch": "2.13",
-    "omni_xpu_kernel": "0.2.0b2+torch213.bmg",
-    "stack_note": "2026-10-14 采集，跑在 python_embeded_torch213",
+    "torch": "2.12",
+    "omni_xpu_kernel": "0.2.0b2+torch212.bmg",
+    "stack_note": "2026-10-17 采集，跑在 python_embeded（torch 2.12.0+xpu · kernel torch212.bmg · provider 0.2.33），与 B50 2026-10-16 那批同代码同栈。证据是原始日志 server_sweep_b70sig.log 里的 `pytorch version: 2.12.0+xpu` 与 `omni_xpu_kernel 0.2.0b2+torch212.bmg` 两行；本记录原填的 2.13 / torch213 是迁移时从 2026-10-14 那批带过来的，2026-10-20 按日志更正。",
     "app": "ComfyUI",
     "app_version": "0.39.0",
     "comfy_kitchen": "0.2.37",

@@ -22,15 +22,15 @@
     "stack": {
       "torch": "2.13",
       "omni_xpu_kernel": "0.2.0b2+torch213.bmg",
-      "stack_note": "2026-10-14 采集，跑在 python_embeded_torch213"
+      "stack_note": "2026-10-17 采集，跑在 python_embeded_torch213（torch 2.13.0+xpu · kernel torch213.bmg · provider 0.2.31）。torch / kernel 由 server_sweep_b70t213.log 的两行证明；provider 0.2.31 由该环境 site-packages 的 comfy_kitchen_xpu_runtime-0.2.31.dist-info 证明（原填 0.2.33 是迁移默认值，2026-10-20 更正）。这一组的用途是「把内核构建单独摘出来」——它改的是 torch + kernel + provider 三项，而稳态与 b70same 逐位相同（10.63 vs 10.62 s）。"
     },
     "torch": "2.13",
     "omni_xpu_kernel": "0.2.0b2+torch213.bmg",
-    "stack_note": "2026-10-14 采集，跑在 python_embeded_torch213",
+    "stack_note": "2026-10-17 采集，跑在 python_embeded_torch213（torch 2.13.0+xpu · kernel torch213.bmg · provider 0.2.31）。torch / kernel 由 server_sweep_b70t213.log 的两行证明；provider 0.2.31 由该环境 site-packages 的 comfy_kitchen_xpu_runtime-0.2.31.dist-info 证明（原填 0.2.33 是迁移默认值，2026-10-20 更正）。这一组的用途是「把内核构建单独摘出来」——它改的是 torch + kernel + provider 三项，而稳态与 b70same 逐位相同（10.63 vs 10.62 s）。",
     "app": "ComfyUI",
     "app_version": "0.39.0",
     "comfy_kitchen": "0.2.37",
-    "comfy_kitchen_xpu_runtime": "0.2.33",
+    "comfy_kitchen_xpu_runtime": "0.2.31",
     "backend": "XPU (SYCL)",
     "env_confidence": {
       "gpu": "recorded",

@@ -259,12 +259,17 @@ The Krea-2 bf16 failure is `UR_RESULT_ERROR_DEVICE_LOST`, reproduced twice at di
 | Qwen-Image 2.1 INT8 | B50 16G | B70 32G | Ratio |
 |---|---:|---:|---:|
 | Steady state (1280×720, 25 steps) | **51.75 s** | **10.62 s** | **4.87×** |
-| Sampling | 29 s (1.16 s/step) | 9 s (0.36 s/step) | **3.2×** |
-| DiT resident / offloaded | 6,921 MB / **0** | 6,920 MB / **0** | identical |
+| Sampling segment | 29 s (1.16 s/step) | 9 s (0.36 s/step) | **3.2×** |
+| Sampling-external fixed part | **21.5–24.0 s** | **1.6 s** | — |
+| DiT resident | 6,921 MB | 6,920 MB | identical |
+| **Evicted and re-read every round** | **3,837.8 MB (4/4 rounds)** | **0** | — |
 
-The entire gap comes from the sampling segment. Both cards hold the model fully resident with zero
-offload, so this is compute + bandwidth — **not** "16 GB can't fit it". And do not decompose the 4.87×
-into single-parameter contributions: the cards differ in capacity, bandwidth *and* INT8 TOPS at once.
+The gap is **not** all compute — the B50 column is **not** "model resident". 15.51 GiB cannot hold
+DiT 6,920 + TE 8,709 + VAE 629 MB, so **every round evicts 3,837.8 MB and reads it back from disk**
+(`Unloaded partially: 3837.80 MB freed, 5079.68 MB remains loaded`, 4 of 4 rounds): only 29 s of the
+51.75 s is sampling. **So 4.87× = 3.22× compute/bandwidth × 1.51× per-round reload.** The 32 GB card has
+nothing to reload, which is why its advantage grows with capacity. Do not decompose the 3.22× itself:
+the cards differ in bandwidth *and* INT8 TOPS at once.
 
 ### What the numbers actually say
 
