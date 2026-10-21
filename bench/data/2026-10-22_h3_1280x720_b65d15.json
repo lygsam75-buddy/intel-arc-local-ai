@@ -1,0 +1,197 @@
+{
+  "schema": "comfyui-xpu-bench/1",
+  "domain": "comfyui-video",
+  "date": "2026-10-22",
+  "tag": "h3_1280x720_b65d15",
+  "status": "active",
+  "source": "local",
+  "tool": "bench_f_h3.py + ComfyUI /prompt + /history",
+  "batch": "B50 出视频分辨率天花板扫描（cold 单轮）",
+  "samples": [
+    {
+      "mode": "cold",
+      "ok": true,
+      "server_sec": 2149.75,
+      "last_sit": "314.22 s/it",
+      "sampling_sec": 1885.32,
+      "sampling_sec_per_step": 314.22,
+      "n_load": 4,
+      "vram_post_gib": null,
+      "power": {
+        "card_domain": 1,
+        "card_limit_mw": 200000,
+        "avg_w": 183.1,
+        "p50_w": 191.6,
+        "p90_w": 203.7,
+        "peak_w": 223.1,
+        "min_w": 50.3,
+        "energy_j": 394134.8,
+        "span_sec": 2151.9,
+        "samples": 2149,
+        "counter_resets": 1,
+        "peak_basis": "1s",
+        "domains": {
+          "0": {
+            "avg_w": 128.0,
+            "p50_w": 136.0,
+            "p90_w": 140.2,
+            "peak_w": 150.0,
+            "min_w": 25.8,
+            "energy_j": 275585.8,
+            "span_sec": 2151.9,
+            "samples": 2149,
+            "counter_resets": 1,
+            "peak_basis": "1s"
+          },
+          "1": {
+            "avg_w": 183.1,
+            "p50_w": 191.6,
+            "p90_w": 203.7,
+            "peak_w": 223.1,
+            "min_w": 50.3,
+            "energy_j": 394134.8,
+            "span_sec": 2151.9,
+            "samples": 2149,
+            "counter_resets": 1,
+            "peak_basis": "1s"
+          },
+          "2": {
+            "avg_w": 0.0,
+            "p50_w": 0.0,
+            "p90_w": 0.0,
+            "peak_w": 0.5,
+            "min_w": 0.0,
+            "energy_j": 2.2,
+            "span_sec": 2151.9,
+            "samples": 2150,
+            "counter_resets": 0,
+            "peak_basis": "1s"
+          },
+          "3": {
+            "avg_w": 0.0,
+            "p50_w": 0.0,
+            "p90_w": 0.0,
+            "peak_w": 0.0,
+            "min_w": 0.0,
+            "energy_j": 0.0,
+            "span_sec": 2151.9,
+            "samples": 2150,
+            "counter_resets": 0,
+            "peak_basis": "1s"
+          }
+        },
+        "busy_threshold_w": 160.0,
+        "busy_share": 0.92
+      }
+    }
+  ],
+  "summary": {
+    "n_total": 1,
+    "n_ok": 1,
+    "n_fail": 0,
+    "server_sec_mean": 2149.75,
+    "power": {
+      "basis": "整卡电源域 · 能耗计数器求差 · 均值覆盖整轮（含装载）",
+      "card_domain": 1,
+      "card_limit_mw": 200000,
+      "n_rounds": 1,
+      "avg_w_min": 183.1,
+      "avg_w_max": 183.1,
+      "p90_w_min": 203.7,
+      "p90_w_max": 203.7,
+      "peak_w_max": 223.1,
+      "peak_basis": "1s",
+      "energy_j_max": 394134.8,
+      "counter_resets_max": 1,
+      "busy_share_mean": 0.92
+    }
+  },
+  "workload": {
+    "model": "MiniMax H3",
+    "task": "image-to-video",
+    "steps": 6,
+    "duration_sec": 15.0,
+    "frames": 362,
+    "fps": 24,
+    "duration_sec_exact": 15.083,
+    "selector_megapixels": null,
+    "width": 1280,
+    "height": 720,
+    "resolution": "1280x720",
+    "dit_file": "minimax_h3_fl2va_pruned_int8_convrot.safetensors",
+    "text_encoder_file": "qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors",
+    "sampler": "euler",
+    "scheduler": "simple"
+  },
+  "env": {
+    "gpu": "Intel Arc Pro B65 32G",
+    "chip": "E222",
+    "subsys": "27441EF7",
+    "device_id": "PCI\\VEN_8086&DEV_E222&SUBSYS_27441EF7&REV_00",
+    "board_vendor": "GUNNIR 蓝戟 (PCI vendor 1EF7)",
+    "board_code": "2744",
+    "vram_visible_gib": 31.16,
+    "ecc": "off",
+    "driver": "32.0.101.9150",
+    "cpu": "AMD Ryzen 5 9600X",
+    "ram_gb": 32,
+    "os": "Windows",
+    "attention_backend": "sdpa (CUTE 关闭；CUTE 开着跑 H3 音频封装必崩)",
+    "stack_variant": "int8fix",
+    "int8fix_env": {
+      "OMNIXPU_INT8_COMPUTE": "1",
+      "OMNIXPU_INT8_SIGFIX": "1"
+    },
+    "env_confidence": {
+      "gpu": "recorded",
+      "vram_visible_gib": "recorded",
+      "ecc": "recorded",
+      "cpu": "recorded",
+      "ram_gb": "recorded",
+      "os": "recorded",
+      "width": "recorded",
+      "height": "recorded",
+      "resolution": "recorded",
+      "steps": "recorded",
+      "attention_backend": "recorded",
+      "chip": "recorded",
+      "subsys": "recorded",
+      "device_id": "recorded",
+      "board_vendor": "recorded",
+      "board_code": "recorded",
+      "driver": "inferred",
+      "reserve_vram_gb": "inferred"
+    },
+    "env_evidence": "AIB 身份由服务器日志的 `Device: xpu:0 ...` 行直接证明：Intel(R) Arc(TM) Pro B65 Graphics 出现在 <bench_f>\\server_h3_1280x720_b65d15.log。这四字段原为按注册表 PCI 枚举推断（backfill_aib.py），今有运行日志佐证，故 env_confidence 升为 recorded。"
+  },
+  "log_evidence": {
+    "status": "annotated",
+    "note": "本记录的时间分解与卡型号由 1 条服务器日志取证（<bench_f>\\server_h3_1280x720_b65d15.log）：每条日志的 `Prompt executed in X seconds` 均与对应样本的 server_sec 在 1.0s 容差内对上，确认是同一轮；日志中的 `Device: xpu:0 ...` 行是卡型号的直接证据。"
+  },
+  "timing_breakdown": {
+    "source": "<bench_f>\\server_h3_1280x720_b65d15.log",
+    "prompt_executed_sec": 2149,
+    "matched_sample": {
+      "steps": null,
+      "round": null,
+      "server_sec": 2149.75
+    },
+    "dit_load_mode": "partially",
+    "dit_loaded_mb": 12431,
+    "dit_offloaded_mb": 7564,
+    "steps": 6,
+    "step_sec_trace": [
+      330,
+      311,
+      311,
+      311,
+      311,
+      311
+    ],
+    "sampling_sec": 1885,
+    "sampling_sec_per_step": 314.17,
+    "fixed_overhead_sec": 264.8,
+    "sampling_share_pct": 87.7,
+    "overhead_base": "samples.server_sec (端到端)"
+  }
+}

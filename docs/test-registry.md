@@ -128,7 +128,7 @@ python bench/harness/registry_audit.py
 
 ---
 
-## 3. 数据资产索引（`bench/data/`，共 290 个 JSON）
+## 3. 数据资产索引（`bench/data/`，共 292 个 JSON）
 
 ### 按 schema（D 编号）
 
