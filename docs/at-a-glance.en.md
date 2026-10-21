@@ -10,7 +10,7 @@ Every number was measured on our own machines. Raw data lives in [`../bench/data
 
 ## 1. The four questions everyone asks
 
-| What you want to do | B50 (¥3,499 · 16 GB) | B70 (¥11,999 · 32 GB) | Verdict |
+| What you want to do | B50 (¥3,499 · 16 GB) | B70 (¥18,999 · 32 GB) | Verdict |
 |---|---|---|---|
 | Chat with a 35B model | **37.6 tok/s** | **75.9 tok/s** | Both fine, B70 is 2× |
 | Generate a 1280×720 image | **52 s** | **11 s** | Both usable, B70 is 5× |

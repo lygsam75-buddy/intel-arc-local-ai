@@ -30,7 +30,7 @@ record of what actually ran after the pits were filled in.
 
 ## Table 1 — What you want to do, and what these cards do
 
-| What you want to do | B50 (¥3,499 · 16 GB) | B70 (¥11,999 · 32 GB) | Verdict |
+| What you want to do | B50 (¥3,499 · 16 GB) | B70 (¥18,999 · 32 GB) | Verdict |
 |---|---|---|---|
 | Chat with a 35B model | **37.6 tok/s** | **75.9 tok/s** | Both fine; B70 is 2× |
 | Generate a 1280×720 image | **52 s** | **11 s** | Both usable; B70 is 5× |
@@ -82,7 +82,7 @@ budget a 550 W PSU or better.
 | Arc Pro **B50** LP 16G | 15.51 GiB | 224 GB/s | 170 | 70 W | ¥3,499 | `E212` | GUNNIR `SUBSYS_25221EF7` |
 | Arc Pro **B60** 24G | 23.33 GiB | 456 GB/s | 197 | 200 W | ¥6,099 | `E211` | GUNNIR `SUBSYS_25421EF7` |
 | Arc Pro **B65** 32G | 31.16 GiB | 608 GB/s | 197 | 200 W | ¥9,499 | `E222` | GUNNIR `SUBSYS_27441EF7` |
-| Arc Pro **B70** 32G | 31.16 GiB | 608 GB/s | 367 | 290 W | ¥11,999 | `E223` | GUNNIR `SUBSYS_27421EF7` |
+| Arc Pro **B70** 32G | 31.16 GiB | 608 GB/s | 367 | 290 W | **¥18,999** | `E223` | GUNNIR `SUBSYS_27421EF7` |
 
 All four cards above have been measured on this rig. 🔴 **B65 shares B70's 608 GB/s but not its speed** —
 same llama.cpp build (11753, `d8d92973c`), same flags, only the card swapped: **B70 75.97 tok/s,
@@ -90,8 +90,15 @@ B65 53.09, B60 52.25** (prefill 1,010 / 670 / 670). **The reason is the core cou
 same BMG-G31 die with **20 vs 32 Xe2 cores** (0.625), and the measured ratios are **0.66× prefill /
 0.70× decode** — same order, nothing left to explain. The old claim was wrong because it treated
 **memory bandwidth as a compute ceiling**: 608 GB/s is how fast data moves, the Xe2 cores are how fast it
-computes, and MoE decode at this size is core-limited. The ¥2,500 buys **12 cores and a 90 W higher
-wall**, not "a cheaper B70 with the same bandwidth". See [B65 card sheet §3.2](docs/cards/B65-README.md).
+computes, and MoE decode at this size is core-limited. The **¥9,500** gap (B70's official price moved to
+¥18,999 on 2026-10-21) buys **12 cores and a 90 W higher wall**, not "a cheaper B70 with the same
+bandwidth". See [B65 card sheet §3.2](docs/cards/B65-README.md).
+
+> **Price basis (2026-10-21):** B70 = **¥18,999 official** (the earlier ¥11,999 street figure is void);
+> B50 / B60 are JD street prices; B65 is Intel's official price. **Overseas:** launch MSRP **$949**
+> (2026-03); by 2026-08 street prices were ~**$1,299** for ASRock variants and ~**$1,779** for the
+> Intel-branded reference design (third-party trackers, not measured here — taxes and channels differ,
+> so do not convert and compare directly).
 
 > VRAM figures assume **ECC off** (Intel's default; ECC is opt-in via IGS and costs ~4 GB of capacity).
 > With ECC on, B70 shows **27.25 GB** to applications. ECC does not change compute — measured
