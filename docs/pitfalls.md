@@ -338,6 +338,15 @@ New-ItemProperty -Path $k -Name 'TdrDdiDelay' -Value 60 -PropertyType DWord -For
 ⚠️ **别把它和「显存不够」混为一谈**：OOM 会打印 `UR_RESULT_ERROR_OUT_OF_RESOURCES`，
 TDR 死法**什么都不打印**。判据是「有没有 dump + 有没有 traceback」，不是猜。
 
+🔴🔴 **2026-10-21 补充：`TdrDelay`=60 s 的副作用是「整机重启」，不是「静默重置」。**
+同一天两次 `WATCHDOG-20261021-{1231,1306}.dmp`，都在 **H3 的 VAE 解码/落盘段**（采样已经跑完），
+间隔 57 s / 28 s 后直接 **bugcheck `0x116`（VIDEO_TDR_FAILURE）**，事件日志是
+`Kernel-Power 41` + `WER-SystemErrorReporting 1001`，minidump `102126-{7625,7437}-01.dmp`。
+**判读顺序**：`LiveKernelReports\WATCHDOG\*.dmp` 的时间戳（hang 发生）→ 30~60 s 后的 minidump（放弃恢复）。
+所以「跑测跑到一半机器自己重启」在调过 `TdrDelay` 的机器上是**预期形态**，先去数 dump，别先怀疑电源。
+⚠️ **两次都落在解码段而不是采样段**：`0x116` 只能证明「某段没在 60 s 内恢复」，
+**不能反推是算力不够或显存不够**（挂之前 VRAM 剩余 **6.11 GB**；本次关掉功耗采样，同负载 10-19 批的 P90 是 290.1~290.3 W、未超 290 W 墙）。
+
 ---
 
 ### 1.10 「第一次跑」的图像理解有明显一次性代价，冷/暖必须分记
