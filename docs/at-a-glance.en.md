@@ -73,9 +73,13 @@ At **¥0.7 per kWh**.
 | You are | Buy |
 |---|---|
 | On a ¥3,500 budget: chat + images + occasional 480p/720p video | **B50 16 GB** |
-| Want 2–5× the speed, need 1080p, do not want to count VRAM | **B70 32 GB** |
-| Need to run something bigger than 35B | Neither. Wait for B60 (24 GB) / B65 (32 GB) |
+| On a ¥6,000 budget: noticeably faster chat, more VRAM headroom | **B60 24 GB** (measured: 52.4 tok/s) |
+| Want 32 GB of VRAM for under ¥10,000 | **B65 32 GB** (¥9,499) — same die as B70 with 20 of 32 Xe2 cores, so **chat speed equals B60**; you pay for VRAM, not speed |
+| Want 2–5× the speed, need 1080p, do not want to count VRAM | **B70 32 GB** (¥18,999 after the 2026-10-21 price rise) |
 | Want two cards on one job | **Never tested. No answer.** |
+
+> **Cheapest speed per tok/s** (chat only): B50 **¥93** · B60 **¥116** · B65 **¥179** · B70 **¥250**.
+> After the price rise B70 has the highest cost per tok/s of the four — what it sells is the ceiling.
 
 ---
 
