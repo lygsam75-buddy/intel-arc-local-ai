@@ -2,7 +2,7 @@
 
 # Intel Arc Local AI Handbook
 
-Field-measured local AI on Intel Arc Pro **B50 (16 GB)**, **B60 (24 GB)** and **B70 (32 GB)** —
+Field-measured local AI on Intel Arc Pro **B50 (16 GB)**, **B60 (24 GB)**, **B65 (32 GB)** and **B70 (32 GB)** —
 `llama.cpp` on SYCL, `ComfyUI` for image / video / music generation, and the power draw behind all of it.
 
 Not vendor documentation. Not a tutorial rewrite.
@@ -30,12 +30,12 @@ record of what actually ran after the pits were filled in.
 
 ## Table 1 — What you want to do, and what these cards do
 
-| What you want to do | B50 (¥3,499 · 16 GB) | B70 (¥18,999 · 32 GB) | Verdict |
-|---|---|---|---|
-| Chat with a 35B model | **37.6 tok/s** | **75.9 tok/s** | Both fine; B70 is 2× |
-| Generate a 1280×720 image | **52 s** | **11 s** | Both usable; B70 is 5× |
-| Generate a 5-second 480p video | **6.6 min** | **5.3 min** | Both can do it |
-| Generate a 5-second 1080p video | **38 min** | faster (not measured) | B50 can do it — patience required |
+| What you want to do | B50 (¥3,499 · 16 GB) | B60 (¥6,099 · 24 GB) | B70 (¥18,999 · 32 GB) | Verdict |
+|---|---|---|---|---|
+| Chat with a 35B model | **37.6 tok/s** | **52.4 tok/s** | **75.9 tok/s** | All three fine — pick by budget |
+| Generate a 1280×720 image | **52 s** | **18 s** | **11 s** | B60 is already close to B70 |
+| Generate a 5-second 480p video | **6.6 min** | **3.7 min** | **2.5 min** | All three can do it |
+| Generate a 5-second 1080p video | **38 min** | **22 min** | **14 min** | All three can — you just wait |
 
 > **What is tok/s?** How many word-chunks the model emits per second. Bigger is faster.
 > 37 is already faster than most people read; 75 is roughly double that.
@@ -45,33 +45,46 @@ record of what actually ran after the pits were filled in.
 | You are | Buy |
 |---|---|
 | On a ¥3,500 budget: chat + images + occasional 480p / 720p video | **B50 16 GB** |
+| Around ¥6,000, want chat and images a step faster, more VRAM headroom | **B60 24 GB** |
 | Want 2–5× the speed, need 1080p, do not want to count VRAM | **B70 32 GB** |
-| Need to run something bigger than 35B | Neither — wait for B60 (24 GB) / B65 (32 GB) |
+| Need to run something bigger than 35B | **B60 / B65 and up** (24–32 GB tier) |
 | Want two cards on one job | **Never tested. No answer.** |
 
 ## Table 3 — Electricity
 
-| | B50 16 GB | B70 32 GB |
-|---|---|---|
-| Idle | not measured | **51 W** (like a light bulb) |
-| Full load | 70 W (spec sheet, not measured) | **290 W** (measured, holds steady) |
-| One hour at full load | about **¥0.05** | about **¥0.20** |
-| One 5-second 720p video | not measured | about **¥0.01** |
+| | B50 16 GB | B60 24 GB | B70 32 GB |
+|---|---:|---:|---:|
+| Idle | not measured | not measured | **51 W** (like a light bulb) |
+| Full load | 70 W (spec sheet, not measured) | **150.5–154.3 W** (H3 P90; TBP 200 W, **never hits the wall**) | **290 W** (measured, holds steady) |
+| One hour at full load | about **¥0.05** | about **¥0.10** | about **¥0.20** |
+| One 5-second 720p video | not measured | about **¥0.01** (50 kJ) | about **¥0.01** (58 kJ) |
 
 At **¥0.7 per kWh**. **Electricity is not the cost — the PSU and cooling are.** For a 290 W card,
 budget a 550 W PSU or better.
 
-## Table 4 — Both cards, one table
+## Table 4 — All four cards, one table
 
-| Workload | B50 16 GB | B70 32 GB | B70 vs B50 |
-|---|---:|---:|---:|
-| LLM decode · Qwen3.6-35B-A3B Q4_0 | 37.6 tok/s | 75.92 tok/s | **2.0×** |
-| Video · MiniMax H3, 864×480 · 6 steps | 399 s | 318 s | **1.25×** |
-| Image · Qwen-Image 2.1 INT8, 1280×720 | 51.75 s | 10.62 s | **4.87×** |
+| Workload | B50 16 GB | B60 24 GB | B65 32 GB | B70 32 GB | B70 vs B50 |
+|---|---:|---:|---:|---:|---:|
+| LLM decode · Qwen3.6-35B-A3B Q4_0 | 37.6 tok/s | 52.43 tok/s | **53.09 tok/s** | 75.92 tok/s | **2.0×** |
+| Video · MiniMax H3, 864×480 · 6 steps, end to end | 399 s | 224 s | **198.1 s** | 152.5 s | **2.6×** |
+| Image · Qwen-Image 2.1 INT8, 1280×720 | 51.75 s | 17.3–18.8 s | **16.1 s** | 10.62 s | **4.87×** |
 
-> **The spread is the point.** There is no single "B70 is N× faster" number. Video is *loading*-dominated
-> (both tiers spend 233–275 s in fixed overhead, which dilutes the compute gap); image generation is
-> *compute*-dominated once the model is resident. **Pick the workload first, then read the ratio.**
+> 🔴 **What the B65 column really says is "it is almost a B60"**: decode 53.09 vs 52.43, video 198.1 vs
+> 224 s — because **both have the same 20 Xe2 cores**. B65 costs ¥3,400 more and has 33% more
+> bandwidth; **you are buying VRAM (24 → 32 GB), not speed**. The image cell is **16.1 s**
+> (measured 2026-10-21): **1.52× slower than B70**, a little less than the 1.60× core-count reciprocal,
+> because **7–22% of end-to-end is loading and scheduling** and that part does not scale with cores. It is
+> even marginally faster than **B60's 17.3–18.8 s**, but both have 20 cores and no paired comparison was
+> run — **no cause given**.
+>
+> **The video row is loading-dominated, so its ratio is the smallest.** All columns are the same
+> 864×480 · 6 steps · 5 s on one software stack (B50 on 10-16, B60 / B70 on 10-19 / 10-20; B70 = fresh run).
+> Broken out: B50 fixed 231–241 s + sampling 158–169 s (DiT partially loaded, 12,985 MB offloaded);
+> B60 fixed 146–177 s + sampling 71–84 s (3,728 MB offloaded); B70 fixed ~148 s + sampling 39–41 s
+> (**fully resident, 0 offloaded**). → **All three are fixed-cost dominated at this size** (sampling is
+> 41% / 33% / 21%), which dilutes the end-to-end ratio: B70/B50 is 3.6× per step but only 2.6× end to end.
+> **Pick the workload first, then read the ratio.**
 
 ---
 
@@ -392,11 +405,12 @@ We state the boundary instead of extrapolating into it.
 
 | Not tested | Why | What we say |
 |---|---|---|
-| **B60 (24 GB) / B65 (32 GB)** | Cards not available — not a single measurement | "Only B50 and B70 were measured" |
+| **B65 on the delivered `llama-server` command line** | Only `llama-bench` was run on B65 | "B65 decode 53.09 tok/s is bench-only; no delivery table" |
 | **Dual-card concurrency** | Not run | "Dual-card concurrency untested" |
 | **2560×1440 and above** | Cost too high; video stops at 1920×1088 | "Video measured up to 1920×1088" |
 | **Sustained load (> 1 h)** | Single-task peaks only | "290 W P90 on a single task; long-run untested" |
-| **Vulkan / Strata backends** | Extra backend / Linux environment required | "SYCL measured; other backends not run" |
+| **Vulkan on B65's delivered command line** | B60 / B70 have `llama-server` runs (1.65× / 1.50×); B65 only `llama-bench` | "Vulkan 1.50–1.68× SYCL decode on `llama-bench`; B65 delivery untested" |
+| **Strata / other backends** | Not run | "SYCL V2 measured; Strata untested" |
 | **A non-GUNNIR board** | Not available | "GUNNIR firmware only" |
 
 Two historical gaps are annotated rather than back-filled: one B50 864×480 record lost its log to a
