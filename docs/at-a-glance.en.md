@@ -91,7 +91,7 @@ At **¥0.7 per kWh**.
 
 ## Two things we will not fake
 
-**Not tested:** B60, B65 (cards not available), two cards on one job, above 1440p, sustained runs over one hour.
+**Not tested:** B65 image / music / 1080p video (card arrived 2026-10-21; chat and 480p/720p video are measured), two cards on one job, above 1440p, sustained runs over one hour.
 **No guesses, no invented numbers.**
 
 **Where to verify:** every number traces back to a file in [`../bench/data/`](../bench/data/). Status, data

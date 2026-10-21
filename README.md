@@ -16,8 +16,8 @@ machine-readable data, and a test registry that states what was tested *and what
 > and each record carries its own evidence status.
 >
 > 🃏 **Only care about one card?** Per-card sheets (Chinese):
-> [B50 16G](docs/cards/b50-16g.md) · [B60 24G](docs/cards/b60-24g.md) · [B70 32G](docs/cards/b70-32g.md)
-> — this page compares the three; each card page holds its own resolution matrix, capacity limits and power.
+> [B50 16G](docs/cards/B50-README.md) · [B60 24G](docs/cards/B60-README.md) · [B65 32G](docs/cards/B65-README.md) · [B70 32G](docs/cards/B70-README.md)
+> — this page compares all four; each card page holds its own resolution matrix, capacity limits and power.
 >
 > 🔗 Repository: <https://github.com/lygsam75-buddy/intel-arc-local-ai>
 
@@ -80,12 +80,16 @@ budget a 550 W PSU or better.
 | Card | VRAM visible | Bandwidth | INT8 TOPS | TBP | Price (CN) | Chip DEV | Board |
 |---|---:|---:|---:|---:|---:|---|---|
 | Arc Pro **B50** LP 16G | 15.51 GiB | 224 GB/s | 170 | 70 W | ¥3,499 | `E212` | GUNNIR `SUBSYS_25221EF7` |
+| Arc Pro **B60** 24G | 23.33 GiB | 456 GB/s | 197 | 200 W | ¥6,099 | `E211` | GUNNIR `SUBSYS_25421EF7` |
+| Arc Pro **B65** 32G | 31.16 GiB | 608 GB/s | 197 | 200 W | ¥9,499 | `E222` | GUNNIR `SUBSYS_27441EF7` |
 | Arc Pro **B70** 32G | 31.16 GiB | 608 GB/s | 367 | 290 W | ¥11,999 | `E223` | GUNNIR `SUBSYS_27421EF7` |
 
-Cards we did **not** get: **B60 (24 GB)** and **B65 (32 GB)** — zero measurements, no estimates.
-Specs are 456 / 608 GB/s and 197 TOPS each; B65 shares B70's bandwidth, so MoE decode should be
-comparable and only prefill/training would feel the TOPS gap. **That is a spec-sheet inference, not a
-measurement — we do not print numbers for it.**
+All four cards above have been measured on this rig. 🔴 **B65 shares B70's 608 GB/s, but it does *not*
+decode at the same speed** — same llama.cpp build (11753, `d8d92973c`), same flags, only the card swapped:
+**B70 75.97 tok/s, B65 53.09, B60 52.25** (prefill 1,010 / 670 / 670). So decode tracks **TOPS and
+power** (367→197 TOPS, 290→200 W), not bandwidth, and B65 lands almost exactly on B60. We do **not**
+state the mechanism: separating "SYCL path" from "200 W power wall" needs a B65 Vulkan run we have not
+done yet. See [B65 card sheet §3.2](docs/cards/B65-README.md).
 
 > VRAM figures assume **ECC off** (Intel's default; ECC is opt-in via IGS and costs ~4 GB of capacity).
 > With ECC on, B70 shows **27.25 GB** to applications. ECC does not change compute — measured
@@ -344,9 +348,10 @@ language-independent. Two English entry points exist: this page and
 |---|---|---|
 | 1 | [`docs/at-a-glance.md`](docs/at-a-glance.md) · [EN](docs/at-a-glance.en.md) | **One page, six tables** — the plain-language summary |
 | 2 | [`README.zh-CN.md`](README.zh-CN.md) | The full Chinese front page: every measured number, every tier |
-| 2a | [`docs/cards/b70-32g.md`](docs/cards/b70-32g.md) | **Per-card sheet · B70 32G** — image 10.6 s, 1080p video 14 min, Vulkan 1.50×, held at 290 W |
-| 2b | [`docs/cards/b60-24g.md`](docs/cards/b60-24g.md) | **Per-card sheet · B60 24G** — the "it fits" dividing line, plus the Krea-2 counter-example |
-| 2c | [`docs/cards/b50-16g.md`](docs/cards/b50-16g.md) | **Per-card sheet · B50 16G** — 16 GB capacity limits, `-ncmoe` knee, long-context depth curve |
+| 2a | [`docs/cards/B70-README.md`](docs/cards/B70-README.md) | **Per-card sheet · B70 32G** — image 10.6 s, 1080p video 14 min, Vulkan 1.50×, held at 290 W |
+| 2b | [`docs/cards/B60-README.md`](docs/cards/B60-README.md) | **Per-card sheet · B60 24G** — the "it fits" dividing line, plus the Krea-2 counter-example |
+| 2d | [`docs/cards/B65-README.md`](docs/cards/B65-README.md) | **Per-card sheet · B65 32G** — same bandwidth as B70, not the same speed; 200 W at the wall; H3 still offloads each round |
+| 2c | [`docs/cards/B50-README.md`](docs/cards/B50-README.md) | **Per-card sheet · B50 16G** — 16 GB capacity limits, `-ncmoe` knee, long-context depth curve |
 | 3 | [`docs/vram-16gb.md`](docs/vram-16gb.md) | **16 GB tier tuning** — quant selection, `-ncmoe`, context |
 | 4 | [`docs/server-config.md`](docs/server-config.md) | **Delivery-ready server config** — without `-ncmoe` it is 15× worse |
 | 5 | [`docs/slot-comparison.md`](docs/slot-comparison.md) | PCIe slot A/B — slot penalty (−2.9%) is smaller than slot noise (13.9%) |

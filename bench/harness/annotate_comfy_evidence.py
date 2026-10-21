@@ -90,13 +90,20 @@ LOG_KEY_ALIASES = {
 # 量化档也要参与索引：同为 `base` 变体，bf16 与 int8 在 B50 上是两轮不同的跑测
 # （`server_sweep_b50.log` vs `server_sweep_b50base.log`）。
 CARD_LOG_KEYS = {
-    # 🔴 **B65 上机后必须补两段**（与 migrate_comfy.py 的 CARDS 同步登记）：
-    #   "b65-32g"      → 单卡，日志前缀 `sweepb65` / `server_sweepb65`
-    #   "b65-dual-32g" → 双卡，日志前缀 `sweepb65-dual` / `server_sweepb65-dual`
-    # ⚠️ 键名必须与 `find_log` 的**子串匹配**对得上 —— 输出文件名由
-    #    `card_slug()` 生成（`b65-dual-32g`），所以这里也要有 `b65-dual` 段；
-    #    少了它，双卡记录会配到单卡 B65 的日志上（型号一致性校验会拦，但白跑）。
-    #    另外日志前缀**无下划线**（`sweep{suffix}`），见下面 b60-24g 的说明。
+    # 2026-10-21 B65 单卡上机（身份已按 gpu_identity.py 实测登记进 migrate_comfy.py 的 CARDS）。
+    # 日志前缀**无下划线**：sweep.py 的规则是 `sweep{suffix}.jsonl` / `server_sweep{suffix}.log`，
+    # stage_c 给的 suffix 是 `b65` / `b65k2` / `b65m3`（每模型一个，见 b60-24g 的说明）。
+    # ⚠️ **"b65-dual-32g" 还没登记**：本次只有一张 B65 在机；双卡上机后补
+    #    `sweepb65-dual` / `server_sweepb65-dual`，否则双卡记录会配到单卡日志上。
+    "b65-32g": {
+        ("bf16", "base"): ["sweepb65"],
+        ("fp16", "base"): ["sweepb65"],
+        ("int8_convrot", "base"): ["sweepb65"],
+        ("int8_convrot", "sigfix"): ["sweepb65"],
+        ("int8_convrot", "int8fix"): ["sweepb65"],
+        ("int8_convrot", "b65k2"): ["sweepb65k2"],
+        ("int8_convrot", "b65m3"): ["sweepb65m3"],
+    },
     # 2026-10-20 B60 上机。日志文件名形如 `sweepb60.jsonl` / `server_sweepb60.log`
     # （`--suffix b60`），与 b50/b70 的命名规律一致。
     # 🔴 **键名无下划线**：sweep.py 的命名规则是 `sweep{suffix}.jsonl`，

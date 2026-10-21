@@ -66,6 +66,13 @@ SUFFIX_CARD = {
     # （实测：不登记时返回 card=None）。双卡身份仍按**单张 B65** 登记——
     # torch.xpu 只见到一张，别把 2× 的值写进 vram_visible_gib。
     "b65-dual": "b65",
+    # 2026-10-21 B65 单卡上机。`--suffix b65` → `sweepb65.jsonl`；
+    # 每模型独立后缀（driver 的 stage_c 派生）：q21→`b65`、krea2→`b65k2`、music3→`b65m3`，
+    # 与 B60 的 `b60` / `b60k2` / `b60m3` 同一套规则。⚠️ 单卡这三条**没有** `-dual` 段，
+    # 所以 SUFFIX_MARKS 不用登记（通用卡型正则已能剥 `b65`）。
+    "b65": "b65",
+    "b65k2": "b65",
+    "b65m3": "b65",
     # 2026-10-20 **每个模型一个独立 suffix**（driver 的 stage_c 派生）：
     # q21 → `b60`，krea2 → `b60k2`，music3 → `b60m3`。
     # 🔴 原因是 sweep.py 的 jsonl / server 日志都是**追加**语义，同一个 suffix
@@ -210,8 +217,11 @@ MARK_STACK = {
 # 不在这张表里，不会被误升级。
 CARD_DEFAULT_STACK = {
     "b60": "int8fix",
-    # B65 / 双 B65 上机后同理（driver 同样不设那两个开关）；
-    # 届时随 CARDS 身份登记一起启用，不提前放空映射。
+    # 2026-10-21 B65 上机（单卡）。driver 的 stage_c **不设**那两个开关
+    # （`OMNIXPU_INT8_COMPUTE` / `OMNIXPU_INT8_SIGFIX` 由 omni_int8fix.py 默认开），
+    # 所以文件名 `sweepb65*` 里没有栈标记 → 判 base 变体时按 int8fix 记。
+    "b65": "int8fix",
+    # 双 B65 上机后再加 "b65-dual": "int8fix"。
 }
 MARK_NOTE = {
     "m3i8": "Music 3 · **DiT int8 + 文本编码器 int8**（bf16 TE 为 15.56 GiB，超 B50 整卡 15.51 GiB；int8 TE 为 8.56 GiB，装得下）",

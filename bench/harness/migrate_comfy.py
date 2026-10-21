@@ -86,13 +86,27 @@ CARDS = {
         "ecc": "off",
         "driver": "32.0.101.9150",
     },
-    # 🔴 **B65 上机实测后必须登记这两项**（`--card b65` 和 `--card b65-dual` 都要用）：
-    #   "b65"      → 单卡。chip / subsys / device_id / board_vendor / vram_visible_gib
-    #                 全部照 `gpu_identity.py` 实测填，**不许照规格表编**（猜错会让
-    #                 整批记录带上别人的身份）。
-    #   "b65-dual" → 双卡。身份字段仍按**单张**填（torch.xpu 只枚举到一张），
-    #                 另加 `"dual": True` 和 `"cards_in_machine": 2`，让读者一眼
-    #                 看出是双卡跑法；⚠️ 别把 2× 的值写进 vram_visible_gib。
+    # 2026-10-21 B65 到手上机（单卡）。以下字段**全部来自 gpu_identity.py / torch 实测**，
+    # 不是照规格表填的：DEV_E222 · SUBSYS_27441EF7 · 板厂 1EF7 = GUNNIR 蓝戟 ·
+    # 板型号编码 2744 · 总线 3 的 **CPU 直连槽** · 31.16 GiB 可见（ECC 关）·
+    # 驱动 9150（与 B60 同版本；B50/B70 那两行的 8976 是回填推断值，见 §5.1 第 5 条）。
+    # ⚠️ **E222 与 B70 的 E223 只差 1** —— 别用 DEV 单字段认卡，要靠 subsys 分：
+    #    B65 = 2744、B70 = 2742、B60 = 2542、B50 = 2522（板型号编码逐级不同）。
+    # ⚠️ VBIOS 本机注册表取不到（恒为 None），要的话走 gpu_sysman.py（Level Zero Sysman）。
+    "b65": {
+        "gpu": "Intel Arc Pro B65 32G",
+        "chip": "E222",
+        "subsys": "27441EF7",
+        "device_id": "PCI\\VEN_8086&DEV_E222&SUBSYS_27441EF7&REV_00",
+        "board_vendor": "GUNNIR 蓝戟 (PCI vendor 1EF7)",
+        "board_code": "2744",
+        "vram_visible_gib": 31.16,
+        "ecc": "off",
+        "driver": "32.0.101.9150",
+    },
+    # 🔴 **"b65-dual" 还没登记**：本次只有一张 B65 在机。双卡身份字段仍按**单张**填
+    # （torch.xpu 只枚举到一张），另加 `"dual": True` 和 `"cards_in_machine": 2`，
+    # ⚠️ 别把 2× 的值写进 vram_visible_gib。等两张同时在机再填，别现在猜。
     # detect_card 已把 `b65-dual` 排在 `b65` 前面防混；CARDS 缺对应项时迁移会
     # KeyError —— 这是设计上的保护：宁可炸掉，也不静默把双卡数据迁成单卡。
 }

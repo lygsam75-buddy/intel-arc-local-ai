@@ -1,0 +1,15 @@
+{
+  "card": "b65",
+  "at": "2026-10-21 14:24:45",
+  "device": "Intel(R) Arc(TM) Pro B65 Graphics",
+  "vram_gib": 31.16,
+  "driver": "32.0.101.9150",
+  "tdr_delay": 60,
+  "tdr_ddi_delay": 60,
+  "devices_in_machine": [
+    {
+      "name": "Intel(R) Arc(TM) Pro B65 Graphics",
+      "gib": 31.16
+    }
+  ]
+}
