@@ -2,7 +2,7 @@
 
 # Intel Arc Local AI Handbook
 
-Field-measured local AI on Intel Arc Pro **B50 (16 GB)** and **B70 (32 GB)** —
+Field-measured local AI on Intel Arc Pro **B50 (16 GB)**, **B60 (24 GB)** and **B70 (32 GB)** —
 `llama.cpp` on SYCL, `ComfyUI` for image / video / music generation, and the power draw behind all of it.
 
 Not vendor documentation. Not a tutorial rewrite.
@@ -14,6 +14,10 @@ machine-readable data, and a test registry that states what was tested *and what
 >
 > 🧾 **Distrust a number?** Every figure below traces to one file in [`bench/data/`](bench/data/),
 > and each record carries its own evidence status.
+>
+> 🃏 **Only care about one card?** Per-card sheets (Chinese):
+> [B50 16G](docs/cards/b50-16g.md) · [B60 24G](docs/cards/b60-24g.md) · [B70 32G](docs/cards/b70-32g.md)
+> — this page compares the three; each card page holds its own resolution matrix, capacity limits and power.
 >
 > 🔗 Repository: <https://github.com/lygsam75-buddy/intel-arc-local-ai>
 
@@ -340,6 +344,9 @@ language-independent. Two English entry points exist: this page and
 |---|---|---|
 | 1 | [`docs/at-a-glance.md`](docs/at-a-glance.md) · [EN](docs/at-a-glance.en.md) | **One page, six tables** — the plain-language summary |
 | 2 | [`README.zh-CN.md`](README.zh-CN.md) | The full Chinese front page: every measured number, every tier |
+| 2a | [`docs/cards/b70-32g.md`](docs/cards/b70-32g.md) | **Per-card sheet · B70 32G** — image 10.6 s, 1080p video 14 min, Vulkan 1.50×, held at 290 W |
+| 2b | [`docs/cards/b60-24g.md`](docs/cards/b60-24g.md) | **Per-card sheet · B60 24G** — the "it fits" dividing line, plus the Krea-2 counter-example |
+| 2c | [`docs/cards/b50-16g.md`](docs/cards/b50-16g.md) | **Per-card sheet · B50 16G** — 16 GB capacity limits, `-ncmoe` knee, long-context depth curve |
 | 3 | [`docs/vram-16gb.md`](docs/vram-16gb.md) | **16 GB tier tuning** — quant selection, `-ncmoe`, context |
 | 4 | [`docs/server-config.md`](docs/server-config.md) | **Delivery-ready server config** — without `-ncmoe` it is 15× worse |
 | 5 | [`docs/slot-comparison.md`](docs/slot-comparison.md) | PCIe slot A/B — slot penalty (−2.9%) is smaller than slot noise (13.9%) |
