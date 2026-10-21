@@ -62,7 +62,7 @@ record of what actually ran after the pits were filled in.
 | VRAM | 16 GB | 24 GB | 32 GB | 32 GB |
 | **Visible to apps** (ECC off) | 15.51 GiB | 23.33 GiB | 31.16 GiB | 31.16 GiB |
 | Bandwidth | 224 GB/s | 456 GB/s | **608 GB/s** | **608 GB/s** |
-| Xe2 cores | not verified | **20** | **20** | **32** |
+| Xe2 cores | **16** | **20** | **20** | **32** |
 | INT8 TOPS | 170 | 197 | 197 | **367** |
 | TBP | 70 W | 200 W | 200 W | 290 W |
 
@@ -78,6 +78,9 @@ record of what actually ran after the pits were filled in.
 | Fits entirely in VRAM? | No (H3 moves 13 GB every sampling step) | Images yes, H3 no | **Images yes, H3 no** | Images yes; H3 **480p yes, swaps from 1080p** |
 
 > "Swaps" = one move between DiT and text encoder per round; the B50 moves every sampling step. Evidence in each card sheet §6 / §8.
+> ⚠️ **The 16 / 20 / 20 / 32 ladder only compares B60–B70**: the B50 cannot hold the 19.4 GB model, and with
+> `-ncmoe 8` it hauls weights every step — its 37.6 tok/s is **transfer-bound, not core-bound**. **Do not
+> extrapolate its decode from 16 / 32.**
 
 > Same bar, one look (same model, same quant):
 
