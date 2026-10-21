@@ -78,9 +78,9 @@ record of what actually ran after the pits were filled in.
 | Fits entirely in VRAM? | No (H3 moves 13 GB every sampling step) | Images yes, H3 no | **Images yes, H3 no** | Images yes; H3 **480p yes, swaps from 1080p** |
 
 > "Swaps" = one move between DiT and text encoder per round; the B50 moves every sampling step. Evidence in each card sheet §6 / §8.
-> ⚠️ **The 16 / 20 / 20 / 32 ladder only compares B60–B70**: the B50 cannot hold the 19.4 GB model, and with
-> `-ncmoe 8` it hauls weights every step — its 37.6 tok/s is **transfer-bound, not core-bound**. **Do not
-> extrapolate its decode from 16 / 32.**
+> ⚠️ **The 16 / 20 / 20 / 32 ladder only applies across B60–B70**: the B50's usual setting cannot hold Q4_0 and
+> runs with `-ncmoe 8`, and even the resident IQ2_M build only reaches **46 tok/s (+22%)** — so **do not
+> extrapolate its 37.6 from the core count.** Details in the [B50 sheet §3](docs/cards/B50-README.md).
 
 > Same bar, one look (same model, same quant):
 
