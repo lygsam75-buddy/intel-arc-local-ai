@@ -99,7 +99,7 @@ At **¥0.7 per kWh**.
 
 ## Two things we will not fake
 
-**Not tested:** two cards on one job, above 1440p, sustained runs over one hour, music on B50 / B60 (B65 is measured).
+**Not tested:** two cards on one job, above 1440p, sustained runs over one hour, music on B50, and the vision tower on B65.
 **No guesses, no invented numbers.**
 
 **Where to verify:** every number traces back to a file in [`../bench/data/`](../bench/data/). Status, data

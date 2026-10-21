@@ -15,9 +15,9 @@
 | 主板 | 技嘉 **B850M FORCE WIFI6E**（micro-ATX） | 决定下面两个槽的规格 |
 | 扩展槽 1 | **PCIe 5.0 x16**（CPU 直连） | 主槽，满链路 |
 | 扩展槽 2 | **PCIe 4.0 x4**（芯片组直连） | 从槽，带宽 ≈ 主槽的 1/4 |
-| 被测主力卡 | **Intel Arc Pro B70 32G**（在位 · CPU 直连槽） | 实测可用 **31.16 GiB**（ECC 关）；B50 已拆 |
+| 被测主力卡 | **Intel Arc Pro B65 32G**（在位 · CPU 直连槽） | 实测可用 **31.16 GiB**（ECC 关）。历史在机：B70（10-19~10-21 上午）、B60（10-20）、B50（已拆） |
 | 内存 | **2 × 16 GB DDR5-6400**（双通道） | Windows 可见 **31.11 GiB** |
-| 显示适配器 | **核显 + 独显共存**：AMD Radeon(TM) Graphics（UMA）+ 被测 Arc Pro B70 | 见下方专节，**影响复现** |
+| 显示适配器 | **核显 + 独显共存**：AMD Radeon(TM) Graphics（UMA）+ 被测 Arc Pro B65 | 见下方专节，**影响复现** |
 | 页面文件 | 初始 64 GB / 最大 128 GB | 32 GB 内存机的硬性配套 |
 | 平台 | AMD AM5（Ryzen） | **支持 AVX-512**，对 CPU 侧 MoE 专家计算有实质加成 |
 
@@ -29,23 +29,23 @@
 | 适配器 | 身份 | 「显存」从哪来 | 实测 |
 |---|---|---|---|
 | AMD Radeon(TM) Graphics | 核显（`uma: 1` 统一内存） | **系统内存**：BIOS 固定分配 **512 MB** + Windows 按需动态共享 | 桌面负载下适配器级：专用 462 MB + 共享 432 MB ≈ **0.9 GB**；进程级合计约 **1.1 GB** |
-| Intel Arc(TM) Pro B70 Graphics | 独显（被测卡） | 自带 32 GB GDDR6 | ECC 关时可用 **31.16 GiB**；桌面空闲时只有 ComfyUI 一个进程占 **70 MB** |
+| Intel Arc(TM) Pro B65 Graphics | 独显（被测卡） | 自带 32 GB GDDR6 | ECC 关时可用 **31.16 GiB**；桌面空闲时只有 ComfyUI 一个进程占 **70 MB** |
 
 **怎么确认哪块卡在驱动显示 + 跑桌面**（不靠设备管理器猜）：
 
 | 检查 | 实测结果 |
 |---|---|
 | 有当前分辨率的适配器 | **核显**：`2560x1440` |
-| 独显的分辨率字段 | **空** → B70 一个显示像素都不驱动 |
+| 独显的分辨率字段 | **空** → 被测独显一个显示像素都不驱动 |
 | 核显 `0x14E3F` 上的进程 | `dwm`（桌面合成）· 浏览器 · 视频播放器 —— **桌面全在这** |
-| B70 `0x166F8` 上的进程 | 只有 `python`（ComfyUI），**70 MB** |
+| 被测独显 `0x166F8` 上的进程 | 只有 `python`（ComfyUI），**70 MB** |
 
 判断命令：`Get-CimInstance Win32_VideoController | Select Name,CurrentHorizontalResolution,CurrentVerticalResolution`
 —— **有分辨率的那个才是真正在驱动显示器的**。
 
 **两条，别记反：**
 
-1. ✅ **核显不会占独显的显存。** 两者物理隔离 —— `torch.xpu` 报 B70 的 `total_memory`
+1. ✅ **核显不会占独显的显存。** 两者物理隔离 —— `torch.xpu` 报被测独显的 `total_memory`
    是满额 **31.16 GiB**，一点没被核显分走。所以「显存装不装得下」的判断不受核显影响。
 2. ⚠️ **但核显会吃掉系统内存。** 它没有自己的显存，桌面合成、浏览器硬件加速、视频解码
    全靠从系统内存里划出来的那一块。所以**「32 GB 内存」里，可供 ComfyUI 卸载权重和
@@ -62,11 +62,11 @@
 16 GB 档「装不下」的那条线可能略微松动；反过来，**BIOS 里把核显 UMA 调大**
 （1G / 2G / 4G）会让系统内存更紧，更早进换页区。
 
-> **这是推荐配置，不是妥协。** 桌面跑在核显上，B70 才能整块留给计算 ——
-> 实测桌面 + 浏览器 + 视频播放全在核显那侧，B70 上只有 ComfyUI 一个进程、占 **70 MB**。
+> **这是推荐配置，不是妥协。** 桌面跑在核显上，独显才能整块留给计算 ——
+> 实测桌面 + 浏览器 + 视频播放全在核显那侧，独显上只有 ComfyUI 一个进程、占 **70 MB**。
 > 代价是核显会吃掉一点系统内存（见上表），换来的是显存不被显示输出占用。
 >
-> ⚠️ **没做过的对照**：没把显示器插到 B70 上跑同一任务对比，所以给不出
+> ⚠️ **没做过的对照**：没把显示器插到**被测独显**上跑同一任务对比，所以给不出
 > 「省了多少 MB / 快了多少」的具体数字。依据是上面的实测表 + WDDM 会给显示输出分 frame buffer
 > 这一机制。**有数字的那部分，本文件才写数字。**
 
@@ -94,7 +94,9 @@ VBIOS、功耗墙、显存颗粒、散热都可能不同，性能未必一致。
 | 卡 | 芯片 DEV | SUBSYS | 板厂 | 板型号编码 | 标称显存 | 驱动 | 状态 |
 |---|---|---|---|---|---|---|---|
 | Arc Pro B50 | `E212` | `25221EF7` | **GUNNIR 蓝戟**（vendor `1EF7`） | 2522 | 16 GB | 32.0.101.8976 | 已拆（历史） |
-| Arc Pro B70 | `E223` | `27421EF7` | GUNNIR 蓝戟（`1EF7`） | 2742 | 32 GB | **32.0.101.9150** | **在位**（CPU 直连槽） |
+| Arc Pro B60 | `E211` | `25421EF7` | GUNNIR 蓝戟（`1EF7`） | 2542 | 24 GB | **32.0.101.9150** | 已测（10-20） |
+| Arc Pro B65 | `E222` | `27441EF7` | GUNNIR 蓝戟（`1EF7`） | 2744 | 32 GB | **32.0.101.9150** | **在位**（CPU 直连槽） |
+| Arc Pro B70 | `E223` | `27421EF7` | GUNNIR 蓝戟（`1EF7`） | 2742 | 32 GB | **32.0.101.9150** | 已测（10-19~10-21 上午） |
 
 > 读法：`SUBSYS_<板型号编码><板厂 vendor id>` —— 高 4 位是板型号编码
 > （同芯片不同厂/不同批次会不同），低 4 位是板厂 PCI vendor id。
@@ -102,7 +104,7 @@ VBIOS、功耗墙、显存颗粒、散热都可能不同，性能未必一致。
 
 **对引用数字的影响**：
 
-- 本机 **B70 与 B50 都是蓝戟 GUNNIR 板** → 两者横向对比是**同厂板对同厂板**，
+- 本机 **B50 / B60 / B65 / B70 四张全是蓝戟 GUNNIR 板** → 四卡横向对比是**同厂板对同厂板**，
   没有把板厂差异混进来。
 - 引用本项目数字时**至少带上芯片 DEV 与 SUBSYS**；AIB 模式下只写型号名不唯一。
 - 换一块**别家的同型号卡**（如 ASRock 的 B70），严格说要重测才能并排——
@@ -314,11 +316,11 @@ Level Zero 的 `zesDevicePciGetState`（Sysman）与 Windows 的
 |---|---|---|
 | `cpu` | **AMD Ryzen 5 9600X** · 6 核 / 12 线程 · AM5 | `Win32_Processor` |
 | `cpu_isa` | **AVX-512**（对 CPU 侧 MoE 专家计算有实质加成） | 规格 |
-| `driver` | **32.0.101.9150**（B70 · 2026-10-08 · INF `oem104.inf`）；B50 时期为 32.0.101.8976 | `Win32_VideoController.DriverVersion` |
+| `driver` | **32.0.101.9150**（B65 · 2026-10-08 · INF `oem104.inf`）；B50 / B70 时期为 32.0.101.8976 | `Win32_VideoController.DriverVersion` |
 | `os` | **Windows 11 专业版 26H2 · Build 26300.9711** | `Win32_OperatingSystem` + `DisplayVersion` |
 | `ram_gb` | **32**（`TotalPhysicalMemory` = 31.1 GiB） | `Win32_ComputerSystem` |
 | `pagefile_gb` | **64**（`<非系统盘>:\pagefile.sys`，初始 65536 MB / 上限 131072 MB，**固定大小、非自动管理**） | `Win32_PageFileUsage` |
-| `vram_gib_visible` | **15.51**（B50，ECC 关闭态） | `torch.xpu.get_device_properties(0).total_memory` |
+| `vram_gib_visible` | **31.16**（B65 32G，ECC 关闭态）；B50 16G 为 15.51 | `torch.xpu.get_device_properties(0).total_memory` |
 | `igpu` | **AMD Radeon(TM) Graphics**（UMA；BIOS 固定 512 MB + 动态共享） | `Win32_VideoController` 的 `AdapterRAM`（512 MB）+ `llama-bench --list-devices` 的 `uma: 1` |
 
 > ⚠️ **`igpu` 不是可选项。** 核显没有独立显存，它的「显存」就是**系统内存** ——

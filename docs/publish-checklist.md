@@ -104,7 +104,7 @@
 | 1 | **仓库名** | ✅ 已定：`intel-arc-local-ai` · 显示名 **Intel Arc Local AI Handbook** |
 | 2 | **公开范围** | ✅ **public**（手册的价值就在于被搜到；已扫过无密钥、无绝对路径、无内部产品名） |
 | 3 | **署名** | ✅ 已定：**Yonggang Lin（林永刚）** · `lygsam75@gmail.com` —— LICENSE、两个 README、git 作者三处一致 |
-| 4 | **仓库描述 / topics** | ✅ 已定。描述（英文，好被搜到）：`Field-measured local AI on Arc Pro B50 / B70: llama.cpp, ComfyUI, image · video · audio generation, and power — with raw logs and machine-readable data.`；topics：`intel-arc` `xpu` `llama-cpp` `comfyui` `local-llm` `benchmark` `oneapi` `arc-pro` |
+| 4 | **仓库描述 / topics** | ✅ 已定。描述（英文，好被搜到）：`Field-measured local AI on Arc Pro B50 / B60 / B65 / B70: llama.cpp, ComfyUI, image · video · audio generation, and power — with raw logs and machine-readable data.`；topics：`intel-arc` `xpu` `llama-cpp` `comfyui` `local-llm` `benchmark` `oneapi` `arc-pro` |
 | 5 | **对外定位** | ✅ 已定：**让更多人知道 Intel 这张卡能用、而且用得不错**，并**记住板子是蓝戟 GUNNIR 做的**。判据是**功耗墙**——公版卡功耗墙更低、性能有所保留，所以功耗数据不是附赠指标，是性能上限的直接依据（见 `README.zh-CN.md` 对应小节） |
 | 6 | **GitHub 登录** | ✅ 已解决：`gh` CLI 未登录，改用 **GitHub Desktop 凭据管理器里的 OAuth token**（`GH_TOKEN` 注入 `gh`），发布当天一次通过（见 §5） |
 

@@ -13,13 +13,13 @@
 
 | 日志里原本的 | 现在写作 |
 |---|---|
-| `D:\LLM\models\…`、`D:/LLM/models/…` | `<模型目录>/…` |
-| `F:\LLM\llama.cpp\build\bin\…` | `<llama.cpp>/build/bin\…` |
-| `D:\WorkBuddy\…\intel-arc-ai-cookbook\bench\data` | `bench/data` |
-| `D:\WorkBuddy\…\intel-arc-ai-cookbook\bench\logs` | `bench/logs` |
+| `\LLM\models\…`（原带盘符，日志里正/反斜杠两种写法都有） | `<模型目录>/…` |
+| `\LLM\llama.cpp\build\bin\…` | `<llama.cpp>/build/bin\…` |
+| `\…\bench\data`（原在仓库根目录下） | `bench/data` |
+| `\…\bench\logs`（原在仓库根目录下） | `bench/logs` |
 
-> 表里那个仓库目录名是**归一化当时**的目录名 —— 这一列记录的是「日志原文里出现过的字符串」，
-> 与当前仓库名（`intel-arc-local-ai`）无关。
+> 左列只保留**目录名与结构**，盘符与上级目录已省略 —— 它记录的是「日志原文里出现过
+> 的字符串形状」，与当前仓库名（`intel-arc-local-ai`）无关。
 
 **归一化只动了路径字符串，其余字节逐字节未变** —— 包括：
 
