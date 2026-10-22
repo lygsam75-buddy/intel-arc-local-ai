@@ -46,7 +46,7 @@ At **¥0.7 per kWh**.
 The same model (Qwen3.6-35B-A3B) at three quant levels, on all four cards
 (`llama-bench` · SYCL · clean loop):
 
-![Decoder speed: four cards by three quant levels](assets/at-a-glance-vram.png)
+![Decoder speed: four cards by three quant levels](assets/at-a-glance-vram.svg)
 
 **Darker = bigger model** (10.7 / 14.3 / 19.4 GB). The **hatched** bar is B50, which cannot hold the
 19.4 GB model and spills to system RAM. **`n/a`** marks the two B70 entries we never measured.
@@ -74,7 +74,7 @@ The chart shows the gap; the table below has the exact numbers.
 
 124 frames @ 24 fps · 6 steps · end to end (model loading included):
 
-![End-to-end time: four cards by three resolutions](assets/at-a-glance-video.png)
+![End-to-end time: four cards by three resolutions](assets/at-a-glance-video.svg)
 
 **Darker = higher resolution**; the vertical axis is minutes, and the number on each bar is the cell
 in the table below. **The B50 group is a cold single shot**, so it sits higher than its neighbours —
