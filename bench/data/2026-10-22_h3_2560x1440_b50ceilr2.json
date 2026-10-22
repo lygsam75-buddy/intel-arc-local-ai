@@ -1,0 +1,155 @@
+{
+  "schema": "comfyui-xpu-bench/1",
+  "domain": "comfyui-video",
+  "date": "2026-10-22",
+  "tag": "h3_2560x1440_b50ceilr2",
+  "status": "discarded",
+  "source": "local",
+  "tool": "bench_f_h3.py + ComfyUI /prompt + /history",
+  "batch": "ComfyUI H3 分辨率扫描（tag=h3_2560x1440_b50ceilr2）",
+  "reserve_vram_gb": 2.0,
+  "samples": [
+    {
+      "mode": "cold",
+      "ok": false,
+      "server_sec": null,
+      "last_sit": null,
+      "sampling_sec": null,
+      "sampling_sec_per_step": null,
+      "n_load": 2,
+      "vram_post_gib": null,
+      "power": {
+        "card_domain": 0,
+        "card_limit_mw": -1,
+        "avg_w": 31.0,
+        "p50_w": 24.0,
+        "p90_w": 47.6,
+        "peak_w": 195.8,
+        "min_w": 11.7,
+        "energy_j": 2140.5,
+        "span_sec": 68.1,
+        "samples": 69,
+        "counter_resets": 0,
+        "peak_basis": "1s",
+        "domains": {
+          "0": {
+            "avg_w": 31.0,
+            "p50_w": 24.0,
+            "p90_w": 47.6,
+            "peak_w": 195.8,
+            "min_w": 11.7,
+            "energy_j": 2140.5,
+            "span_sec": 68.1,
+            "samples": 69,
+            "counter_resets": 0,
+            "peak_basis": "1s"
+          },
+          "1": {
+            "avg_w": 35.3,
+            "p50_w": 34.8,
+            "p90_w": 41.3,
+            "peak_w": 74.2,
+            "min_w": 21.9,
+            "energy_j": 2438.8,
+            "span_sec": 68.1,
+            "samples": 69,
+            "counter_resets": 0,
+            "peak_basis": "1s"
+          },
+          "2": {
+            "avg_w": 1.5,
+            "p50_w": 0.6,
+            "p90_w": 4.7,
+            "peak_w": 10.9,
+            "min_w": 0.0,
+            "energy_j": 100.4,
+            "span_sec": 68.1,
+            "samples": 69,
+            "counter_resets": 0,
+            "peak_basis": "1s"
+          },
+          "3": {
+            "avg_w": 13.7,
+            "p50_w": 15.3,
+            "p90_w": 24.0,
+            "peak_w": 37.6,
+            "min_w": 0.0,
+            "energy_j": 948.6,
+            "span_sec": 68.1,
+            "samples": 69,
+            "counter_resets": 0,
+            "peak_basis": "1s"
+          }
+        }
+      }
+    }
+  ],
+  "summary": {
+    "n_total": 1,
+    "n_ok": 0,
+    "n_fail": 1,
+    "server_sec_mean": null,
+    "power": null
+  },
+  "workload": {
+    "model": "MiniMax H3",
+    "task": "image-to-video",
+    "steps": 6,
+    "duration_sec": 5.0,
+    "frames": 124,
+    "fps": 24,
+    "duration_sec_exact": 5.167,
+    "selector_megapixels": null,
+    "width": 2560,
+    "height": 1440,
+    "resolution": "2560x1440",
+    "dit_file": "minimax_h3_fl2va_pruned_int8_convrot.safetensors",
+    "text_encoder_file": "qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors",
+    "sampler": "euler",
+    "scheduler": "simple"
+  },
+  "env": {
+    "gpu": "Intel Arc Pro B50 LP 16G",
+    "chip": "E212",
+    "subsys": "25221EF7",
+    "device_id": "PCI\\VEN_8086&DEV_E212&SUBSYS_25221EF7&REV_00",
+    "board_vendor": "GUNNIR 蓝戟 (PCI vendor 1EF7)",
+    "board_code": "2522",
+    "vram_visible_gib": 15.51,
+    "ecc": "off",
+    "driver": "32.0.101.8976",
+    "cpu": "AMD Ryzen 5 9600X",
+    "ram_gb": 32,
+    "os": "Windows",
+    "attention_backend": "sdpa (CUTE 关闭；CUTE 开着跑 H3 音频封装必崩)",
+    "stack_variant": "int8fix",
+    "int8fix_env": {
+      "OMNIXPU_INT8_COMPUTE": "1",
+      "OMNIXPU_INT8_SIGFIX": "1"
+    },
+    "env_confidence": {
+      "gpu": "recorded",
+      "vram_visible_gib": "recorded",
+      "ecc": "recorded",
+      "cpu": "recorded",
+      "ram_gb": "recorded",
+      "os": "recorded",
+      "width": "recorded",
+      "height": "recorded",
+      "resolution": "recorded",
+      "steps": "recorded",
+      "attention_backend": "recorded",
+      "chip": "inferred",
+      "subsys": "inferred",
+      "device_id": "inferred",
+      "board_vendor": "inferred",
+      "board_code": "inferred",
+      "driver": "inferred",
+      "reserve_vram_gb": "recorded"
+    }
+  },
+  "log_evidence": {
+    "status": "pending",
+    "note": "日志在 `_bench_f/server_<tag>.log`，取证回填待跑 annotate_comfy_evidence.py"
+  }
+}
