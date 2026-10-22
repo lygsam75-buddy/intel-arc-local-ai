@@ -1,6 +1,6 @@
 **English** · [简体中文](at-a-glance.md)
 
-# At a glance: what these two cards can actually do
+# At a glance: what these four cards can actually do
 
 Skip the long docs. **Six tables below tell you which card to buy and what it can run.**
 
