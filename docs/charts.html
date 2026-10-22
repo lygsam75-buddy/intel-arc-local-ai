@@ -43,7 +43,7 @@
   <div class="sub">同一台机器、只换显卡 · 全部本机实测 · 与 README 表 1 / 表 1b 同源</div>
   <div class="card">
     <div class="bar-row" id="metrics"></div>
-    <div class="meta"><span id="hint"></span><span>bar 长度按本列最大值归一</span></div>
+    <div class="meta"><span id="hint"></span><span style="flex:none">长度按本列最大值归一</span></div>
     <table>
       <thead><tr><th>型号</th><th id="unitHead"></th><th style="width:50%">占比</th></tr></thead>
       <tbody id="rows"></tbody>
@@ -52,13 +52,14 @@
   </div>
 </div>
 <script>
-const DATA = {"cards": ["B50 16G", "B60 24G", "B65 32G", "B70 32G"], "short": ["B50", "B60", "B65", "B70"], "color": {"B50 16G": "#8C9BAA", "B60 24G": "#3B6FE0", "B65 32G": "#12897B", "B70 32G": "#E2622B"}, "spec": {"price": [3499.0, 6099.0, 9499.0, 18999.0], "vram": [16.0, 24.0, 32.0, 32.0], "usable": [15.51, 23.33, 31.16, 31.16], "bw": [224.0, 456.0, 608.0, 608.0], "core": [16.0, 20.0, 20.0, 32.0], "tops": [170.0, 197.0, 197.0, 367.0], "tbp": [70.0, 200.0, 200.0, 290.0]}, "chat_tok_s": [37.6, 52.4, 53.1, 75.9], "image_sec": [52.0, 18.05, 16.1, 10.6], "v480_min": [4.7, 3.4, 3.3, 2.5], "v1080_min": [38.0, 22.0, 22.0, 14.0], "music_min": [3.6, 2.4, 2.7, 1.1], "price_per_tok_s": [93.1, 116.4, 178.9, 250.3]};
+const DATA = {"cards": ["B50 16G", "B60 24G", "B65 32G", "B70 32G"], "short": ["B50", "B60", "B65", "B70"], "color": {"B50 16G": "#8C9BAA", "B60 24G": "#3B6FE0", "B65 32G": "#12897B", "B70 32G": "#E2622B"}, "spec": {"price": [3499.0, 6099.0, 9499.0, 18999.0], "vram": [16.0, 24.0, 32.0, 32.0], "usable": [15.51, 23.33, 31.16, 31.16], "bw": [224.0, 456.0, 608.0, 608.0], "core": [16.0, 20.0, 20.0, 32.0], "tops": [170.0, 197.0, 197.0, 367.0], "tbp": [70.0, 200.0, 200.0, 290.0]}, "ranges": {"image_sec": [null, "17.3~18.8", null, null]}, "chat_tok_s": [37.6, 52.4, 53.1, 75.9], "image_sec": [52.0, 18.05, 16.1, 10.6], "v480_min": [4.7, 3.4, 3.3, 2.5], "v1080_min": [38.0, 22.0, 22.0, 14.0], "music_min": [3.6, 2.4, 2.7, 1.1], "price_per_tok_s": [93.1, 116.4, 178.9, 250.3]};
+const tf = v => { const s = v.toFixed(1); return s.endsWith('.0') ? s.slice(0,-2) : s; };
 const METRICS = [
-  {k:'chat_tok_s', label:'聊天解码', unit:'tok/s', better:1, fmt:v=>v.toFixed(1), src:'llama-bench -p 512 -n 128 -r 3 · Qwen3.6-35B-A3B Q4_0'},
-  {k:'image_sec', label:'出图 720p', unit:'秒', better:-1, fmt:v=>v.toFixed(1), src:'Qwen-Image 2.1 INT8 · 25 步 · 稳态'},
-  {k:'v480_min', label:'5 秒 480p', unit:'分钟', better:-1, fmt:v=>v.toFixed(1), src:'MiniMax H3 · 6 步 · 端到端含装载'},
-  {k:'v1080_min', label:'5 秒 1080p', unit:'分钟', better:-1, fmt:v=>v.toFixed(1), src:'MiniMax H3 · 6 步 · 端到端含装载'},
-  {k:'music_min', label:'2 分钟音乐', unit:'分钟', better:-1, fmt:v=>v.toFixed(1), src:'MiniMax Music 3 · 30 步 · int8 DiT + int8 TE · reserve 4'},
+  {k:'chat_tok_s', label:'聊天解码', unit:'tok/s', better:1, fmt:v=>tf(v), src:'llama-bench -p 512 -n 128 -r 3 · Qwen3.6-35B-A3B Q4_0'},
+  {k:'image_sec', label:'出图 720p', unit:'秒', better:-1, fmt:v=>tf(v), src:'Qwen-Image 2.1 INT8 · 25 步 · 稳态'},
+  {k:'v480_min', label:'5 秒 480p', unit:'分钟', better:-1, fmt:v=>tf(v), src:'MiniMax H3 · 6 步 · 端到端含装载'},
+  {k:'v1080_min', label:'5 秒 1080p', unit:'分钟', better:-1, fmt:v=>tf(v), src:'MiniMax H3 · 6 步 · 端到端含装载'},
+  {k:'music_min', label:'2 分钟音乐', unit:'分钟', better:-1, fmt:v=>tf(v), src:'MiniMax Music 3 · 30 步 · int8 DiT + int8 TE · reserve 4'},
   {k:'price_per_tok_s', label:'每 tok/s 买价', unit:'元', better:-1, fmt:v=>v.toFixed(0), src:'售价 ÷ 聊天解码 · 2026-10-21 价格'}
 ];
 const SPEC = [
@@ -82,11 +83,12 @@ function render(){
     (cur==='price_per_tok_s' ? '这一列不是性能，是「花多少钱买一 tok/s」，越低越划算。' : '') +
     (SPEC.some(x=>x.k===cur) ? '这一列是厂商规格，不是本机实测。' : '');
   const tb = document.getElementById('rows'); tb.innerHTML = '';
+  const rng = (DATA.ranges && DATA.ranges[m.k]) || [];
   DATA.cards.forEach((c,i)=>{
     const tr = document.createElement('tr');
     tr.innerHTML = '<td><span style="display:inline-block;width:10px;height:10px;border-radius:3px;background:'+
       DATA.color[c]+';margin-right:8px"></span>'+c+'</td><td class="v'+(v[i]===best?' best':'')+'">'+
-      m.fmt(v[i])+' <span style="font-weight:400;color:var(--ink3)">'+m.unit+'</span></td>'+
+      (rng[i]||m.fmt(v[i]))+' <span style="font-weight:400;color:var(--ink3)">'+m.unit+'</span></td>'+
       '<td><div class="track"><div class="fill" style="width:0;background:'+DATA.color[c]+'"></div></div></td>';
     tb.appendChild(tr);
     requestAnimationFrame(()=>{ tr.querySelector('.fill').style.width = (v[i]/max*100).toFixed(1)+'%'; });
