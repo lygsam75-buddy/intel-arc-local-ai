@@ -2,15 +2,14 @@
 """
 从 README.zh-CN.md 的「表 1」「表 1b」生成「四张卡一眼比」的两份产物：
 
-  1. docs/assets/summary-dashboard.svg / .en.svg —— README 里直接显示：矢量、柱子逐根长出
-  2. docs/charts.html                            —— 指标可切的交互版
+  1. docs/assets/summary-dashboard.svg      —— 中文版，README.zh-CN.md 用
+  2. docs/assets/summary-dashboard.en.svg   —— 英文版，README.md 用
 
 用法：python bench/harness/gen_summary_chart.py
 
 数字只有一个来源：README.zh-CN.md。不在这里另抄一份。
 """
 import html
-import json
 import pathlib
 import re
 
@@ -18,7 +17,6 @@ REPO = pathlib.Path(__file__).resolve().parents[2]
 README = REPO / "README.zh-CN.md"
 OUT_SVG = REPO / "docs" / "assets" / "summary-dashboard.svg"      # 中文版
 OUT_SVG_EN = REPO / "docs" / "assets" / "summary-dashboard.en.svg"  # 英文版
-OUT_HTML = REPO / "docs" / "charts.html"
 
 CARDS = ["B50 16G", "B60 24G", "B65 32G", "B70 32G"]
 SHORT = ["B50", "B60", "B65", "B70"]
@@ -216,127 +214,12 @@ def gen_svg(d, lang="zh"):
     return W, H
 
 
-HTML_TMPL = """<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>四张卡，一眼比 · Intel Arc Pro B 系列</title>
-<style>
-  :root{--bg:#f5f7fa;--panel:#fff;--ink:#1a202c;--ink2:#4a5568;--ink3:#8b95a5;--line:#e4e9f0;--accent:#c05621}
-  @media (prefers-color-scheme:dark){:root{--bg:#12161c;--panel:#1a1f27;--ink:#eef2f7;--ink2:#aab4c2;
-    --ink3:#7c8797;--line:#28303b;--accent:#f6ad55}}
-  *{box-sizing:border-box}
-  body{margin:0;background:var(--bg);color:var(--ink);padding:28px 20px 60px;
-    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif}
-  .wrap{max-width:1000px;margin:0 auto}
-  h1{font-size:24px;margin:0 0 6px}
-  .sub{color:var(--ink3);font-size:13px;margin-bottom:22px}
-  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px 22px 12px}
-  .bar-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
-  button{border:1px solid var(--line);background:transparent;color:var(--ink2);padding:7px 13px;
-    border-radius:999px;font-size:13px;cursor:pointer;transition:.16s}
-  button:hover{color:var(--ink)}
-  button[aria-pressed=true]{background:var(--ink);color:var(--panel);border-color:var(--ink)}
-  .meta{display:flex;justify-content:space-between;align-items:baseline;font-size:13px;
-    color:var(--ink3);margin:6px 0 14px;gap:16px}
-  .meta b{color:var(--ink2);font-weight:600}
-  table{width:100%;border-collapse:collapse;font-size:14px}
-  th,td{padding:11px 8px;border-bottom:1px solid var(--line);text-align:right}
-  th:first-child,td:first-child{text-align:left}
-  th{font-size:12px;color:var(--ink3);font-weight:600}
-  tr:last-child td{border-bottom:none}
-  .track{height:22px;border-radius:6px;background:transparent}
-  .fill{height:22px;border-radius:6px;transition:width .5s cubic-bezier(.2,.8,.25,1),background .2s}
-  tr:hover .fill{background:var(--accent)!important}
-  tr:hover td{color:var(--ink)}
-  .v{font-variant-numeric:tabular-nums;font-weight:700}
-  .best:after{content:" ★";color:var(--accent);font-size:12px}
-  .foot{margin-top:16px;font-size:12px;color:var(--ink3);line-height:1.7}
-</style>
-</head>
-<body>
-<div class="wrap">
-  <h1>四张卡，一眼比</h1>
-  <div class="sub">同一台机器、只换显卡 · 全部本机实测 · 与 README 表 1 / 表 1b 同源</div>
-  <div class="card">
-    <div class="bar-row" id="metrics"></div>
-    <div class="meta"><span id="hint"></span><span style="flex:none">长度按本列最大值归一</span></div>
-    <table>
-      <thead><tr><th>型号</th><th id="unitHead"></th><th style="width:50%">占比</th></tr></thead>
-      <tbody id="rows"></tbody>
-    </table>
-    <div class="foot" id="foot"></div>
-  </div>
-</div>
-<script>
-const DATA = __DATA__;
-const tf = v => { const s = v.toFixed(1); return s.endsWith('.0') ? s.slice(0,-2) : s; };
-const METRICS = [
-  {k:'chat_tok_s', label:'聊天解码', unit:'tok/s', better:1, fmt:v=>tf(v), src:'llama-bench -p 512 -n 128 -r 3 · Qwen3.6-35B-A3B Q4_0'},
-  {k:'image_sec', label:'出图 720p', unit:'秒', better:-1, fmt:v=>tf(v), src:'Qwen-Image 2.1 INT8 · 25 步 · 稳态'},
-  {k:'v480_min', label:'5 秒 480p', unit:'分钟', better:-1, fmt:v=>tf(v), src:'MiniMax H3 · 6 步 · 端到端含装载'},
-  {k:'v1080_min', label:'5 秒 1080p', unit:'分钟', better:-1, fmt:v=>tf(v), src:'MiniMax H3 · 6 步 · 端到端含装载'},
-  {k:'music_min', label:'2 分钟音乐', unit:'分钟', better:-1, fmt:v=>tf(v), src:'MiniMax Music 3 · 30 步 · int8 DiT + int8 TE · reserve 4'},
-  {k:'price_per_tok_s', label:'每 tok/s 买价', unit:'元', better:-1, fmt:v=>v.toFixed(0), src:'售价 ÷ 聊天解码 · 2026-10-21 价格'}
-];
-const SPEC = [
-  {k:'price', label:'参考价', unit:'元', better:-1, fmt:v=>v.toLocaleString(), src:'2026-10-21 官方/京东价'},
-  {k:'vram', label:'显存', unit:'GB', better:1, fmt:v=>v.toFixed(0), src:'厂商规格'},
-  {k:'usable', label:'可用显存（关 ECC）', unit:'GiB', better:1, fmt:v=>v.toFixed(2), src:'实测 torch.xpu 读到'},
-  {k:'bw', label:'带宽', unit:'GB/s', better:1, fmt:v=>v.toFixed(0), src:'厂商规格'},
-  {k:'core', label:'Xe2 核心', unit:'个', better:1, fmt:v=>v.toFixed(0), src:'厂商规格'},
-  {k:'tops', label:'INT8 算力', unit:'TOPS', better:1, fmt:v=>v.toFixed(0), src:'厂商规格'},
-  {k:'tbp', label:'整卡功耗 TBP', unit:'W', better:-1, fmt:v=>v.toFixed(0), src:'厂商规格（非实测）'}
-];
-const ALL = METRICS.concat(SPEC);
-let cur = 'chat_tok_s';
-function vals(k){ return k in DATA.spec ? DATA.spec[k] : DATA[k]; }
-function render(){
-  const m = ALL.find(x=>x.k===cur), v = vals(cur);
-  const max = Math.max(...v), best = m.better===1 ? max : Math.min(...v);
-  document.getElementById('unitHead').textContent = m.unit + (m.better===1?' · 越大越好':' · 越小越好');
-  document.getElementById('hint').innerHTML = '当前：<b>' + m.label + '</b> · ' + m.src;
-  document.getElementById('foot').textContent =
-    (cur==='price_per_tok_s' ? '这一列不是性能，是「花多少钱买一 tok/s」，越低越划算。' : '') +
-    (SPEC.some(x=>x.k===cur) ? '这一列是厂商规格，不是本机实测。' : '');
-  const tb = document.getElementById('rows'); tb.innerHTML = '';
-  const rng = (DATA.ranges && DATA.ranges[m.k]) || [];
-  DATA.cards.forEach((c,i)=>{
-    const tr = document.createElement('tr');
-    tr.innerHTML = '<td><span style="display:inline-block;width:10px;height:10px;border-radius:3px;background:'+
-      DATA.color[c]+';margin-right:8px"></span>'+c+'</td><td class="v'+(v[i]===best?' best':'')+'">'+
-      (rng[i]||m.fmt(v[i]))+' <span style="font-weight:400;color:var(--ink3)">'+m.unit+'</span></td>'+
-      '<td><div class="track"><div class="fill" style="width:0;background:'+DATA.color[c]+'"></div></div></td>';
-    tb.appendChild(tr);
-    requestAnimationFrame(()=>{ tr.querySelector('.fill').style.width = (v[i]/max*100).toFixed(1)+'%'; });
-  });
-  document.querySelectorAll('#metrics button').forEach(b=>b.setAttribute('aria-pressed', b.dataset.k===cur));
-}
-const box = document.getElementById('metrics');
-ALL.forEach(m=>{
-  const b = document.createElement('button');
-  b.textContent = m.label; b.dataset.k = m.k;
-  b.onclick = ()=>{ cur = m.k; render(); };
-  box.appendChild(b);
-});
-render();
-</script>
-</body>
-</html>
-"""
-
-
 def main():
     d = load()
     w, h = gen_svg(d, "zh")
     gen_svg(d, "en")
-    OUT_HTML.parent.mkdir(parents=True, exist_ok=True)
-    OUT_HTML.write_text(HTML_TMPL.replace("__DATA__", json.dumps(d, ensure_ascii=False)),
-                        encoding="utf-8", newline="\n")
     print(f"SVG {w}x{h} -> {OUT_SVG.relative_to(REPO)}")
     print(f"SVG {w}x{h} -> {OUT_SVG_EN.relative_to(REPO)}")
-    print(f"HTML -> {OUT_HTML.relative_to(REPO)}")
     for k in ("chat_tok_s", "image_sec", "v480_min", "v1080_min", "music_min", "price_per_tok_s"):
         print(" ", k, d[k])
     print("  spec.price", d["spec"]["price"])
