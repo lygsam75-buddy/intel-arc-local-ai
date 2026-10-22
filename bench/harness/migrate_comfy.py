@@ -374,6 +374,12 @@ def convert_jsonl(path, card_override=None, dry_run=False):
     steps = r0.get("steps") or 6
     dur = r0.get("duration") or 5.0
     nfr = r0.get("frames") or frames_for(dur)
+    # `--reserve-vram` 是这一批的**量纲**：采集器会把它写进每条 jsonl，
+    # 但迁移器此前整段丢掉 → 补测批次（如 24 GB 显存档用 11.83）落盘后
+    # 与「默认 reserve 4」的记录长得完全一样，后来人没法分辨显存档位。
+    # 判不出就留 None（不要退回 4 冒充实测）。
+    rsv = r0.get("reserve_vram")
+    rsv = float(rsv) if rsv is not None else None
     # `selector_megapixels` 记的是**工作流里 ResolutionSelector 的标称值**（0.4 MP），
     # 不是 w×h/1024²：864×480 折算只有 0.3956（宽高被 round 到 32 的倍数）。
     # 只有分辨率正好是从标称值推导出来的那一组才填，其余（按 tag 手填的分辨率）
@@ -410,13 +416,14 @@ def convert_jsonl(path, card_override=None, dry_run=False):
                               "chip": "inferred", "subsys": "inferred",
                               "device_id": "inferred", "board_vendor": "inferred",
                               "board_code": "inferred", "driver": "inferred",
-                              "reserve_vram_gb": "inferred"}}
+                              "reserve_vram_gb": "recorded" if rsv is not None else "inferred"}}
     return {"schema": "comfyui-xpu-bench/1", "domain": "comfyui-video",
             "date": date, "tag": tag,
             "status": "active" if ok else "discarded",
             "source": "local",
             "tool": "bench_f_h3.py + ComfyUI /prompt + /history",
-            "batch": "B50 出视频分辨率天花板扫描（cold 单轮）",
+            "batch": "ComfyUI H3 分辨率扫描（tag=%s）" % tag,
+            "reserve_vram_gb": rsv,
             "samples": samples, "summary": summary, "workload": wl, "env": env,
             "log_evidence": {"status": "pending",
                              "note": "日志在 `_bench_f/server_<tag>.log`，"

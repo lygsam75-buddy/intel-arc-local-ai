@@ -94,6 +94,13 @@ SUFFIX_CARD = {
     "b65k2b16": "b65",       # Krea-2 Turbo · bf16 · 1024×1024
     "b65m3f16": "b65",       # Music 3 · DiT fp16 + TE bf16
     "b65m3i8te8": "b65",     # Music 3 · DiT int8 + TE int8
+    # 2026-10-22 24 GB 显存档补测（`--reserve-vram 11.83`）。
+    # ⚠️ 后缀里带 `r24` 而不是 `rsv`：`infer_reserve` 只认 `rsv(\d+)`，
+    # 判不出来会退回 5 —— 这批的档位必须靠 `--reserve-vram 11.83` 显式覆盖。
+    "b65r24": "b65",         # Qwen-Image 2.1 · bf16 · 1280×720
+    "b65r24k2": "b65",       # Krea-2 Turbo · bf16 · 1280×720
+    "b65r24m3f16": "b65",    # Music 3 · DiT fp16 + TE bf16
+    "b65r24m3i8te8": "b65",  # Music 3 · DiT int8 + TE int8
 }
 
 CARDS = {
@@ -257,6 +264,11 @@ MARK_STACK = {
     "b65k2b16": "int8fix",
     "b65m3f16": "int8fix",
     "b65m3i8te8": "int8fix",
+    # 2026-10-22 24 GB 显存档补测：driver 不设开关，栈仍是 int8fix。
+    "b65r24": "int8fix",
+    "b65r24k2": "int8fix",
+    "b65r24m3f16": "int8fix",
+    "b65r24m3i8te8": "int8fix",
 }
 # 文件名里**完全不带栈标记**的新卡队列批次（`sweepb60.jsonl` → 卡型被 CARDS
 # 分支先剥掉，SUFFIX_MARKS 无标记可剥 → variant 停在默认 "base"）。
@@ -341,6 +353,13 @@ MARK_NOTE = {
                 "整装不下；这一格量的是卸载代价）",
     "b65m3f16": "**B65 32G · Music 3 · DiT fp16 + 文本编码器 bf16**（20.34 GiB，装得下）",
     "b65m3i8te8": "**B65 32G · Music 3 · DiT int8 + 文本编码器 int8**（11.10 GiB）",
+    "b65r24": "**24 GB 显存档 · Qwen-Image 2.1 · DiT bf16 · 1280×720**"
+              "（`--reserve-vram 11.83`，可分配 19,798 MB；DiT 13.25 + TE 8.71 + VAE 0.63 = 22.59 GiB 装不下，量的是卸载代价）",
+    "b65r24k2": "**24 GB 显存档 · Krea-2 Turbo · bf16 · 1280×720**"
+                "（`--reserve-vram 11.83`；DiT 24.48 GiB 单件就超可分配量）",
+    "b65r24m3f16": "**24 GB 显存档 · Music 3 · DiT fp16 + TE bf16**"
+                   "（20.34 GiB 贴着可分配量 19,798 MB）",
+    "b65r24m3i8te8": "**24 GB 显存档 · Music 3 · DiT int8 + TE int8**（11.10 GiB）",
 }
 # ⚠️ 这个脚本**没有 `--only`**：一次跑就是整个 `--src` 目录。
 # 所以只要目录里混着一个从没登记过的后缀，**整次迁移硬失败**（判不出卡型就报错退出是对的，
@@ -386,6 +405,15 @@ SUFFIX_MARKS = {
     "b65k2b16": "**B65 · Krea-2 Turbo · bf16 · 1024×1024**（`--suffix b65k2b16`）",
     "b65m3f16": "**B65 · Music 3 · DiT fp16 + TE bf16**（`--suffix b65m3f16`）",
     "b65m3i8te8": "**B65 · Music 3 · DiT int8 + TE int8**（`--suffix b65m3i8te8`）",
+    # 2026-10-22 24 GB 显存档（`--reserve-vram 11.83` → 可分配 19,798 MB）。
+    "b65r24": "**24 GB 显存档 · Qwen-Image 2.1 · bf16 · 1280×720**"
+              "（`--suffix b65r24`；`--reserve-vram 11.83`）",
+    "b65r24k2": "**24 GB 显存档 · Krea-2 Turbo · bf16 · 1280×720**"
+                "（`--suffix b65r24k2`；`--reserve-vram 11.83`）",
+    "b65r24m3f16": "**24 GB 显存档 · Music 3 · DiT fp16 + TE bf16**"
+                   "（`--suffix b65r24m3f16`；`--reserve-vram 11.83`）",
+    "b65r24m3i8te8": "**24 GB 显存档 · Music 3 · DiT int8 + TE int8**"
+                     "（`--suffix b65r24m3i8te8`；`--reserve-vram 11.83`）",
     "b65-dualk2": "**双 B65 · Krea-2**（`--suffix b65-dualk2`；ComfyUI 只用第一张，"
                   "与单张 B65 同条件对照）",
     "b65-dualm3": "**双 B65 · Music 3**（`--suffix b65-dualm3`；TE 档位按**单卡**判，"
