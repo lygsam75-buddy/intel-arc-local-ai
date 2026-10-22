@@ -143,11 +143,11 @@ budget a 550 W PSU or better.
 | Workload | B50 16 GB | B60 24 GB | B65 32 GB | B70 32 GB | B70 vs B50 |
 |---|---:|---:|---:|---:|---:|
 | LLM decode · Qwen3.6-35B-A3B Q4_0 | 37.6 tok/s | 52.43 tok/s | **53.09 tok/s** | 75.92 tok/s | **2.0×** |
-| Video · MiniMax H3, 864×480 · 6 steps, end to end | 399 s | 224 s | **198.1 s** | 152.5 s | **2.6×** |
+| Video · MiniMax H3, 864×480 · 6 steps, end to end | 399 s | **203.03 s** | **198.1 s** | 152.5 s | **2.6×** |
 | Image · Qwen-Image 2.1 INT8, 1280×720 | 51.75 s | 17.3–18.8 s | **16.1 s** | 10.62 s | **4.87×** |
 
 > 🔴 **What the B65 column really says is "it is almost a B60"**: decode 53.09 vs 52.43, video 198.1 vs
-> 224 s — because **both have the same 20 Xe2 cores**. B65 costs ¥3,400 more and has 33% more
+> 203 s — because **both have the same 20 Xe2 cores**. B65 costs ¥3,400 more and has 33% more
 > bandwidth; **you are buying VRAM (24 → 32 GB), not speed**. The image cell is **16.1 s**
 > (measured 2026-10-21): **1.52× slower than B70**, a little less than the 1.60× core-count reciprocal,
 > because **7–22% of end-to-end is loading and scheduling** and that part does not scale with cores. It is
@@ -155,7 +155,8 @@ budget a 550 W PSU or better.
 > run — **no cause given**.
 >
 > **The video row is loading-dominated, so its ratio is the smallest.** All columns are the same
-> 864×480 · 6 steps · 5 s on one software stack (B50 on 10-16, B60 / B70 on 10-19 / 10-20; B70 = fresh run).
+> 864×480 · 6 steps · 5 s on one software stack (B50 on 10-16, B60 / B70 on 10-19 / 10-20; B60 and B70 are
+ fresh single runs, B50 a cold one).
 > Broken out: B50 fixed 231–241 s + sampling 158–169 s (DiT partially loaded, 12,985 MB offloaded);
 > B60 fixed 146–177 s + sampling 71–84 s (3,728 MB offloaded); B70 fixed ~148 s + sampling 39–41 s
 > (**fully resident, 0 offloaded**). → **All three are fixed-cost dominated at this size** (sampling is
