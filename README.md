@@ -21,10 +21,14 @@ machine-readable data, and a test registry that states what was tested *and what
 >
 > 🔗 Repository: <https://github.com/lygsam75-buddy/intel-arc-local-ai>
 
-**Why this exists, in one line:** Intel cards do not lose on hardware — they lose on *the fact that
-they do not work out of the box*. The Intel backends track upstream one step behind, ComfyUI ships
-pinned-memory support for NVIDIA/AMD only, and new engines rarely list Intel on day one. This is the
-record of what actually ran after the pits were filled in.
+**Why this exists:** Intel cards are cheap and come with plenty of VRAM, but they genuinely do not
+work out of the box — the Intel backends trail upstream, ComfyUI only enables pinned memory for
+NVIDIA/AMD, and new engines rarely list Intel on day one.
+
+**You no longer have to fix that yourself.** A 6.0 GB bundle ships torch, the XPU runtime and the
+patches pre-installed — unzip, double-click, generate. For chat only you don't even need Python
+([what to install](docs/install.md)). This handbook records the configuration that actually runs, and
+how fast it goes and what it draws.
 
 ---
 
