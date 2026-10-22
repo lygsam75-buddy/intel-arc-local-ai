@@ -1,0 +1,35 @@
+0.00.438.275 I srv  llama_server: initializing ...
+0.00.438.284 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)
+0.00.442.784 W srv  llama_server: security: no API key is set and CORS allows all origins (see https://github.com/ggml-org/llama.cpp/pull/25655)
+0.00.458.396 I srv    load_model: loading model '<模型目录>/Qwen3.6-35B-A3B-UD-IQ2_M.gguf'
+0.08.234.183 I cmn          init: llama threadpool init, n_threads = 6
+0.08.805.907 I srv    load_model: loaded multimodal model, '<模型目录>/mmproj-Qwen3.6-35B-A3B-Q8_0.gguf'
+0.08.832.949 I srv    load_model: initializing, n_slots = 1, n_ctx_slot = 16384, kv_unified = 'false'
+0.08.849.335 W srv          init: chat template supports preserving reasoning, it is enabled by default (may use more tokens, disable via --no-reasoning-preserve)
+0.08.849.736 I srv  llama_server: model loaded
+0.08.849.741 I srv  llama_server: listening on http://127.0.0.1:8098
+0.10.547.898 I slot get_availabl: id  0 | task -1 | selected slot by LRU, n_tokens = 0, t_last = -1
+0.10.548.155 I slot launch_slot_: id  0 | task 0 | processing task, is_child = 0
+0.16.963.892 W find_slot: non-consecutive token position 28 after 27 for sequence 0 with 512 new tokens
+0.16.963.898 W find_slot: non-consecutive token position 28 after 28 for sequence 0 with 512 new tokens
+0.16.963.899 W find_slot: non-consecutive token position 28 after 28 for sequence 0 with 51 new tokens
+0.16.964.506 W find_slot: non-consecutive token position 28 after 27 for sequence 0 with 512 new tokens
+0.17.653.821 W find_slot: non-consecutive token position 28 after 28 for sequence 0 with 512 new tokens
+0.18.016.352 W find_slot: non-consecutive token position 28 after 28 for sequence 0 with 51 new tokens
+0.19.145.511 W find_slot: non-consecutive token position 76 after 28 for sequence 0 with 6 new tokens
+0.19.145.550 W find_slot: non-consecutive token position 76 after 28 for sequence 0 with 6 new tokens
+0.19.953.148 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =   1109, progress = 1.00, t =   9.40 s / 117.92 tokens per second
+0.20.173.726 I slot print_timing: id  0 | task 0 | prompt eval time =    9482.70 ms /  1113 tokens (    8.52 ms per token,   117.37 tokens per second)
+0.20.173.730 I slot print_timing: id  0 | task 0 |        eval time =     142.84 ms /     9 tokens (   17.86 ms per token,    56.00 tokens per second)
+0.20.173.731 I slot print_timing: id  0 | task 0 |       total time =    9625.55 ms /  1122 tokens
+0.20.173.732 I slot print_timing: id  0 | task 0 |    graphs reused =          8
+0.20.175.009 I slot print_timing: id  0 | task 0 |   graph reallocs =          0    /     0        (same size) / (changed size)
+0.20.175.234 I slot      release: id  0 | task 0 | stop processing: n_tokens = 1121, truncated = 0
+0.20.196.166 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, f_sim_best = 1.000 (> 0.100 thold), f_keep = 0.993
+0.20.196.546 I slot launch_slot_: id  0 | task 12 | processing task, is_child = 0
+0.20.395.911 I slot print_timing: id  0 | task 12 | prompt eval time =      59.39 ms /     4 tokens (   14.85 ms per token,    67.35 tokens per second)
+0.20.395.915 I slot print_timing: id  0 | task 12 |        eval time =     139.95 ms /     9 tokens (   17.49 ms per token,    57.16 tokens per second)
+0.20.395.916 I slot print_timing: id  0 | task 12 |       total time =     199.35 ms /    13 tokens
+0.20.395.917 I slot print_timing: id  0 | task 12 |    graphs reused =         15
+0.20.395.919 I slot print_timing: id  0 | task 12 |   graph reallocs =          0    /     0        (same size) / (changed size)
+0.20.395.937 I slot      release: id  0 | task 12 | stop processing: n_tokens = 1121, truncated = 0
