@@ -2,7 +2,7 @@
 
 # At a glance: what these four cards can actually do
 
-Skip the long docs. **Six tables below tell you which card to buy and what it can run.**
+Skip the long docs. **Six tables and two charts below tell you which card to buy and what it can run.**
 
 Every number was measured on our own machines. Raw data lives in [`../bench/data/`](../bench/data/).
 
@@ -14,7 +14,7 @@ Every number was measured on our own machines. Raw data lives in [`../bench/data
 |---|---|---|---|---|---|
 | Chat with a 35B model | **37.6 tok/s** | **52.4 tok/s** | **53.1 tok/s** | **75.9 tok/s** | All four fine, pick by budget |
 | Generate a 1280×720 image | **52 s** | **18 s** | **16 s** | **11 s** | B60 / B65 are close to B70 |
-| Generate a 5-second 480p video | **6.6 min** | **3.7 min** | **3.3 min** | **2.5 min** | All four can do it |
+| Generate a 5-second 480p video | **6.6 min** | **3.4 min** | **3.3 min** | **2.5 min** | All four can do it |
 | Generate a 5-second 1080p video | **38 min** | **22 min** | **22 min** | **14 min** | All four can, just slowly |
 
 > **What is tok/s?** How many "word chunks" the model spits out per second. Bigger is faster.
@@ -41,34 +41,59 @@ At **¥0.7 per kWh**.
 
 ---
 
-## 3. How big a model fits on B50 (16 GB)
+## 3. How big a model fits in VRAM
 
-| Model size | Fits in VRAM? | Chat speed |
-|---|---|---|
-| **10.7 GB** (IQ2_M) | Yes, fully resident | **46 tok/s** |
-| **14.3 GB** (Q3_K_S) | Yes, fully resident | **38 tok/s** |
-| **19.4 GB** (Q4_0) | No, part of it spills to RAM | **37.6 tok/s** |
+The same model (Qwen3.6-35B-A3B) at three quant levels, on all four cards
+(`llama-bench` · SYCL · clean loop):
 
-> **Two counter-intuitive facts, both measured:**
+![Decoder speed: four cards by three quant levels](assets/at-a-glance-vram.png)
+
+**Darker = bigger model** (10.7 / 14.3 / 19.4 GB). The **hatched** bar is B50, which cannot hold the
+19.4 GB model and spills to system RAM. **`n/a`** marks the two B70 entries we never measured.
+The chart shows the gap; the table below has the exact numbers.
+
+| Model size | B50 16 GB | B60 24 GB | B65 32 GB | B70 32 GB |
+|---|---:|---:|---:|---:|
+| **10.7 GB** (IQ2_M) | **46 tok/s** | **62.7 tok/s** | **64.0 tok/s** | not measured |
+| **14.3 GB** (Q3_K_S) | **38 tok/s** | **52.1 tok/s** | **59.4 tok/s** | not measured |
+| **19.4 GB** (Q4_0) | **37.6 tok/s**<br>does not fit, spills | **52.4 tok/s**<br>fully resident | **53.1 tok/s**<br>fully resident | **76.0 tok/s**<br>fully resident |
+
+> **Three counter-intuitive facts, all measured:**
 >
 > 1. **It still runs when it does not fit** — just slower. Windows moves the excess to RAM without an error.
-> 2. **A smaller model is not faster.** Going from 19.4 GB to 10.7 GB only moves speed from 37.6 to 46.
+>    Of the four cards only **B50 at 19.4 GB** hits this (16 GB of VRAM); the 24 / 32 GB cards keep it whole.
+> 2. **A smaller model is not faster.** Halving the size (19.4 → 10.7 GB) buys only about **20%**
+>    on the three cards we measured (B50 +22% / B60 +20% / B65 +20%).
 >    **Pick the small quant to save VRAM, not to go faster.**
+> 3. **B70's two smaller quants are not measured** — Q4_0 is already fully resident on 32 GB, so the
+>    upside is the smallest of the four. No measurement, no extrapolated number.
 
 ---
 
-## 4. How long a video takes on B50 (5-second clip)
+## 4. How long a 5-second video takes
 
-| Resolution | Wait time | In human terms |
-|---|---|---|
-| 480p (864×480) | 4.7 min | time for a coffee |
-| 720p (1280×720) | 11 min | a quick errand |
-| 1080p (1920×1088) | **37.7 min** | a proper meal |
+124 frames @ 24 fps · 6 steps · end to end (model loading included):
 
-> **The rule is simple: double the pixels, more than quadruple the time.**
+![End-to-end time: four cards by three resolutions](assets/at-a-glance-video.png)
+
+**Darker = higher resolution**; the vertical axis is minutes, and the number on each bar is the cell
+in the table below. **The B50 group is a cold single shot**, so it sits higher than its neighbours —
+do not subtract it cell by cell.
+
+| Resolution | B50 16 GB | B60 24 GB | B65 32 GB | B70 32 GB | In human terms |
+|---|---:|---:|---:|---:|---|
+| 480p (864×480) | 4.7 min | 3.4 min | 3.3 min | 2.5 min | time for a coffee |
+| 720p (1280×720) | 11.2 min | 7.1 min | 6.6 min | 4.6 min | a quick errand |
+| 1080p (1920×1088) | **37.7 min** | 22.1 min | 22.1 min | 14.0 min | a proper meal |
+
+> **The rule is simple: 5× the pixels, 4–8× the time** (B70 5.5× / B65 6.7× / B60 6.5× / B50 8.0×) —
+> the higher the resolution, the more the bottleneck moves to compute, and **the more a faster card helps**.
+> At low resolution most of the time goes into loading the model, so a faster card barely matters.
 >
-> Note: this table comes from a separate run (cold single-shot). The 4.7 min for 480p is not the same run as
-> the 6.6 min in table 1 — **read the trend, do not compare absolute numbers across tables**.
+> Basis: **the B50 column is a cold single shot** (a 16 GB card loses the device on the second
+> back-to-back run), the other three are steady state. **Do not subtract B50 cell-by-cell** against its
+> neighbours — that is also why table 1 shows 6.6 min for 480p (a different batch).
+> **Read the trend, do not compare absolute numbers across batches.**
 
 ---
 
