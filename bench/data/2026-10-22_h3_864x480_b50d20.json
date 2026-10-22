@@ -1,0 +1,169 @@
+{
+  "schema": "comfyui-xpu-bench/1",
+  "domain": "comfyui-video",
+  "date": "2026-10-22",
+  "tag": "h3_864x480_b50d20",
+  "status": "active",
+  "source": "local",
+  "tool": "bench_f_h3.py + ComfyUI /prompt + /history",
+  "batch": "ComfyUI H3 分辨率扫描（tag=h3_864x480_b50d20）",
+  "reserve_vram_gb": 2.0,
+  "samples": [
+    {
+      "mode": "cold",
+      "ok": true,
+      "server_sec": 1556.01,
+      "last_sit": "219.61 s/it",
+      "sampling_sec": 1317.66,
+      "sampling_sec_per_step": 219.61,
+      "n_load": 4,
+      "vram_post_gib": null,
+      "power": {
+        "card_domain": 0,
+        "card_limit_mw": -1,
+        "avg_w": 49.7,
+        "p50_w": 51.6,
+        "p90_w": 52.3,
+        "peak_w": 206.2,
+        "min_w": 11.5,
+        "energy_j": 77388.1,
+        "span_sec": 1558.1,
+        "samples": 1556,
+        "counter_resets": 1,
+        "peak_basis": "1s",
+        "domains": {
+          "0": {
+            "avg_w": 49.7,
+            "p50_w": 51.6,
+            "p90_w": 52.3,
+            "peak_w": 206.2,
+            "min_w": 11.5,
+            "energy_j": 77388.1,
+            "span_sec": 1558.1,
+            "samples": 1556,
+            "counter_resets": 1,
+            "peak_basis": "1s"
+          },
+          "1": {
+            "avg_w": 70.0,
+            "p50_w": 73.0,
+            "p90_w": 73.2,
+            "peak_w": 75.5,
+            "min_w": 22.0,
+            "energy_j": 109145.3,
+            "span_sec": 1558.1,
+            "samples": 1557,
+            "counter_resets": 0,
+            "peak_basis": "1s"
+          },
+          "2": {
+            "avg_w": 2.0,
+            "p50_w": 0.0,
+            "p90_w": 6.1,
+            "peak_w": 13.2,
+            "min_w": 0.0,
+            "energy_j": 3040.9,
+            "span_sec": 1558.1,
+            "samples": 1557,
+            "counter_resets": 0,
+            "peak_basis": "1s"
+          },
+          "3": {
+            "avg_w": 7.1,
+            "p50_w": 6.5,
+            "p90_w": 10.5,
+            "peak_w": 24.9,
+            "min_w": 0.0,
+            "energy_j": 11044.9,
+            "span_sec": 1558.1,
+            "samples": 1557,
+            "counter_resets": 0,
+            "peak_basis": "1s"
+          }
+        }
+      }
+    }
+  ],
+  "summary": {
+    "n_total": 1,
+    "n_ok": 1,
+    "n_fail": 0,
+    "server_sec_mean": 1556.01,
+    "power": {
+      "basis": "整卡电源域 · 能耗计数器求差 · 均值覆盖整轮（含装载）",
+      "card_domain": 0,
+      "card_limit_mw": -1,
+      "n_rounds": 1,
+      "avg_w_min": 49.7,
+      "avg_w_max": 49.7,
+      "p90_w_min": 52.3,
+      "p90_w_max": 52.3,
+      "peak_w_max": 206.2,
+      "peak_basis": "1s",
+      "energy_j_max": 77388.1,
+      "counter_resets_max": 1,
+      "busy_share_mean": 0.0
+    }
+  },
+  "workload": {
+    "model": "MiniMax H3",
+    "task": "image-to-video",
+    "steps": 6,
+    "duration_sec": 20.0,
+    "frames": 481,
+    "fps": 24,
+    "duration_sec_exact": 20.042,
+    "selector_megapixels": 0.4,
+    "width": 864,
+    "height": 480,
+    "resolution": "864x480",
+    "dit_file": "minimax_h3_fl2va_pruned_int8_convrot.safetensors",
+    "text_encoder_file": "qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors",
+    "sampler": "euler",
+    "scheduler": "simple"
+  },
+  "env": {
+    "gpu": "Intel Arc Pro B50 LP 16G",
+    "chip": "E212",
+    "subsys": "25221EF7",
+    "device_id": "PCI\\VEN_8086&DEV_E212&SUBSYS_25221EF7&REV_00",
+    "board_vendor": "GUNNIR 蓝戟 (PCI vendor 1EF7)",
+    "board_code": "2522",
+    "vram_visible_gib": 15.51,
+    "ecc": "off",
+    "driver": "32.0.101.8976",
+    "cpu": "AMD Ryzen 5 9600X",
+    "ram_gb": 32,
+    "os": "Windows",
+    "attention_backend": "sdpa (CUTE 关闭；CUTE 开着跑 H3 音频封装必崩)",
+    "stack_variant": "int8fix",
+    "int8fix_env": {
+      "OMNIXPU_INT8_COMPUTE": "1",
+      "OMNIXPU_INT8_SIGFIX": "1"
+    },
+    "env_confidence": {
+      "gpu": "recorded",
+      "vram_visible_gib": "recorded",
+      "ecc": "recorded",
+      "cpu": "recorded",
+      "ram_gb": "recorded",
+      "os": "recorded",
+      "width": "recorded",
+      "height": "recorded",
+      "resolution": "recorded",
+      "steps": "recorded",
+      "attention_backend": "recorded",
+      "chip": "inferred",
+      "subsys": "inferred",
+      "device_id": "inferred",
+      "board_vendor": "inferred",
+      "board_code": "inferred",
+      "driver": "inferred",
+      "reserve_vram_gb": "recorded"
+    }
+  },
+  "log_evidence": {
+    "status": "pending",
+    "note": "日志在 `_bench_f/server_<tag>.log`，取证回填待跑 annotate_comfy_evidence.py"
+  }
+}
