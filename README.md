@@ -34,12 +34,15 @@ how fast it goes and what it draws.
 
 ## Table 1 — What you want to do, and what these cards do
 
+![Four cards, one glance](docs/assets/summary-dashboard.en.svg)
+
 | What you want to do | B50 (¥3,499 · 16 GB) | B60 (¥6,099 · 24 GB) | B65 (¥9,499 · 32 GB) | B70 (¥18,999 · 32 GB) | Verdict |
 |---|---|---|---|---|---|
 | Chat with a 35B model | **37.6 tok/s** | **52.4 tok/s** | **53.1 tok/s** | **75.9 tok/s** | All four fine — pick by budget |
 | Generate a 1280×720 image | **52 s** | **18 s** | **16 s** | **11 s** | B60 / B65 are already close to B70 |
-| Generate a 5-second 480p video | **6.6 min** | **3.4 min** | **3.3 min** | **2.5 min** | All four can do it |
+| Generate a 5-second 480p video | **4.7 min** | **3.4 min** | **3.3 min** | **2.5 min** | All four can do it |
 | Generate a 5-second 1080p video | **38 min** | **22 min** | **22 min** | **14 min** | All four can — you just wait |
+| Generate a 2-minute music track | **3.6 min** | **2.4 min** | **2.7 min** | **1.1 min** | All four can — B70 in about a minute |
 
 > **What is tok/s?** How many word-chunks the model emits per second. Bigger is faster.
 > 37 is already faster than most people read; 75 is roughly double that.
@@ -76,7 +79,7 @@ how fast it goes and what it draws.
 |---|---:|---:|---:|---:|
 | Chat decode · 35B-A3B Q4_0 | 37.6 tok/s | 52.4 tok/s | **53.1 tok/s** | **75.9 tok/s** |
 | Image · Qwen-Image 2.1 INT8 · 1280×720 | 52 s | 17.3–18.8 s | **16.1 s** | **10.6 s** |
-| Video · 5 s · 480p | 6.6 min | 3.4 min | **3.3 min** | **2.5 min** |
+| Video · 5 s · 480p | 4.7 min | 3.4 min | **3.3 min** | **2.5 min** |
 | Video · 5 s · 1080p | 38 min | 22 min | **22 min** | **14 min** |
 | Full-load power (measured P90) | 70 W (spec, not measured) | 151–154 W | **201–204 W** | **290 W** |
 | Fits entirely in VRAM? | No (H3 moves 13 GB every sampling step) | Images yes; **H3 partial at all three sizes** | Images yes; **H3 480p / 720p yes, partial from 1080p** | Images yes; **H3 480p / 720p yes, partial from 1536×864** |

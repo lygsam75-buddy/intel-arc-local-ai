@@ -1,0 +1,165 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 930 902" width="930" height="902" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,PingFang SC,Microsoft YaHei,sans-serif">
+<defs><style>
+  .pt{font-size:16px;font-weight:700;fill:#1a202c}
+  .pu{font-size:11.5px;fill:#8b95a5}
+  .cl{font-size:13px;fill:#4a5568}
+  .vl{font-size:14.5px;font-weight:700;fill:#1a202c}
+  .bar{transform-box:fill-box;transform-origin:bottom;animation:g .85s cubic-bezier(.2,.8,.25,1) both}
+  @keyframes g{from{transform:scaleY(.001)}to{transform:scaleY(1)}}
+</style></defs>
+<rect width="930" height="902" fill="#ffffff"/>
+<text x="24" y="42" font-size="22" font-weight="800" fill="#1a202c">Four cards, one glance</text>
+<text x="24" y="66" font-size="13" fill="#8b95a5">Same machine, only the GPU swapped · all measured here · every number traces to bench/data/</text>
+<rect x="490" y="28" width="12" height="12" rx="3" fill="#8C9BAA"/>
+<text x="508" y="39" font-size="12.5" fill="#4a5568">B50 16G</text>
+<rect x="594" y="28" width="12" height="12" rx="3" fill="#3B6FE0"/>
+<text x="612" y="39" font-size="12.5" fill="#4a5568">B60 24G</text>
+<rect x="698" y="28" width="12" height="12" rx="3" fill="#12897B"/>
+<text x="716" y="39" font-size="12.5" fill="#4a5568">B65 32G</text>
+<rect x="802" y="28" width="12" height="12" rx="3" fill="#E2622B"/>
+<text x="820" y="39" font-size="12.5" fill="#4a5568">B70 32G</text>
+<rect x="24" y="96" width="430" height="246" rx="12" fill="#f8fafc" stroke="#e6ebf1"/>
+<text x="42" y="126" class="pt">Chat decode · 35B</text>
+<text x="436" y="126" class="pu" text-anchor="end">tok/s · higher is better</text>
+<g><title>B50 16G: 37.6 tok/s</title>
+<rect class="bar" x="57.0" y="236.7" width="58" height="69.3" rx="5" fill="#8C9BAA" style="animation-delay:0.00s"/>
+<text class="vl" x="86.0" y="227.7" text-anchor="middle">37.6</text>
+<text class="cl" x="86.0" y="324.0" text-anchor="middle">B50</text>
+</g>
+<g><title>B60 24G: 52.4 tok/s</title>
+<rect class="bar" x="159.0" y="209.5" width="58" height="96.5" rx="5" fill="#3B6FE0" style="animation-delay:0.04s"/>
+<text class="vl" x="188.0" y="200.5" text-anchor="middle">52.4</text>
+<text class="cl" x="188.0" y="324.0" text-anchor="middle">B60</text>
+</g>
+<g><title>B65 32G: 53.1 tok/s</title>
+<rect class="bar" x="261.0" y="208.2" width="58" height="97.8" rx="5" fill="#12897B" style="animation-delay:0.09s"/>
+<text class="vl" x="290.0" y="199.2" text-anchor="middle">53.1</text>
+<text class="cl" x="290.0" y="324.0" text-anchor="middle">B65</text>
+</g>
+<g><title>B70 32G: 75.9 tok/s</title>
+<rect class="bar" x="363.0" y="166.2" width="58" height="139.8" rx="5" fill="#E2622B" style="animation-delay:0.14s"/>
+<text class="vl" x="392.0" y="157.2" text-anchor="middle">★ 75.9</text>
+<text class="cl" x="392.0" y="324.0" text-anchor="middle">B70</text>
+</g>
+<line x1="40" y1="306" x2="438" y2="306" stroke="#d7dee8"/>
+<rect x="476" y="96" width="430" height="246" rx="12" fill="#f8fafc" stroke="#e6ebf1"/>
+<text x="494" y="126" class="pt">One 720p image</text>
+<text x="888" y="126" class="pu" text-anchor="end">s · lower is better</text>
+<g><title>B50 16G: 52 s</title>
+<rect class="bar" x="509.0" y="166.2" width="58" height="139.8" rx="5" fill="#8C9BAA" style="animation-delay:0.04s"/>
+<text class="vl" x="538.0" y="157.2" text-anchor="middle">52</text>
+<text class="cl" x="538.0" y="324.0" text-anchor="middle">B50</text>
+</g>
+<g><title>B60 24G: 17.3~18.8 s</title>
+<rect class="bar" x="611.0" y="257.5" width="58" height="48.5" rx="5" fill="#3B6FE0" style="animation-delay:0.08s"/>
+<text class="vl" x="640.0" y="248.5" text-anchor="middle">17.3~18.8</text>
+<text class="cl" x="640.0" y="324.0" text-anchor="middle">B60</text>
+</g>
+<g><title>B65 32G: 16.1 s</title>
+<rect class="bar" x="713.0" y="262.7" width="58" height="43.3" rx="5" fill="#12897B" style="animation-delay:0.13s"/>
+<text class="vl" x="742.0" y="253.7" text-anchor="middle">16.1</text>
+<text class="cl" x="742.0" y="324.0" text-anchor="middle">B65</text>
+</g>
+<g><title>B70 32G: 10.6 s</title>
+<rect class="bar" x="815.0" y="277.5" width="58" height="28.5" rx="5" fill="#E2622B" style="animation-delay:0.18s"/>
+<text class="vl" x="844.0" y="268.5" text-anchor="middle">★ 10.6</text>
+<text class="cl" x="844.0" y="324.0" text-anchor="middle">B70</text>
+</g>
+<line x1="492" y1="306" x2="890" y2="306" stroke="#d7dee8"/>
+<rect x="24" y="364" width="430" height="246" rx="12" fill="#f8fafc" stroke="#e6ebf1"/>
+<text x="42" y="394" class="pt">5 s 480p video</text>
+<text x="436" y="394" class="pu" text-anchor="end">min · lower is better</text>
+<g><title>B50 16G: 4.7 min</title>
+<rect class="bar" x="57.0" y="434.2" width="58" height="139.8" rx="5" fill="#8C9BAA" style="animation-delay:0.00s"/>
+<text class="vl" x="86.0" y="425.2" text-anchor="middle">4.7</text>
+<text class="cl" x="86.0" y="592.0" text-anchor="middle">B50</text>
+</g>
+<g><title>B60 24G: 3.4 min</title>
+<rect class="bar" x="159.0" y="472.8" width="58" height="101.2" rx="5" fill="#3B6FE0" style="animation-delay:0.04s"/>
+<text class="vl" x="188.0" y="463.8" text-anchor="middle">3.4</text>
+<text class="cl" x="188.0" y="592.0" text-anchor="middle">B60</text>
+</g>
+<g><title>B65 32G: 3.3 min</title>
+<rect class="bar" x="261.0" y="475.8" width="58" height="98.2" rx="5" fill="#12897B" style="animation-delay:0.09s"/>
+<text class="vl" x="290.0" y="466.8" text-anchor="middle">3.3</text>
+<text class="cl" x="290.0" y="592.0" text-anchor="middle">B65</text>
+</g>
+<g><title>B70 32G: 2.5 min</title>
+<rect class="bar" x="363.0" y="499.6" width="58" height="74.4" rx="5" fill="#E2622B" style="animation-delay:0.14s"/>
+<text class="vl" x="392.0" y="490.6" text-anchor="middle">★ 2.5</text>
+<text class="cl" x="392.0" y="592.0" text-anchor="middle">B70</text>
+</g>
+<line x1="40" y1="574" x2="438" y2="574" stroke="#d7dee8"/>
+<rect x="476" y="364" width="430" height="246" rx="12" fill="#f8fafc" stroke="#e6ebf1"/>
+<text x="494" y="394" class="pt">5 s 1080p video</text>
+<text x="888" y="394" class="pu" text-anchor="end">min · lower is better</text>
+<g><title>B50 16G: 38 min</title>
+<rect class="bar" x="509.0" y="434.2" width="58" height="139.8" rx="5" fill="#8C9BAA" style="animation-delay:0.04s"/>
+<text class="vl" x="538.0" y="425.2" text-anchor="middle">38</text>
+<text class="cl" x="538.0" y="592.0" text-anchor="middle">B50</text>
+</g>
+<g><title>B60 24G: 22 min</title>
+<rect class="bar" x="611.0" y="493.0" width="58" height="81.0" rx="5" fill="#3B6FE0" style="animation-delay:0.08s"/>
+<text class="vl" x="640.0" y="484.0" text-anchor="middle">22</text>
+<text class="cl" x="640.0" y="592.0" text-anchor="middle">B60</text>
+</g>
+<g><title>B65 32G: 22 min</title>
+<rect class="bar" x="713.0" y="493.0" width="58" height="81.0" rx="5" fill="#12897B" style="animation-delay:0.13s"/>
+<text class="vl" x="742.0" y="484.0" text-anchor="middle">22</text>
+<text class="cl" x="742.0" y="592.0" text-anchor="middle">B65</text>
+</g>
+<g><title>B70 32G: 14 min</title>
+<rect class="bar" x="815.0" y="522.5" width="58" height="51.5" rx="5" fill="#E2622B" style="animation-delay:0.18s"/>
+<text class="vl" x="844.0" y="513.5" text-anchor="middle">★ 14</text>
+<text class="cl" x="844.0" y="592.0" text-anchor="middle">B70</text>
+</g>
+<line x1="492" y1="574" x2="890" y2="574" stroke="#d7dee8"/>
+<rect x="24" y="632" width="430" height="246" rx="12" fill="#f8fafc" stroke="#e6ebf1"/>
+<text x="42" y="662" class="pt">One 2-minute track</text>
+<text x="436" y="662" class="pu" text-anchor="end">min · lower is better</text>
+<g><title>B50 16G: 3.6 min</title>
+<rect class="bar" x="57.0" y="702.2" width="58" height="139.8" rx="5" fill="#8C9BAA" style="animation-delay:0.00s"/>
+<text class="vl" x="86.0" y="693.2" text-anchor="middle">3.6</text>
+<text class="cl" x="86.0" y="860.0" text-anchor="middle">B50</text>
+</g>
+<g><title>B60 24G: 2.4 min</title>
+<rect class="bar" x="159.0" y="748.8" width="58" height="93.2" rx="5" fill="#3B6FE0" style="animation-delay:0.04s"/>
+<text class="vl" x="188.0" y="739.8" text-anchor="middle">2.4</text>
+<text class="cl" x="188.0" y="860.0" text-anchor="middle">B60</text>
+</g>
+<g><title>B65 32G: 2.7 min</title>
+<rect class="bar" x="261.0" y="737.1" width="58" height="104.9" rx="5" fill="#12897B" style="animation-delay:0.09s"/>
+<text class="vl" x="290.0" y="728.1" text-anchor="middle">2.7</text>
+<text class="cl" x="290.0" y="860.0" text-anchor="middle">B65</text>
+</g>
+<g><title>B70 32G: 1.1 min</title>
+<rect class="bar" x="363.0" y="799.3" width="58" height="42.7" rx="5" fill="#E2622B" style="animation-delay:0.14s"/>
+<text class="vl" x="392.0" y="790.3" text-anchor="middle">★ 1.1</text>
+<text class="cl" x="392.0" y="860.0" text-anchor="middle">B70</text>
+</g>
+<line x1="40" y1="842" x2="438" y2="842" stroke="#d7dee8"/>
+<rect x="476" y="632" width="430" height="246" rx="12" fill="#f8fafc" stroke="#e6ebf1"/>
+<text x="494" y="662" class="pt">Price per tok/s</text>
+<text x="888" y="662" class="pu" text-anchor="end">¥ · lower is better</text>
+<g><title>B50 16G: 93 ¥</title>
+<rect class="bar" x="509.0" y="790.0" width="58" height="52.0" rx="5" fill="#8C9BAA" style="animation-delay:0.04s"/>
+<text class="vl" x="538.0" y="781.0" text-anchor="middle">★ 93</text>
+<text class="cl" x="538.0" y="860.0" text-anchor="middle">B50</text>
+</g>
+<g><title>B60 24G: 116 ¥</title>
+<rect class="bar" x="611.0" y="777.0" width="58" height="65.0" rx="5" fill="#3B6FE0" style="animation-delay:0.08s"/>
+<text class="vl" x="640.0" y="768.0" text-anchor="middle">116</text>
+<text class="cl" x="640.0" y="860.0" text-anchor="middle">B60</text>
+</g>
+<g><title>B65 32G: 179 ¥</title>
+<rect class="bar" x="713.0" y="742.1" width="58" height="99.9" rx="5" fill="#12897B" style="animation-delay:0.13s"/>
+<text class="vl" x="742.0" y="733.1" text-anchor="middle">179</text>
+<text class="cl" x="742.0" y="860.0" text-anchor="middle">B65</text>
+</g>
+<g><title>B70 32G: 250 ¥</title>
+<rect class="bar" x="815.0" y="702.2" width="58" height="139.8" rx="5" fill="#E2622B" style="animation-delay:0.18s"/>
+<text class="vl" x="844.0" y="693.2" text-anchor="middle">250</text>
+<text class="cl" x="844.0" y="860.0" text-anchor="middle">B70</text>
+</g>
+<line x1="492" y1="842" x2="890" y2="842" stroke="#d7dee8"/>
+</svg>

@@ -14,13 +14,13 @@ Every number was measured on our own machines. Raw data lives in [`../bench/data
 |---|---|---|---|---|---|
 | Chat with a 35B model | **37.6 tok/s** | **52.4 tok/s** | **53.1 tok/s** | **75.9 tok/s** | All four fine, pick by budget |
 | Generate a 1280×720 image | **52 s** | **18 s** | **16 s** | **11 s** | B60 / B65 are close to B70 |
-| Generate a 5-second 480p video | **6.6 min** | **3.4 min** | **3.3 min** | **2.5 min** | All four can do it |
+| Generate a 5-second 480p video | **4.7 min** | **3.4 min** | **3.3 min** | **2.5 min** | All four can do it |
 | Generate a 5-second 1080p video | **38 min** | **22 min** | **22 min** | **14 min** | All four can, just slowly |
 
 > **What is tok/s?** How many "word chunks" the model spits out per second. Bigger is faster.
 > 37 is already faster than most people read; 75 is double that.
 
-> **B65 column:** chat **53.1 tok/s**, image **16 s**, music (120 s) **3 min**, 480p **3.3 min**,
+> **B65 column:** chat **53.1 tok/s**, image **16 s**, music (120 s) **2.7 min**, 480p **3.3 min**,
 > 720p **6.6 min**, 1080p **22.1 min** (all warm runs). It sits next to B60 for a reason —
 > both have **20 Xe2 cores**, so the extra money buys VRAM, not speed.
 
@@ -91,9 +91,7 @@ do not subtract it cell by cell.
 > At low resolution most of the time goes into loading the model, so a faster card barely matters.
 >
 > Basis: **the B50 column is a cold single shot** (a 16 GB card loses the device on the second
-> back-to-back run), the other three are steady state. **Do not subtract B50 cell-by-cell** against its
-> neighbours — that is also why table 1 shows 6.6 min for 480p (a different batch).
-> **Read the trend, do not compare absolute numbers across batches.**
+> back-to-back run), the other three are steady state.
 
 ---
 
