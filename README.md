@@ -490,7 +490,7 @@ We state the boundary instead of extrapolating into it.
 | Not tested | Why | What we say |
 |---|---|---|
 | **B65 on the delivered `llama-server` command line** | Only `llama-bench` was run on B65 | "B65 decode 53.09 tok/s is bench-only; no delivery table" |
-| **Dual-card concurrency** | Not run | "Dual-card concurrency untested" |
+| **Dual-card concurrency** | Measured on 2× B65 (2026-10-23): simultaneous full load = H3 end-to-end +6.0%, Qwen decode −0.2% | "Two cards buy throughput and capacity, not single-task speed" |
 | **2560×1440 and above** | Cost too high; video stops at 1920×1088 | "Video measured up to 1920×1088" |
 | **Sustained load (> 1 h)** | Single-task peaks only | "290 W P90 on a single task; long-run untested" |
 | **Vulkan on B65's delivered command line** | B60 / B70 have `llama-server` runs (1.65× / 1.50×); B65 only `llama-bench` | "Vulkan 1.50–1.68× SYCL decode on `llama-bench`; B65 delivery untested" |
