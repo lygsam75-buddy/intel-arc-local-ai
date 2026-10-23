@@ -9,6 +9,10 @@
 
 ## 0. 上线内容清单
 
+> ⚠️ **本节的行数、条数、体积都是 2026-10-20 首发那一刻的快照**，之后每天都还在加数据，**不要再当现值用**。
+> 现值的唯一来源是 `python bench/harness/registry_audit.py`：**2026-10-23 现跑 = `bench/data` 372 条**
+> （355 active · 16 discarded · 1 probe_failed；comfyui 185 / bench 87 / ctx-sweep 68 / vision 27 / longctx 4 / capacity 1）。
+
 六个板块。**顺序就是读者进来的顺序**：先看结论 → 再看自己那类负载 → 再查坑 → 最后才看原始数据。
 
 | # | 板块 | 具体文件 | 规模 | 一句话定位（读者为什么要看） |

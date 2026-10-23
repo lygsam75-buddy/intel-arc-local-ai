@@ -261,31 +261,61 @@ Two settings that are not optional on 16 GB:
 Launch line: `-ngl 999 -fa on -ctk q8_0 -ctv q8_0`. Env: `SYCL_CACHE_PERSISTENT=1`,
 `OMP_NUM_THREADS=8`, `ONEAPI_DEVICE_SELECTOR=opencl:0`.
 
-### Long context on a ~¥3,500 16 GB card
+### Long context: allocating is free, filling is what you pay for
 
-A 16 GB card runs the model's native **262,144** context, and *allocating* it is nearly free —
-**−1.6% decode across a 64× context range**, 10.5 s to load:
+Two separate questions: what *allocating* 262,144 tokens of KV costs, and what a given *filled depth* costs.
+The first is nearly free. The second is the bill.
 
-| `-c` | 4096 | 16384 | 32768 | 65536 | 131072 | **262144** |
-|---|---:|---:|---:|---:|---:|---:|
-| decode tok/s (shallow prompt) | 45.21 | 45.07 | 45.07 | 44.47 | 44.75 | **44.93** |
+**① Allocation — `-c` up to 262,144 costs nothing**
 
-What actually costs is how deep the context gets *filled*:
+| Card | Quant | Method | Result |
+|---|---|---|---|
+| B50 16G | IQ2_M 10.73 GiB | six `-c` steps, shallow prompt | 45.21 / 45.07 / 45.07 / 44.47 / 44.75 / **44.93**, spread 1.6% |
+| **B65 32G** | Q4_0 19.41 GiB | same prompt, same script, only `-c` differs | **52.42 (`-c 16384`) → 51.29 (`-c 262144`), −2.2%** |
+| B60 24G | Q4_0 19.41 GiB | five `-c` steps, shallow prompt | 50.94 / 50.73 / 51.54 / 50.94 / **51.35**, spread 1.6% |
 
-| Filled depth (tokens) | 508 | 31,323 | 59,918 | 119,902 | 181,454 | 244,098 |
-|---|---:|---:|---:|---:|---:|---:|
-| **decode tok/s** | **44.35** | **30.82** | **24.26** | **17.02** | **13.01** | **10.48** |
-| prefill tok/s | 414.91 | 427.53 | 385.95 | 330.04 | 285.82 | 254.76 |
+`-c 262144` loads in **17.6 s** on B65 (`-c 16384` takes 18.1 s on the same card — no measurable difference);
+the same script on B50 took 13.1 s. Allocating is free — but "it fits" is not the same as
+"long context is usable". See the second table.
 
-Fit (max residual 2.4%): `decode_ms ≈ 22.95 + 0.000298 × depth`. The intercept is a 43.6 tok/s ceiling;
-the slope is the cost of attention. At 262k the model is still usable at ~10 tok/s — that is attention
-arithmetic, not a broken card. (Only a quarter of this model's layers carry KV; a fully-attention model
-of the same size would slope roughly 4× steeper — an estimate from layer ratio, not a measurement.)
+**② Filled — KV fed to N tokens, then generate**
+
+| Filled depth | 508 | 31,323 | 62,673 | 125,375 | 188,104 | 250,948 |
+|---:|---:|---:|---:|---:|---:|
+| **B65 32G · Q4_0** decode | **51.29** | **37.20** | **30.02** | **21.73** | **17.81** | **14.24** |
+| B65 32G prefill | 366.97 | 569.88 | 547.19 | 507.60 | 472.47 | 440.77 |
+| **B50 16G · IQ2_M** decode | **44.35** | **30.82** | **24.26** | **17.02** | **13.01** | **10.48** |
+| B50 16G prefill | 414.91 | 427.53 | 385.95 | 330.04 | 285.82 | 254.76 |
+
+⚠️ These two rows are **not a same-weights comparison**. They are the delivery configuration each card can
+actually hold: 16 GB only fits IQ2_M (10.73 GiB), 32 GB runs Q4_0 (19.41 GiB). The depth points follow each
+run's own request sequence (512 / 32768 / 65536 / 131072 / 196608 / 262144), so the measured `prompt_n` values
+differ slightly — read the header row.
+
+Fit (decode ms/token against depth):
+
+- **B65: `20.32 + 0.000198 × depth` ms** (max residual 4.7%), intercept = **49.2 tok/s** ceiling
+- **B50: `22.95 + 0.000298 × depth` ms** (max residual 2.4%), intercept = **43.6 tok/s** ceiling
+- The two **slopes** are directly comparable: the weights streamed per token is a constant (it lands in the
+  intercept), while attention work per token is the slope. Changing the quant moves the intercept, not the
+  slope. **B65's slope is 0.66× B50's.**
+- So the gap **widens with depth**: **1.16×** at 508 tokens, **1.36×** at 250k. Prefill is
+  starker: **0.88×** shallow (B50 wins — Q4_0 streams twice the bytes of IQ2_M), **1.73×**
+  at 250k.
+
+> One line: **B65 holds ~18 tok/s at 190k depth and ~14 tok/s at 250k; B50 is 13 and 10.5 at the same depths.**
+> That is attention arithmetic, not a broken card. Only a quarter of this model's layers carry KV — a
+> fully-attention model of the same size would slope roughly 4× steeper (an estimate from layer ratio, not a
+> measurement).
 
 > ⚠️ **IQ2_M, not Q3_K_S, for long context on 16 GB.** IQ2_M (10.73 GiB) at `-c 262144` totals
 > 15,540 MB and never spills; Q3_K_S (14.30 GiB) spills **2,332 MB and loses 58% decode**
 > (15.74 tok/s). Spilling is not an OOM — Windows lets you over-subscribe, silently, and charges you in
 > speed. The tell is **prefill and decode falling together**.
+
+**B60 has only the allocation half**: five `-c` steps (16,384 → 262,144) decode at
+50.94 / 50.73 / 51.54 / 50.94 / 51.35, spread 1.6%, VRAM 19.2 → 22.5 GB — also free. **The depth curve was
+not run on 24 GB**, so no numbers are given for it.
 
 ---
 
@@ -472,7 +502,7 @@ language-independent. Two English entry points exist: this page and
 | 14 | [`docs/publish-checklist.md`](docs/publish-checklist.md) | What ships, what does not, and how untested items are labelled |
 | 15 | [`bench/README.md`](bench/README.md) | **Measurement definitions** — what makes two numbers comparable |
 | 16 | [`bench/logs/`](bench/logs/) | 33 raw `llama-server` logs (path-scrubbed, otherwise byte-identical) |
-| 17 | [`bench/data/`](bench/data/) | 207 machine-readable JSON records |
+| 17 | [`bench/data/`](bench/data/) | **372** machine-readable JSON records (355 active · 16 discarded · 1 probe_failed) |
 | 18 | [`CONTRIBUTING.md`](CONTRIBUTING.md) | Format required for submitting measurements |
 
 **If you only read three pages:**
