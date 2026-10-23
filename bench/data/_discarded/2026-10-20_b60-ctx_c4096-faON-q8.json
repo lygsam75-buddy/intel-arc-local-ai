@@ -10,7 +10,7 @@
     "backend": "SYCL",
     "tool": "llama-server",
     "device_selector": "opencl:0",
-    "sycl_path": "D:/oneapi-dpcpp/Library/bin;F:/oneMKL_pkg",
+    "sycl_path": "<SYCL 运行时目录>;<oneMKL 目录>",
     "ram_gb": 31.1,
     "commit_limit_gb": 95.1,
     "slot": "CPU 直连槽",
@@ -36,7 +36,7 @@
     "-ctv",
     "q8_0"
   ],
-  "log": "D:\\WorkBuddy\\2026-10-15-09-22-59\\intel-arc-ai-cookbook\\bench\\logs\\2026-10-20_c4096-faON-q8.log",
+  "log": "bench/logs\\2026-10-20_c4096-faON-q8.log",
   "load_s": 2.1,
   "status": "discarded",
   "exit_code": 3221225781,

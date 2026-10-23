@@ -1,0 +1,96 @@
+{
+  "schema": "arc-xpu-longctx/1",
+  "tag": "b65-32g-q4_0-longctx",
+  "date": "2026-10-23",
+  "source": "local",
+  "env": {
+    "gpu": "Intel Arc Pro B65 32G",
+    "driver": "9150",
+    "ecc": "off",
+    "backend": "SYCL",
+    "tool": "llama-server",
+    "device_selector": "opencl:0",
+    "sycl_path": "<ComfyUI 目录>/python_embeded/Library/bin",
+    "ram_gb": 31.1,
+    "commit_limit_gb": 95.1
+  },
+  "model": {
+    "name": "Qwen_Qwen3.6-35B-A3B-Q4_0",
+    "quant": "Q4_0",
+    "size_gib": 19.41
+  },
+  "ctx_size": 262144,
+  "ncmoe": 0,
+  "server_args": "-fa on -ctk q8_0 -ctv q8_0",
+  "log": "bench\\logs\\2026-10-23_b65-32g-q4_0-longctx.log",
+  "points": [
+    {
+      "target_tokens": 512,
+      "prompt_chars": 852,
+      "wall_s": 3.87,
+      "prompt_n": 508,
+      "prompt_tok_s": 366.97,
+      "predicted_n": 128,
+      "decode_tok_s": 51.29,
+      "prefill_s": 1.4
+    },
+    {
+      "target_tokens": 32768,
+      "prompt_chars": 52461,
+      "wall_s": 58.44,
+      "prompt_n": 31323,
+      "prompt_tok_s": 569.88,
+      "predicted_n": 128,
+      "decode_tok_s": 37.2,
+      "prefill_s": 55.0
+    },
+    {
+      "target_tokens": 65536,
+      "prompt_chars": 104890,
+      "wall_s": 118.85,
+      "prompt_n": 62673,
+      "prompt_tok_s": 547.19,
+      "predicted_n": 128,
+      "decode_tok_s": 30.02,
+      "prefill_s": 114.5
+    },
+    {
+      "target_tokens": 131072,
+      "prompt_chars": 209748,
+      "wall_s": 253.0,
+      "prompt_n": 125375,
+      "prompt_tok_s": 507.6,
+      "predicted_n": 128,
+      "decode_tok_s": 21.73,
+      "prefill_s": 247.0
+    },
+    {
+      "target_tokens": 196608,
+      "prompt_chars": 314605,
+      "wall_s": 405.47,
+      "prompt_n": 188104,
+      "prompt_tok_s": 472.47,
+      "predicted_n": 128,
+      "decode_tok_s": 17.81,
+      "prefill_s": 398.1
+    },
+    {
+      "target_tokens": 262144,
+      "prompt_chars": 419463,
+      "wall_s": 578.5,
+      "prompt_n": 250948,
+      "prompt_tok_s": 440.77,
+      "predicted_n": 128,
+      "decode_tok_s": 14.24,
+      "prefill_s": 569.3
+    }
+  ],
+  "load_s": 17.6,
+  "status": "active",
+  "log_scan": {
+    "lines": 411,
+    "key_lines": [
+      "0.16.274.286 I srv    load_model: initializing, n_slots = 4, n_ctx_slot = 262144, kv_unified = 'true'"
+    ]
+  }
+}
