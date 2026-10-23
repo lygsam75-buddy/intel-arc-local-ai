@@ -103,16 +103,12 @@ SUFFIX_CARD = {
     "b65img3072": "b65",
     "b65img4096": "b65",
     "b65img5120": "b65",
+    "duala2c0": "b65",
+    "duala2c1": "b65",
+    "duala2solo": "b65",
     "b65r24k2": "b65",       # Krea-2 Turbo · bf16 · 1280×720
     "b65r24m3f16": "b65",    # Music 3 · DiT fp16 + TE bf16
     "b65r24m3i8te8": "b65",  # Music 3 · DiT int8 + TE int8
-    # 2026-10-22 B50 出图分辨率上限探测（3072×3072，`--suffix b50img3072`）。
-    "b50img3072": "**B50 · Qwen-Image 2.1 · 3072×3072 分辨率档**（2026-10-22 上限探测；"
-                   "reserve 4；first / resident 各一轮）",
-    "b65img3072": "**B65 · Qwen-Image 2.1 · 3072×3072 分辨率档**（2026-10-22；"
-                   "reserve 4；与 B50 同口径对照）",
-    "b65img4096": "**B65 · Qwen-Image 2.1 · 4096×4096 分辨率档**（2026-10-22 上限探测；reserve 4）",
-    "b65img5120": "**B65 · Qwen-Image 2.1 · 5120×5120 分辨率档**（2026-10-22 上限探测；reserve 4）",
 }
 
 CARDS = {
@@ -286,6 +282,9 @@ MARK_STACK = {
     "b65img3072": "int8fix",
     "b65img4096": "int8fix",
     "b65img5120": "int8fix",
+    "duala2c0": "int8fix",
+    "duala2c1": "int8fix",
+    "duala2solo": "int8fix",
 }
 # 文件名里**完全不带栈标记**的新卡队列批次（`sweepb60.jsonl` → 卡型被 CARDS
 # 分支先剥掉，SUFFIX_MARKS 无标记可剥 → variant 停在默认 "base"）。
@@ -311,6 +310,9 @@ MARK_NOTE = {
     "b65img3072": "Qwen-Image 2.1 · 3072×3072 分辨率档",
     "b65img4096": "Qwen-Image 2.1 · 4096×4096 分辨率档（上限探测）",
     "b65img5120": "Qwen-Image 2.1 · 5120×5120 分辨率档（上限探测）",
+    "duala2c0": "Qwen-Image 2.1 · 1280×720 · 双卡并发卡 0 实例",
+    "duala2c1": "Qwen-Image 2.1 · 1280×720 · 双卡并发卡 1 实例",
+    "duala2solo": "Qwen-Image 2.1 · 1280×720 · 单卡基线（并发对照用）",
     "t213": "**内核构建对照 · torch 2.13 环境**（kernel 0.2.0b2+torch213.bmg + provider 0.2.31）",
     "r2048full": "2048×2048 **补齐稳态**（首轮那次被我误判中断，只留了 1 轮）",
     "tebf16": "Music 3 · **bf16 文本编码器**（15.56 GiB > B50 整卡 15.51 GiB → TE 必须全卸载到主机内存）",
@@ -458,6 +460,9 @@ SUFFIX_MARKS = {
     "b65img3072": "Qwen-Image 2.1 · 3072×3072 分辨率档",
     "b65img4096": "Qwen-Image 2.1 · 4096×4096 分辨率档（上限探测）",
     "b65img5120": "Qwen-Image 2.1 · 5120×5120 分辨率档（上限探测）",
+    "duala2c0": "Qwen-Image 2.1 · 1280×720 · 双卡并发卡 0 实例",
+    "duala2c1": "Qwen-Image 2.1 · 1280×720 · 双卡并发卡 1 实例",
+    "duala2solo": "Qwen-Image 2.1 · 1280×720 · 单卡基线（并发对照用）",
     "t213": "**内核构建对照 · torch 2.13 环境**（kernel 0.2.0b2+torch213.bmg + provider 0.2.31）",
     "r2048full": "2048×2048 **补齐稳态**（首轮那次被我误判中断，只留了 1 轮）",
     "tebf16": "Music 3 · **bf16 文本编码器**（15.56 GiB > B50 整卡 15.51 GiB → TE 必须全卸载到主机内存）",
@@ -917,6 +922,7 @@ def build_records(rows, date, variant, card, reserve=None):
                            "t213", "prov031", "r2048full", "tebf16",
                            "k2bf16retry", "b70same", "b70sig", "b70t213",
                            "b50img3072", "b65img3072", "b65img4096", "b65img5120",
+                           "duala2c0", "duala2c1", "duala2solo",
                            "b70m3teint8", "b70m3tebf16", "b70m3teint8b", "b70m3tebf16b",
                                     "b70m3fp16tebf16", "b70m3fp16teint8",
                                     "b70k2base", "b70k2sig", "b70k2res", "b70k2res2", "b70m3fp16a",
