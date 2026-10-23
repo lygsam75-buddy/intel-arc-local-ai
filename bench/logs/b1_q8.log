@@ -1,0 +1,153 @@
+[19:14:10] === B1：Q8_0 34.37 GiB —— 单卡 vs 双卡 ===
+[19:14:12] 权重 36903140320 bytes
+[19:14:13] --- 1/3 单卡（预期装不下）---
+{
+  "name": "b1_q8_single",
+  "cards": 1,
+  "device_selector": "level_zero:0",
+  "ctx_tokens": 4096,
+  "parallel": null,
+  "ctk": "q8_0",
+  "ctv": "q8_0",
+  "ok": true,
+  "free_before_gib": [
+    31.16,
+    31.16
+  ],
+  "free_after_gib": [
+    0.03,
+    31.16
+  ],
+  "probe_http": 200,
+  "log": "ctxcap_b1_q8_single.log",
+  "used_gib": [
+    31.13,
+    0.0
+  ],
+  "used_total_gib": 31.13
+}
+[19:15:45] --- 2/3 双卡 -sm layer（预期装得下）---
+{
+  "name": "b1_q8_dual",
+  "cards": 2,
+  "device_selector": "level_zero:0,1",
+  "ctx_tokens": 4096,
+  "parallel": 4,
+  "ctk": "q8_0",
+  "ctv": "q8_0",
+  "ok": true,
+  "free_before_gib": [
+    31.16,
+    31.16
+  ],
+  "free_after_gib": [
+    13.71,
+    15.11
+  ],
+  "probe_http": 200,
+  "log": "ctxcap_b1_q8_dual.log",
+  "used_gib": [
+    17.45,
+    16.05
+  ],
+  "used_total_gib": 33.5
+}
+[19:17:02] --- 3/3 双卡解码 tok/s（llama-bench）---
+[ERR] llama-bench 退出码 1
+--- stderr ---
+Build with Macros:
+  GGML_SYCL_DNNL: yes
+  GGML_SYCL_F16: yes
+  GGML_SYCL_FORCE_MMQ: no
+  GGML_SYCL_GRAPH: yes
+  GGML_SYCL_SUPPORT_LEVEL_ZERO_API: yes
+  GGML_SYCL_SUPPORT_VMM: yes
+Running with Environment Variables:
+  GGML_SYCL_DEBUG: 0
+  GGML_SYCL_DEV_DEBUG: 0
+  GGML_SYCL_DEV2DEV_MEMCPY: 0 (SYCL API)
+  GGML_SYCL_GET_MEM_API: 0 (Level Zero API)
+  GGML_SYCL_ENABLE_DNN: 1
+  GGML_SYCL_FA_ONEDNN: 1
+  GGML_SYCL_FA_ONEDNN_MAX_KV: 0
+  GGML_SYCL_ENABLE_MKL_FA: 1
+  GGML_SYCL_MEMTRACE: 0
+  GGML_SYCL_MEMTRACE_STEP: 64
+  GGML_SYCL_ENABLE_FLASH_ATTN: 1
+  GGML_SYCL_ENABLE_GRAPH: 0
+  GGML_SYCL_ENABLE_OPT: 1
+  GGML_SYCL_ENABLE_VMM: 1
+  GGML_SYCL_ENABLE_FUSION: 1
+  GGML_SYCL_ENABLE_ESIMD: 1
+  GGML_SYCL_MMVQ_WIDE: 1
+  GGML_SYCL_PRIORITIZE_DMMV: 0
+  GGML_SYCL_USE_ASYNC_MEM_OP: 1
+  GGML_SYCL_USE_LEVEL_ZERO_API: 1
+  GGML_SYCL_USM_SYSTEM: 0
+  GGML_SYCL_ENABLE_HOST_PINNED_MEM: 1
+  GGML_SYCL_HOST_PINNED_MEM_2G: 0
+  GGML_SYCL_SPARSE_FA: 0
+  GGML_SYCL_SPARSE_FA_DEBUG: 0
+  GGML_SYCL_SPARSE_FA_MARGIN: 256
+Found 2 SYCL devices:
+|  |                   |                                       |       |Max    |        |Max  |Global |                     |
+|  |                   |                                       |       |compute|Max work|sub  |mem    |                     |
+|ID|        Device Type|                                   Name|Version|units  |group   |group|size   |       Driver version|
+|--|-------------------|---------------------------------------|-------|-------|--------|-----|-------|---------------------|
+| 0| [level_zero:gpu:0]|             Intel Arc Pro B65 Graphics|   20.2|    160|    1024|   32| 33456M|         1.17.39894+4|
+| 1| [level_zero:gpu:1]|             Intel Arc Pro B65 Graphics|   20.2|    160|    1024|   32| 33456M|         1.17.39894+4|
+SYCL Optimization Feature:
+|ID|        Device Type|Reorder|
+|--|-------------------|-------|
+| 0| [level_zero:gpu:0]|      Y|
+| 1| [level_zero:gpu:1]|      Y|
+error: invalid parameter for argument: -c
+
+[i] llama-bench: <llama.cpp>/build/bin\llama-bench.exe
+[i] backend: SYCL
+[CMD] <llama.cpp>/build/bin\llama-bench.exe -o json -m <本机工作目录>/models/Qwen3.6-35B-A3B-Q8_0.gguf -ngl 99 -fa on -ctk q8_0 -ctv q8_0 -c 4096 -dev SYCL0,SYCL1 -sm layer -p 512 -n 128 -r 3
+[ENV] ONEAPI_DEVICE_SELECTOR=level_zero:0,1
+[19:17:08] === B1 结束 ===
+[19:18:50] --- 3/4 双卡 Q8_0 解码（全驻显存）---
+[19:57:01] --- 双卡 Q8_0 解码（全驻显存）---
+[i] llama-bench: <llama.cpp>/build/bin\llama-bench.exe
+[i] backend: SYCL
+[CMD] <llama.cpp>/build/bin\llama-bench.exe -o json -m <本机工作目录>/models/Qwen3.6-35B-A3B-Q8_0.gguf -ngl 99 -fa on -ctk q8_0 -ctv q8_0 -dev SYCL0,SYCL1 -sm layer -p 512 -n 128 -r 3
+[ENV] ONEAPI_DEVICE_SELECTOR=level_zero:0,1
+[OK] 写入 bench/data\2026-10-23_b65-32g-q8_0-dual-layer-qwen3.6-35b-a3b.json
+[i] prompt 35.16 tok/s · decode 6.37 tok/s
+[!] 记得回头核对：显存口径(GiB)、驱动版本、ECC 状态是否都填了。
+[20:02:28] --- 单卡 Q8_0 解码（装不下，部分层落 CPU）---
+[i] llama-bench: <llama.cpp>/build/bin\llama-bench.exe
+[i] backend: SYCL
+[CMD] <llama.cpp>/build/bin\llama-bench.exe -o json -m <本机工作目录>/models/Qwen3.6-35B-A3B-Q8_0.gguf -ngl 99 -fa on -ctk q8_0 -ctv q8_0 -p 512 -n 128 -r 3
+[ENV] ONEAPI_DEVICE_SELECTOR=level_zero:0
+[OK] 写入 bench/data\2026-10-23_b65-32g-q8_0-single-spill-qwen3.6-35b-a3b.json
+[i] prompt 405.01 tok/s · decode 12.98 tok/s
+[!] 记得回头核对：显存口径(GiB)、驱动版本、ECC 状态是否都填了。
+[20:04:50] === B1 全部结束 ===
+[20:07:20] --- 单卡 Q8_0 -ngl 37（控制组：全驻显存）---
+[i] llama-bench: <llama.cpp>/build/bin\llama-bench.exe
+[i] backend: SYCL
+[CMD] <llama.cpp>/build/bin\llama-bench.exe -o json -m <本机工作目录>/models/Qwen3.6-35B-A3B-Q8_0.gguf -ngl 37 -fa on -ctk q8_0 -ctv q8_0 -p 512 -n 128 -r 3
+[ENV] ONEAPI_DEVICE_SELECTOR=level_zero:0
+[OK] 写入 bench/data\2026-10-23_b65-32g-q8_0-single-ngl37-qwen3.6-35b-a3b.json
+[i] prompt 493.07 tok/s · decode 30.83 tok/s
+[!] 记得回头核对：显存口径(GiB)、驱动版本、ECC 状态是否都填了。
+[20:08:46] --- 单卡 Q8_0 -ngl 34（控制组：全驻显存）---
+[i] llama-bench: <llama.cpp>/build/bin\llama-bench.exe
+[i] backend: SYCL
+[CMD] <llama.cpp>/build/bin\llama-bench.exe -o json -m <本机工作目录>/models/Qwen3.6-35B-A3B-Q8_0.gguf -ngl 34 -fa on -ctk q8_0 -ctv q8_0 -p 512 -n 128 -r 3
+[ENV] ONEAPI_DEVICE_SELECTOR=level_zero:0
+[OK] 写入 bench/data\2026-10-23_b65-32g-q8_0-single-ngl34-qwen3.6-35b-a3b.json
+[i] prompt 325.83 tok/s · decode 28.45 tok/s
+[!] 记得回头核对：显存口径(GiB)、驱动版本、ECC 状态是否都填了。
+[20:10:13] --- 单卡 Q8_0 -ngl 30（控制组：全驻显存）---
+[i] llama-bench: <llama.cpp>/build/bin\llama-bench.exe
+[i] backend: SYCL
+[CMD] <llama.cpp>/build/bin\llama-bench.exe -o json -m <本机工作目录>/models/Qwen3.6-35B-A3B-Q8_0.gguf -ngl 30 -fa on -ctk q8_0 -ctv q8_0 -p 512 -n 128 -r 3
+[ENV] ONEAPI_DEVICE_SELECTOR=level_zero:0
+[OK] 写入 bench/data\2026-10-23_b65-32g-q8_0-single-ngl30-qwen3.6-35b-a3b.json
+[i] prompt 244.32 tok/s · decode 25.24 tok/s
+[!] 记得回头核对：显存口径(GiB)、驱动版本、ECC 状态是否都填了。
+[20:11:48] === B1 控制组结束 ===
