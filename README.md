@@ -536,7 +536,7 @@ Two cards do **not** double single-task compute. H3 step time is **42.30 s/it** 
   two B65s are **1.40×** faster (18.3 vs 13.0 clips/hour). Only two B65s reach 62.32 GiB and 3M tokens.
 
 Full write-up — dual against single, single-card H3, 1× B70 against 2× B65, working parameters and
-14 pitfalls — in [`docs/dual-b65-report.md`](docs/dual-b65-report.md).
+13 pitfalls — in [`docs/dual-b65-report.md`](docs/dual-b65-report.md).
 
 ---
 
