@@ -180,7 +180,9 @@
       "peak_basis": "1s",
       "energy_j_max": 15200.0,
       "counter_resets_max": 1,
-      "busy_share_mean": 0.0
+      "busy_share_mean": 0.0,
+      "usable": false,
+      "note": "本批功耗字段不可用：`power_sampler.py` 只采 Sysman 第 0 个设备，而 Sysman 设备顺序不等于 `level_zero:N`（本机 Sysman dev0 = 总线 16 = 卡 1）。H3 跑在卡 0 时采样器读的是卡 1 的空载 42~46 W → 数值与负载无关。双卡功耗改用 `power_probe_multi.py` 按卡采，见 `_bench_f/power_c3_*`。"
     }
   },
   "workload": {

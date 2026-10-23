@@ -106,6 +106,10 @@ SUFFIX_CARD = {
     "duala2c0": "b65",
     "duala2c1": "b65",
     "duala2solo": "b65",
+    "c3s0": "b65",
+    "c3s1": "b65",
+    "c3b0": "b65",
+    "c3b1": "b65",
     "b65r24k2": "b65",       # Krea-2 Turbo · bf16 · 1280×720
     "b65r24m3f16": "b65",    # Music 3 · DiT fp16 + TE bf16
     "b65r24m3i8te8": "b65",  # Music 3 · DiT int8 + TE int8
@@ -285,6 +289,10 @@ MARK_STACK = {
     "duala2c0": "int8fix",
     "duala2c1": "int8fix",
     "duala2solo": "int8fix",
+    "c3s0": "int8fix",
+    "c3s1": "int8fix",
+    "c3b0": "int8fix",
+    "c3b1": "int8fix",
 }
 # 文件名里**完全不带栈标记**的新卡队列批次（`sweepb60.jsonl` → 卡型被 CARDS
 # 分支先剥掉，SUFFIX_MARKS 无标记可剥 → variant 停在默认 "base"）。
@@ -313,6 +321,10 @@ MARK_NOTE = {
     "duala2c0": "Qwen-Image 2.1 · 1280×720 · 双卡并发卡 0 实例",
     "duala2c1": "Qwen-Image 2.1 · 1280×720 · 双卡并发卡 1 实例",
     "duala2solo": "Qwen-Image 2.1 · 1280×720 · 单卡基线（并发对照用）",
+    "c3s0": "Qwen-Image 2.1 · 1280×720 · 功耗叠加 · 只卡 0",
+    "c3s1": "Qwen-Image 2.1 · 1280×720 · 功耗叠加 · 只卡 1",
+    "c3b0": "Qwen-Image 2.1 · 1280×720 · 功耗叠加 · 双卡同时 · 卡 0",
+    "c3b1": "Qwen-Image 2.1 · 1280×720 · 功耗叠加 · 双卡同时 · 卡 1",
     "t213": "**内核构建对照 · torch 2.13 环境**（kernel 0.2.0b2+torch213.bmg + provider 0.2.31）",
     "r2048full": "2048×2048 **补齐稳态**（首轮那次被我误判中断，只留了 1 轮）",
     "tebf16": "Music 3 · **bf16 文本编码器**（15.56 GiB > B50 整卡 15.51 GiB → TE 必须全卸载到主机内存）",
@@ -463,6 +475,10 @@ SUFFIX_MARKS = {
     "duala2c0": "Qwen-Image 2.1 · 1280×720 · 双卡并发卡 0 实例",
     "duala2c1": "Qwen-Image 2.1 · 1280×720 · 双卡并发卡 1 实例",
     "duala2solo": "Qwen-Image 2.1 · 1280×720 · 单卡基线（并发对照用）",
+    "c3s0": "Qwen-Image 2.1 · 1280×720 · 功耗叠加 · 只卡 0",
+    "c3s1": "Qwen-Image 2.1 · 1280×720 · 功耗叠加 · 只卡 1",
+    "c3b0": "Qwen-Image 2.1 · 1280×720 · 功耗叠加 · 双卡同时 · 卡 0",
+    "c3b1": "Qwen-Image 2.1 · 1280×720 · 功耗叠加 · 双卡同时 · 卡 1",
     "t213": "**内核构建对照 · torch 2.13 环境**（kernel 0.2.0b2+torch213.bmg + provider 0.2.31）",
     "r2048full": "2048×2048 **补齐稳态**（首轮那次被我误判中断，只留了 1 轮）",
     "tebf16": "Music 3 · **bf16 文本编码器**（15.56 GiB > B50 整卡 15.51 GiB → TE 必须全卸载到主机内存）",
@@ -923,6 +939,7 @@ def build_records(rows, date, variant, card, reserve=None):
                            "k2bf16retry", "b70same", "b70sig", "b70t213",
                            "b50img3072", "b65img3072", "b65img4096", "b65img5120",
                            "duala2c0", "duala2c1", "duala2solo",
+                           "c3s0", "c3s1", "c3b0", "c3b1",
                            "b70m3teint8", "b70m3tebf16", "b70m3teint8b", "b70m3tebf16b",
                                     "b70m3fp16tebf16", "b70m3fp16teint8",
                                     "b70k2base", "b70k2sig", "b70k2res", "b70k2res2", "b70m3fp16a",
