@@ -483,25 +483,30 @@ language-independent. Two English entry points exist: this page and
 
 ---
 
-## What was NOT tested
+## Dual cards (2× B65)
 
-We state the boundary instead of extrapolating into it.
+Two cards do **not** double single-task compute. H3 step time is **42.30 s/it** on one card and
+**42.41 s/it** with both cards at full load — the second card buys **throughput and capacity**, not speed.
 
-| Not tested | Why | What we say |
-|---|---|---|
-| **B65 on the delivered `llama-server` command line** | Only `llama-bench` was run on B65 | "B65 decode 53.09 tok/s is bench-only; no delivery table" |
-| **Dual-card reality check** | Two cards do **not** double single-task compute: H3 step time is 42.30 s/it on one card and 42.41 s/it with both cards at full load. Dual B65 buys throughput and capacity, not speed. One B65 alone renders MiniMax H3 (720p / 5 s / 6 steps in ~6.6 min steady state, up to 17 s duration). Full write-up — what dual cards buy, single-card H3, 1x B70 vs 2x B65, working parameters and 14 pitfalls — in [`docs/dual-b65-report.md`](docs/dual-b65-report.md) |
-| **Dual-card concurrency** | Measured on 2× B65 (2026-10-23): simultaneous full load = H3 end-to-end +6.0%, Qwen decode −0.2%; image generation 2 instances = zero loss (16.00~16.18 s/image vs 16.20 / 16.31 single); **two video pipelines at once does not work** — 2/2 crashed with `0xC0000005`, pagefile peak 48.7 GB, one H3 instance needs ~25 GB of virtual memory; both cards at full load = **P90 400.8 W / peak 406.5 W total**, each card's P90 unchanged vs solo (206.0 vs 205.5 / 201.3 vs 200.0) → no downclocking; vision Q&A on one card while the other renders H3: 12/12 correct, decode −0.2%, H3 step time −0.14%; **context capacity 1M → 3M tokens** (Qwen3.6-35B-A3B Q4_0, KV q8_0): one card really holds 1M tokens (4 full-length sessions, 0.03 GiB left), two cards with an explicit `--parallel = ctx / 262144` hold 3M (12 sessions, 0.19 / 0.22 GiB left) — **3×, not 2×**, because each card carries only ~9.7 GiB of weights and the freed VRAM goes to KV; without `--parallel` it is 1.75× and 2M OOMs outright. Single-request limit stays 262144 (the training context); 1M / 3M are concurrent-session totals. **Big weights (Qwen3.6-35B-A3B Q8_0, 34.37 GiB)**: one card cannot hold it but llama.cpp still starts (rest of the layers on CPU, 12.98 tok/s decode); two cards with `-sm layer` hold the whole model (33.5 GiB resident) but decode drops to **6.37 tok/s = 1/4.8** of the best single-card config (`-ngl 37`, 30.83) and prefill is 1/14 — **layer splitting buys capacity and pays for it in speed**; to run two models at once, use one instance per card, not one model split across two | "Two cards buy throughput and capacity, not single-task speed" |
-| **2560×1440 and above** | Cost too high; video stops at 1920×1088 | "Video measured up to 1920×1088" |
-| **Sustained load (> 1 h)** | Single-task peaks only | "290 W P90 on a single task; long-run untested" |
-| **Vulkan on B65's delivered command line** | B60 / B70 have `llama-server` runs (1.65× / 1.50×); B65 only `llama-bench` | "Vulkan 1.50–1.68× SYCL decode on `llama-bench`; B65 delivery untested" |
-| **Strata / other backends** | Not run | "SYCL V2 measured; Strata untested" |
-| **A non-GUNNIR board** | Not available | "GUNNIR firmware only" |
+- **One B65 is enough for MiniMax H3**: 720p · 5 s · 6 steps in **394.06 s** steady state (~6.6 min),
+  measured up to **17 s** duration; 1080p · 5 s in **1326.17 s**.
+- **Throughput**: two ComfyUI instances, one card each — image generation **16.00~16.18 s/image** against
+  16.20 / 16.31 single (**zero loss**); vision Q&A on one card while the other renders H3 — 12/12 correct,
+  decode **−0.2%**, H3 step time **−0.14%**.
+- **Two video pipelines at once does not work**: 2/2 crashed with `0xC0000005`, pagefile peak 48.7 GB —
+  one H3 instance needs ~25 GB of virtual memory and the machine has 32 GB.
+- **Power adds up, no downclocking**: both cards at full load = **P90 400.8 W / peak 406.5 W** in total,
+  each card's P90 unchanged against solo (206.0 vs 205.5 / 201.3 vs 200.0).
+- **Capacity, context 1M → 3M tokens** (`--parallel = ctx / 262144`, `kv_unified=false`): **3×, not 2×**,
+  because each card carries only ~9.7 GiB of weights. Without `--parallel` it is 1.75× and 2M OOMs.
+- **Capacity, a 34.37 GiB model a single card cannot hold**: two cards with `-sm layer` hold all of it
+  (33.5 GiB resident), but decode drops to **6.37 tok/s** — while **one** card with ~4 GiB of layers left
+  on the CPU does **30.83 tok/s**, i.e. **4.84× faster**. Layer splitting buys capacity and pays in speed.
+- **1× B70 (¥18,999) vs 2× B65 (¥18,998) — the same money**: one clip, B70 is **1.42×** faster; two clips,
+  two B65s are **1.40×** faster (18.3 vs 13.0 clips/hour). Only two B65s reach 62.32 GiB and 3M tokens.
 
-Two historical gaps are annotated rather than back-filled: one B50 864×480 record lost its log to a
-later batch (record exists, timing breakdown permanently missing), and the 2026-10-14 B70 image batch
-was captured on a **pre-kernel-swap** stack — **do not compare it side by side** with anything after
-10-17 (see [`docs/comfyui-image.md`](docs/comfyui-image.md) §0).
+Full write-up — dual against single, single-card H3, 1× B70 against 2× B65, working parameters and
+14 pitfalls — in [`docs/dual-b65-report.md`](docs/dual-b65-report.md).
 
 ---
 
@@ -515,6 +520,11 @@ ls bench/harness/                             # collectors, matchers, and migrat
 Every record carries `log_evidence` with `status ∈ {annotated, missing, pending}` — so you can tell, per
 record, whether its timing breakdown was backed by a log, lost, or never attempted. A `missing` record
 says so out loud instead of pretending the decomposition exists.
+
+Two historical gaps are annotated rather than back-filled: one B50 864×480 record lost its log to a
+later batch (record exists, timing breakdown permanently missing), and the 2026-10-14 B70 image batch
+was captured on a **pre-kernel-swap** stack — **do not compare it side by side** with anything after
+10-17 (see [`docs/comfyui-image.md`](docs/comfyui-image.md) §0).
 
 Measurement philosophy, in one line: **the number has to be measured on your own machine, and negative
 results get recorded too.**
