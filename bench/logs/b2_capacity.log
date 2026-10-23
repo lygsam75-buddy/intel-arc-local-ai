@@ -1,0 +1,229 @@
+[16:24:40] === B2 上下文容量：单卡 vs 双卡（KV q8_0）===
+[16:24:41] --- k4k：ctx=4096  selector=level_zero:0  dev=（默认） ---
+[16:24:41]     起之前：
+      xpu:0 free=31.16 GiB / total=31.16 GiB
+      xpu:1 free=31.16 GiB / total=31.16 GiB
+[16:25:07]     ✅ 起来了（ctx 已分配）· 起来之后：
+      xpu:0 free=12.84 GiB / total=31.16 GiB
+      xpu:1 free=31.16 GiB / total=31.16 GiB
+[16:25:17] --- c262s：ctx=262144  selector=level_zero:0  dev=（默认） ---
+[16:25:18]     起之前：
+      xpu:0 free=31.16 GiB / total=31.16 GiB
+      xpu:1 free=31.16 GiB / total=31.16 GiB
+[16:25:42]     ✅ 起来了（ctx 已分配）· 起来之后：
+      xpu:0 free=9.50 GiB / total=31.16 GiB
+      xpu:1 free=31.16 GiB / total=31.16 GiB
+[16:25:54] --- c524s：ctx=524288  selector=level_zero:0  dev=（默认） ---
+[16:25:54]     起之前：
+      xpu:0 free=31.16 GiB / total=31.16 GiB
+      xpu:1 free=31.16 GiB / total=31.16 GiB
+[16:26:19]     ✅ 起来了（ctx 已分配）· 起来之后：
+      xpu:0 free=6.09 GiB / total=31.16 GiB
+      xpu:1 free=31.16 GiB / total=31.16 GiB
+[16:26:29] --- c1m：ctx=1048576  selector=level_zero:0  dev=（默认） ---
+[16:26:29]     起之前：
+      xpu:0 free=31.16 GiB / total=31.16 GiB
+      xpu:1 free=31.16 GiB / total=31.16 GiB
+[16:27:06]     ✅ 起来了（ctx 已分配）· 起来之后：
+      xpu:0 free=0.03 GiB / total=31.16 GiB
+      xpu:1 free=31.16 GiB / total=31.16 GiB
+[16:27:19] --- c262d：ctx=262144  selector=level_zero:0,1  dev=SYCL0,SYCL1 ---
+[16:27:19]     起之前：
+      xpu:0 free=31.16 GiB / total=31.16 GiB
+      xpu:1 free=31.16 GiB / total=31.16 GiB
+[16:27:49]     ✅ 起来了（ctx 已分配）· 起来之后：
+      xpu:0 free=18.99 GiB / total=31.16 GiB
+      xpu:1 free=19.81 GiB / total=31.16 GiB
+[16:28:00] --- c524d：ctx=524288  selector=level_zero:0,1  dev=SYCL0,SYCL1 ---
+[16:28:00]     起之前：
+      xpu:0 free=31.16 GiB / total=31.16 GiB
+      xpu:1 free=31.16 GiB / total=31.16 GiB
+[16:28:30]     ✅ 起来了（ctx 已分配）· 起来之后：
+      xpu:0 free=16.16 GiB / total=31.16 GiB
+      xpu:1 free=16.98 GiB / total=31.16 GiB
+[16:28:41] --- c1md：ctx=1048576  selector=level_zero:0,1  dev=SYCL0,SYCL1 ---
+[16:28:41]     起之前：
+      xpu:0 free=31.16 GiB / total=31.16 GiB
+      xpu:1 free=31.16 GiB / total=31.16 GiB
+[16:29:11]     ✅ 起来了（ctx 已分配）· 起来之后：
+      xpu:0 free=10.50 GiB / total=31.16 GiB
+      xpu:1 free=11.32 GiB / total=31.16 GiB
+[16:29:22] === B2 结束 ===
+[16:29:53] === B2 第二阶段：顶到装不下 ===
+[16:29:54] --- s2m：ctx=2097152  selector=level_zero:0  dev=（默认） ---
+[16:29:54]     起之前：
+      xpu:0 free=31.16 GiB / total=31.16 GiB
+      xpu:1 free=31.16 GiB / total=31.16 GiB
+[16:31:22] === B2 第二阶段：顶到装不下 ===
+[16:31:23] --- s2m：ctx=2097152  selector=level_zero:0  dev=（默认） ---
+[16:31:23]     起之前：
+      xpu:0 free=31.16 GiB / total=31.16 GiB
+      xpu:1 free=31.16 GiB / total=31.16 GiB
+[16:32:01]     ❌ 没起来（装不下）· 0.01.019.815 W common_fit_params: failed to fit params to free device memory: n_gpu_layers already set by user to 99, abort
+[16:32:07] --- d2m：ctx=2097152  selector=level_zero:0,1  dev=SYCL0,SYCL1 ---
+[16:32:07]     起之前：
+      xpu:0 free=31.16 GiB / total=31.16 GiB
+      xpu:1 free=31.16 GiB / total=31.16 GiB
+[16:32:57]     ❌ 没起来（装不下）· <本机工作目录>\llama.cpp\ggml\src\ggml-sycl\..\ggml-sycl\common.hpp:146: SYCL error
+[16:33:03] --- d3m：ctx=3145728  selector=level_zero:0,1  dev=SYCL0,SYCL1 ---
+[16:33:03]     起之前：
+      xpu:0 free=31.16 GiB / total=31.16 GiB
+      xpu:1 free=31.16 GiB / total=31.16 GiB
+[16:33:53]     ❌ 没起来（装不下）· 0.01.132.121 W common_fit_params: failed to fit params to free device memory: n_gpu_layers already set by user to 99, abort
+[16:33:59] --- d4m：ctx=4194304  selector=level_zero:0,1  dev=SYCL0,SYCL1 ---
+[16:33:59]     起之前：
+      xpu:0 free=31.16 GiB / total=31.16 GiB
+      xpu:1 free=31.16 GiB / total=31.16 GiB
+[16:34:42]     ❌ 没起来（装不下）· <本机工作目录>\llama.cpp\ggml\src\ggml-sycl\..\ggml-sycl\common.hpp:146: SYCL error
+[16:34:47] === B2 第二阶段结束 ===
+[16:35:13] === B2 第三阶段：双卡断点夹逼 ===
+[16:35:14] --- d125m：ctx=1310720  selector=level_zero:0,1 ---
+      xpu:0 free=31.16 GiB / total=31.16 GiB
+      xpu:1 free=31.16 GiB / total=31.16 GiB
+[16:35:25]     ❌ 没起来 · 
+[16:35:32] --- d15m：ctx=1572864  selector=level_zero:0,1 ---
+      xpu:0 free=31.16 GiB / total=31.16 GiB
+      xpu:1 free=31.16 GiB / total=31.16 GiB
+[16:35:41]     ❌ 没起来 · 
+[16:35:47] --- d175m：ctx=1835008  selector=level_zero:0,1 ---
+      xpu:0 free=31.16 GiB / total=31.16 GiB
+      xpu:1 free=31.16 GiB / total=31.16 GiB
+[16:35:56]     ❌ 没起来 · 
+[16:36:01] === B2 第三阶段结束 ===
+[16:36:15] === B2 第三阶段：双卡断点夹逼 ===
+[16:36:16] --- d125m：ctx=1310720  selector=level_zero:0,1 ---
+      xpu:0 free=31.16 GiB / total=31.16 GiB
+      xpu:1 free=31.16 GiB / total=31.16 GiB
+[16:36:52]     ✅ 起来了 · 起来之后：
+      xpu:0 free=7.67 GiB / total=31.16 GiB
+      xpu:1 free=8.49 GiB / total=31.16 GiB
+[16:37:04] --- d15m：ctx=1572864  selector=level_zero:0,1 ---
+      xpu:0 free=31.16 GiB / total=31.16 GiB
+      xpu:1 free=31.16 GiB / total=31.16 GiB
+[16:37:40]     ✅ 起来了 · 起来之后：
+      xpu:0 free=4.84 GiB / total=31.16 GiB
+      xpu:1 free=5.66 GiB / total=31.16 GiB
+[16:37:53] --- d175m：ctx=1835008  selector=level_zero:0,1 ---
+      xpu:0 free=31.16 GiB / total=31.16 GiB
+      xpu:1 free=31.16 GiB / total=31.16 GiB
+[16:38:31]     ✅ 起来了 · 起来之后：
+      xpu:0 free=2.01 GiB / total=31.16 GiB
+      xpu:1 free=2.83 GiB / total=31.16 GiB
+[16:38:44] === B2 第三阶段结束 ===
+[16:39:09] === B2 第四阶段：--parallel 7 能否吃满 1.75M ===
+[16:39:10] --- p7：-c 1835008 --parallel 7 ---
+      xpu:0 free=31.16 GiB / total=31.16 GiB
+      xpu:1 free=31.16 GiB / total=31.16 GiB
+[16:39:40]     ✅ 起来了 · 起来之后：
+      xpu:0 free=7.91 GiB / total=31.16 GiB
+      xpu:1 free=8.75 GiB / total=31.16 GiB
+[slots] n_slots = 7, n_ctx_slot = 262144
+[16:39:51] --- p8：-c 2097152 --parallel 8 ---
+      xpu:0 free=31.16 GiB / total=31.16 GiB
+      xpu:1 free=31.16 GiB / total=31.16 GiB
+[16:40:21]     ✅ 起来了 · 起来之后：
+      xpu:0 free=6.07 GiB / total=31.16 GiB
+      xpu:1 free=6.90 GiB / total=31.16 GiB
+[slots] n_slots = 8, n_ctx_slot = 262144
+[16:40:31] === B2 第四阶段结束 ===
+[16:40:56] === B2 第五阶段：n_ctx = n_parallel × 262144 往上顶 ===
+[16:40:57] --- p8v：2097152 --parallel 8 ---
+      xpu:0 free=31.16 GiB / total=31.16 GiB
+      xpu:1 free=31.16 GiB / total=31.16 GiB
+[16:41:09]     ❌ 没起来 · 
+[16:41:15] --- p10：2621440 --parallel 10 ---
+      xpu:0 free=31.16 GiB / total=31.16 GiB
+      xpu:1 free=31.16 GiB / total=31.16 GiB
+[16:41:26]     ❌ 没起来 · 
+[16:41:32] --- p12：3145728 --parallel 12 ---
+      xpu:0 free=31.16 GiB / total=31.16 GiB
+      xpu:1 free=31.16 GiB / total=31.16 GiB
+[16:41:44]     ❌ 没起来 · 
+[16:41:50] --- p16：4194304 --parallel 16 ---
+      xpu:0 free=31.16 GiB / total=31.16 GiB
+      xpu:1 free=31.16 GiB / total=31.16 GiB
+[16:42:01]     ❌ 没起来 · 
+[16:42:07] === B2 第五阶段结束 ===
+[16:42:23] === B2 第五阶段：n_ctx = n_parallel × 262144 往上顶 ===
+[16:42:24] --- p8v：-c 2097152 --parallel 8 ---
+      xpu:0 free=31.16 GiB / total=31.16 GiB
+      xpu:1 free=31.16 GiB / total=31.16 GiB
+[16:42:54]     ✅ 起来了 · 起来之后：
+      xpu:0 free=6.07 GiB / total=31.16 GiB
+      xpu:1 free=6.90 GiB / total=31.16 GiB
+[slots] n_slots = 8, n_ctx_slot = 262144
+[16:42:59]     [probe] HTTP 200 · {"choices":[{"finish_reason":"length","index":0,"message":{"role":"assistant","content":"","reasoning_content":"Here's a thinking process:\n\n1.  **Analyze User
+[16:43:06] --- p10：-c 2621440 --parallel 10 ---
+      xpu:0 free=31.16 GiB / total=31.16 GiB
+      xpu:1 free=31.16 GiB / total=31.16 GiB
+[16:43:35]     ✅ 起来了 · 起来之后：
+      xpu:0 free=2.33 GiB / total=31.16 GiB
+      xpu:1 free=3.17 GiB / total=31.16 GiB
+[slots] n_slots = 10, n_ctx_slot = 262144
+[16:43:40]     [probe] HTTP 200 · {"choices":[{"finish_reason":"length","index":0,"message":{"role":"assistant","content":"","reasoning_content":"Here's a thinking process:\n\n1.  **Analyze User
+[16:43:47] --- p12：-c 3145728 --parallel 12 ---
+      xpu:0 free=31.16 GiB / total=31.16 GiB
+      xpu:1 free=31.16 GiB / total=31.16 GiB
+[16:44:45]     ✅ 起来了 · 起来之后：
+      xpu:0 free=0.19 GiB / total=31.16 GiB
+      xpu:1 free=0.22 GiB / total=31.16 GiB
+[slots] n_slots = 12, n_ctx_slot = 262144
+[16:44:53]     [probe] HTTP 200 · {"choices":[{"finish_reason":"length","index":0,"message":{"role":"assistant","content":"","reasoning_content":"Here's a thinking process:\n\n1.  **Analyze User
+[16:44:59] --- p16：-c 4194304 --parallel 16 ---
+      xpu:0 free=31.16 GiB / total=31.16 GiB
+      xpu:1 free=31.16 GiB / total=31.16 GiB
+[16:46:09]     ❌ 没起来 · 
+[16:46:14] === B2 第五阶段结束 ===
+[16:47:01] === B2 第六阶段：单卡显式 --parallel 对照 ===
+[16:47:02] --- s1mp4：selector=level_zero:0  -c 1048576 --parallel 4 ---
+      xpu:0 free=31.16 GiB / total=31.16 GiB
+      xpu:1 free=31.16 GiB / total=31.16 GiB
+[16:47:33]     ✅ 起来了 · 起来之后：
+      xpu:0 free=0.03 GiB / total=31.16 GiB
+      xpu:1 free=31.16 GiB / total=31.16 GiB
+[slots] n_slots = 4, n_ctx_slot = 262144, kv_unified = 'false'
+[16:47:39]     [probe] HTTP 200
+[16:47:45] --- s15m：selector=level_zero:0  -c 1572864 --parallel 6 ---
+      xpu:0 free=31.16 GiB / total=31.16 GiB
+      xpu:1 free=31.16 GiB / total=31.16 GiB
+[16:48:28]     ✅ 起来了 · 起来之后：
+      xpu:0 free=0.16 GiB / total=31.16 GiB
+      xpu:1 free=31.16 GiB / total=31.16 GiB
+[slots] n_slots = 6, n_ctx_slot = 262144, kv_unified = 'false'
+[16:48:36]     [probe] HTTP 200
+[16:48:42] --- s1m3：selector=level_zero:0  -c 786432 --parallel 3 ---
+      xpu:0 free=31.16 GiB / total=31.16 GiB
+      xpu:1 free=31.16 GiB / total=31.16 GiB
+[16:49:07]     ✅ 起来了 · 起来之后：
+      xpu:0 free=3.25 GiB / total=31.16 GiB
+      xpu:1 free=31.16 GiB / total=31.16 GiB
+[slots] n_slots = 3, n_ctx_slot = 262144, kv_unified = 'false'
+[16:49:13]     [probe] HTTP 200
+[16:49:18] === B2 第六阶段结束 ===
+[16:49:42] === B2 第七阶段：单卡上限 ===
+[16:49:42] --- s2mp8：selector=level_zero:0  -c 2097152 --parallel 8 ---
+      xpu:0 free=31.16 GiB / total=31.16 GiB
+      xpu:1 free=31.16 GiB / total=31.16 GiB
+[16:50:32]     ✅ 起来了 · 起来之后：
+      xpu:0 free=0.21 GiB / total=31.16 GiB
+      xpu:1 free=31.16 GiB / total=31.16 GiB
+[slots] n_slots = 8, n_ctx_slot = 262144, kv_unified = 'false'
+[16:50:41]     [probe] HTTP 200
+[16:50:47] --- s3mp12：selector=level_zero:0  -c 3145728 --parallel 12 ---
+      xpu:0 free=31.16 GiB / total=31.16 GiB
+      xpu:1 free=31.16 GiB / total=31.16 GiB
+[16:51:48]     ❌ 没起来 · 
+[16:51:54] --- s4mp16：selector=level_zero:0  -c 4194304 --parallel 16 ---
+      xpu:0 free=31.16 GiB / total=31.16 GiB
+      xpu:1 free=31.16 GiB / total=31.16 GiB
+[16:53:57]     ❌ 没起来 · 
+[16:54:02] === B2 第七阶段结束 ===
+[16:54:40] === B2 第八阶段：双卡 1M 单变量对照（只有 kv_unified 变）===
+[16:54:41] --- d1mp4：selector=level_zero:0,1  -c 1048576 --parallel 4 ---
+      xpu:0 free=31.16 GiB / total=31.16 GiB
+      xpu:1 free=31.16 GiB / total=31.16 GiB
+[16:55:29]     ✅ 起来了 · 起来之后：
+      xpu:0 free=13.51 GiB / total=31.16 GiB
+      xpu:1 free=14.33 GiB / total=31.16 GiB
+[slots] n_slots = 4, n_ctx_slot = 262144, kv_unified = 'false'
+[16:55:40] === B2 第八阶段结束 ===
