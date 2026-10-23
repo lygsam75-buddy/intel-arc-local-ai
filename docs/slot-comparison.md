@@ -273,7 +273,8 @@ python bench/harness/compare_slots.py \
    差值全部落在「每轮重装文本编码器」那一段（两侧都是 `fresh` 轮 `loads=3 / offload=1`）。
    **没做单变量对照（同一张卡两个槽位互换），不归因 PCIe 链路宽度。**
 6. **功耗是叠加的，不是互压的**：两卡同时满载合计 **P90 400.8 W / 峰值 406.5 W**，各自的 P90 与单跑持平（§6.6）。850 W 电源够，但要按「显卡侧 400 W 级」算，不是 200 W。
-7. **一句话**：双卡买的是**吞吐与容量**，不是单任务速度。要快就换更强的单卡；要多任务并进、要更大的可驻留模型，才上第二张。
+7. **多模态问答也能并进**：一张卡出视频、一张卡看图问答，问答 decode −0.2%、H3 单步 −0.14%（§6.7）。
+8. **一句话**：双卡买的是**吞吐与容量**，不是单任务速度。要快就换更强的单卡；要多任务并进、要更大的可驻留模型，才上第二张。
 
 ### 6.4 出图：双实例并发，零损失
 
@@ -321,12 +322,30 @@ python bench/harness/compare_slots.py \
 - ⚠️ 不要把 `power_sampler.py` 的数当双卡功耗：它只采 Sysman 第 0 个设备，
   本机 dev0 = 总线 16 = 卡 1，**H3 跑在卡 0 时它读到的是卡 1 的空载 42~46 W**。
 
-### 6.7 数据从哪来
+### 6.7 多模态问答：和出视频同时跑，零回退
+
+卡 1 挂 `mmproj` 起 llama-server（Qwen3-VL-4B · Q4_0 · ctx 8192），卡 0 同时在跑 H3 720p。
+问答用一张**答案唯一**的图（白底 + 红方块 / 绿圆 / 蓝方块），每轮都真跑（`cache_prompt: false`）：
+
+| 档 | 墙钟 | prefill | decode | 答对 |
+|---|---:|---:|---:|---:|
+| solo（H3 未跑） | 0.72 s | 393.6~394.2 tok/s | **115.02 tok/s** | 3/3 |
+| H3 在装载 | 0.75~0.90 s | 385.7~387.3 tok/s | 114.6~115.7 tok/s | 3/3 |
+| **H3 在采样（2/6 步）** | **0.76 s** | 389.8~394.6 tok/s | **114.79 tok/s（−0.2%）** | 6/6 |
+
+- 同一次 H3 跑：`cold` 端到端 **518.59 s**、单步 42.58 s/it —— 与 H3 独占卡 0 时的 525.73 s / 42.64 s/it 一致。
+- **两侧都没回退**：问答 decode 差 −0.2%（抖动内），H3 单步差 −0.14%。这是「一张卡出片、一张卡陪聊」的典型形态。
+- ⚠️ **不关 prompt 缓存会得到假数据**：同一张图连打，第 2 轮起命中缓存，墙钟 0.13 s、decode 报 115 tok/s ——
+  那是缓存命中，不是这张卡解得动。本批 `cache_prompt: false` 强制每轮重算。
+- ⚠️ 视觉塔靠**答案唯一**的图验证：答错或含糊就说明 mmproj 没真解码（模型照样会编一段流畅的描述）。
+
+### 6.8 数据从哪来
 
 - H3 四条：`bench/data/2026-10-23_h3_1280x720_dual{d1,d4,d4b,d6}.json`
 - Qwen 两条：`bench/data/2026-10-23_b65-32g-q4_0-dual-c1.json`（独占）、`...-concurrent.json`（与 H3 并发）
 - 卡 1 跑 H3：`bench/data/2026-10-23_h3_1280x720_dualc1.json`、`..._dualc1b.json`（同配置复跑）
 - 出图并发三条：`bench/data/2026-10-23_b65-32g_qwen-image-2.1-int8_convrot-duala2{solo,c0,c1}-comfyui.json`
 - 功耗三档四条：`bench/data/2026-10-23_b65-32g_qwen-image-2.1-int8_convrot-c3{s0,s1,b0,b1}-comfyui.json`；采样器 `bench/harness/power_probe_multi.py`
+- 多模态并进：`bench/data/2026-10-23_dual-a4-vision-under-h3.json`（12 轮问答 + H3 cold 一次）；采集器 `bench/harness/vision_under_load.py`
 - 采集脚本：`bench_f_h3.py`（H3，`--expect-index` 钉卡）+ `llama-bench`（Qwen）
 - 台架记录：`bench/notes/dual-b65-prep.md`
