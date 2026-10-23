@@ -238,6 +238,9 @@ python bench/harness/compare_slots.py \
 
 > 台账 T-11。并发用「两卡各跑一个任务」验证，不是把同一个任务拆到两张卡上
 > —— ComfyUI / `torch.xpu` 只用第一张卡，拆不开。
+>
+> 双卡的完整报告（为什么不是算力翻倍、单卡能不能单独做 H3、一片 B70 与两片 B65 怎么选、
+> 跑通的参数与坑清单）见 [`dual-b65-report.md`](dual-b65-report.md)。
 
 ### 6.1 配置
 
