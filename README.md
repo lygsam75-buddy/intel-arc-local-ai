@@ -502,7 +502,7 @@ language-independent. Two English entry points exist: this page and
 | 14 | [`docs/publish-checklist.md`](docs/publish-checklist.md) | What ships, what does not, and how untested items are labelled |
 | 15 | [`bench/README.md`](bench/README.md) | **Measurement definitions** — what makes two numbers comparable |
 | 16 | [`bench/logs/`](bench/logs/) | 33 raw `llama-server` logs (path-scrubbed, otherwise byte-identical) |
-| 17 | [`bench/data/`](bench/data/) | **372** machine-readable JSON records (355 active · 16 discarded · 1 probe_failed) |
+| 17 | [`bench/data/`](bench/data/) | **373** machine-readable JSON records (356 active · 16 discarded · 1 probe_failed) |
 | 18 | [`CONTRIBUTING.md`](CONTRIBUTING.md) | Format required for submitting measurements |
 
 **If you only read three pages:**
@@ -530,8 +530,9 @@ Two cards do **not** double single-task compute. H3 step time is **42.30 s/it** 
 - **Capacity, context 1M → 3M tokens** (`--parallel = ctx / 262144`, `kv_unified=false`): **3×, not 2×**,
   because each card carries only ~9.7 GiB of weights. Without `--parallel` it is 1.75× and 2M OOMs.
 - **Capacity, a 34.37 GiB model a single card cannot hold**: two cards with `-sm layer` hold all of it
-  (33.5 GiB resident), but decode drops to **6.37 tok/s** — while **one** card with ~4 GiB of layers left
-  on the CPU does **30.83 tok/s**, i.e. **4.84× faster**. Layer splitting buys capacity and pays in speed.
+  (33.53 GiB resident, 17.47 / 16.06) and decode at **35.14 tok/s** — faster than one card fully resident
+  with ~4 GiB of layers on the CPU (31.46) and **2.55× faster** than one card forced to spill (13.80).
+  Layer splitting buys capacity **without paying in speed**; `-sm row` fails to load on this build.
 - **1× B70 (¥18,999) vs 2× B65 (¥18,998) — the same money**: one clip, B70 is **1.42×** faster; two clips,
   two B65s are **1.40×** faster (18.3 vs 13.0 clips/hour). Only two B65s reach 62.32 GiB and 3M tokens.
 

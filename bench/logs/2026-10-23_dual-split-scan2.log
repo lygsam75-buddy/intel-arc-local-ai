@@ -1,0 +1,8 @@
+[23:08:35] === 第二轮开始：row 两档 + 单卡同口径对照 ===
+=== row ===
+{"tag": "row", "cards": 2, "device_selector": "level_zero:0,1", "dev": "SYCL0,SYCL1", "ngl": 99, "ctx": 4096, "ctk": "q8_0", "ctv": "q8_0", "fa": "on", "model": "Qwen3.6-35B-A3B-Q8_0.gguf", "loaded": false, "free_before_gib": [31.16, 31.16], "free_after_gib": null, "log": "dsb_row.log", "split_mode": "row", "tensor_split": "50,50", "failure": "(进程退出，日志无 OOM 行)"}
+=== row7030 ===
+{"tag": "row7030", "cards": 2, "device_selector": "level_zero:0,1", "dev": "SYCL0,SYCL1", "ngl": 99, "ctx": 4096, "ctk": "q8_0", "ctv": "q8_0", "fa": "on", "model": "Qwen3.6-35B-A3B-Q8_0.gguf", "loaded": false, "free_before_gib": [31.16, 31.16], "free_after_gib": null, "log": "dsb_row7030.log", "split_mode": "row", "tensor_split": "70,30", "failure": "(进程退出，日志无 OOM 行)"}
+=== solo37 ===
+{"tag": "solo37", "cards": 1, "device_selector": "level_zero:0", "dev": "SYCL0", "ngl": 37, "ctx": 4096, "ctk": "q8_0", "ctv": "q8_0", "fa": "on", "model": "Qwen3.6-35B-A3B-Q8_0.gguf", "loaded": true, "free_before_gib": [31.16, 31.16], "free_after_gib": [0.38, 31.16], "log": "dsb_solo37.log", "used_gib": [30.78, 0.0], "used_total_gib": 30.78, "runs": [{"decode_tok_s": 20.12, "decode_n": 128, "prefill_tok_s": 11.38, "prefill_n": 19}, {"decode_tok_s": 31.46, "decode_n": 128, "prefill_tok_s": 57.78, "prefill_n": 19}, {"decode_tok_s": 31.92, "decode_n": 128, "prefill_tok_s": 56.54, "prefill_n": 19}], "decode_tok_s": 31.46, "decode_min": 20.12, "decode_max": 31.92, "prefill_tok_s": 56.54}
+=== solo99 ===

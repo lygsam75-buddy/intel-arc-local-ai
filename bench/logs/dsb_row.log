@@ -1,0 +1,5 @@
+0.00.225.731 I srv  llama_server: initializing ...
+0.00.225.741 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)
+0.00.225.934 W srv  llama_server: security: no API key is set and CORS allows all origins (see https://github.com/ggml-org/llama.cpp/pull/25655)
+0.00.237.733 I srv    load_model: loading model '<本机工作目录>/models/Qwen3.6-35B-A3B-Q8_0.gguf'
+<本机工作目录>\llama.cpp\ggml\src\ggml-backend.cpp:1081: pre-allocated tensor (blk.0.attn_norm.weight) in a buffer (SYCL_Split) that cannot run the operation (NONE)

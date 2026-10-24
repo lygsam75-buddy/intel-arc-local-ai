@@ -836,7 +836,7 @@ B50 那批的实参没有记录——记录里那个 `reserve_vram_gb: 4` 是迁
 | [`docs/publish-checklist.md`](docs/publish-checklist.md) | 上线作业单——放什么、不放什么、未测项怎么标注 |
 | [`bench/README.md`](bench/README.md) | 基准口径定义（跨机型可比的前提） |
 | [`bench/harness/`](bench/harness/) | 采集与对照脚本 |
-| [`bench/data/`](bench/data/) | machine-readable 实测数据 · **372 条**（355 active · 16 discarded · 1 probe_failed） |
+| [`bench/data/`](bench/data/) | machine-readable 实测数据 · **373 条**（356 active · 16 discarded · 1 probe_failed） |
 | [`CONTRIBUTING.md`](CONTRIBUTING.md) | 提交实测数据的格式要求 |
 
 ---
@@ -859,10 +859,11 @@ B50 那批的实参没有记录——记录里那个 `reserve_vram_gb: 4` 是迁
   **3M token**（12 条满长对话，剩 0.19 / 0.22 GiB）。**是 3 倍不是 2 倍** —— 双卡每卡只摊 ~9.7 GiB 权重，
   腾出来的显存全给了 KV。不写 `--parallel` 只有 1.75 倍，而且 2M 直接 OOM。
   ⚠️ 单请求上限仍是 262144（模型训练上下文），1M / 3M 指的是**并发会话总量**。
-- **大权重模型：双卡装得下，但层切分赔速度**（Qwen3.6-35B-A3B Q8_0，权重 34.37 GiB）：
-  单卡 31 GB 装不下，可 llama.cpp 照样起得来（余下层放 CPU，解码 12.98 tok/s）；
-  双卡 `-sm layer` 能把整个模型装进显存（33.5 GiB），但**解码只剩 6.37 tok/s**，
-  是单卡最快一档（`-ngl 37`，30.83）的 **1/4.8**。→ **要同时跑两个模型，用两卡各一个实例，别把一个模型切两张卡。**
+- **大权重模型：双卡装得下，而且层切分不赔速度**（Qwen3.6-35B-A3B Q8_0，权重 34.37 GiB）：
+  单卡 31 GB 装不下，可 llama.cpp 照样起得来（余下层放 CPU，解码 13.80 tok/s）；
+  双卡 `-sm layer` 能把整个模型装进显存（33.53 GiB，17.47 / 16.06），解码 **35.14 tok/s** ——
+  比单卡全驻一档（31.46）快 1.12×，比单卡硬塞 spill（13.80）快 2.55×。
+  → **要同时跑两个模型，用两卡各一个实例；一个模型装不下，才用拆层 —— 拆层不赔速度。**
 - **双卡不等于双机**：32 GB 上只能是「一条视频 + 一条轻任务」。
 
 **「双卡是不是算力翻倍」—— 不是。** 同一条 H3 的单步耗时单卡 42.30 s/it、双卡同时满载 42.41 s/it；
