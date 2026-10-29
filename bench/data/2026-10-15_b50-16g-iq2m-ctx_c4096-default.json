@@ -1,0 +1,73 @@
+{
+  "schema": "arc-xpu-ctx-sweep/1",
+  "tag": "b50-16g-iq2m-ctx::c4096-default",
+  "date": "2026-10-15",
+  "source": "local",
+  "env": {
+    "gpu": "Intel Arc Pro B50 LP 16G",
+    "driver": "32.0.101.8976",
+    "ecc": "off",
+    "backend": "SYCL",
+    "tool": "llama-server",
+    "device_selector": "opencl:0",
+    "sycl_path": "<SYCL 运行时目录>;<oneMKL 目录>",
+    "ram_gb": 31.1,
+    "commit_limit_gb": 95.1,
+    "env_backfill": "ram_gb/commit_limit_gb 由 backfill 补写（原脚本用 os.sysconf，Windows 上不存在）"
+  },
+  "model": {
+    "name": "Qwen3.6-35B-A3B-UD-IQ2_M",
+    "quant": "IQ2_M",
+    "size_gib": 10.73
+  },
+  "config_name": "c4096-default",
+  "ncmoe": 0,
+  "server_args": [
+    "-c",
+    "4096"
+  ],
+  "log": "bench\\logs\\2026-10-15_c4096-default.log",
+  "load_s": 10.5,
+  "warmup": {
+    "rep": 0,
+    "wall_s": 3.6,
+    "decode_tok_s": 45.51357953193404,
+    "prompt_tok_s": 16.01434885657549,
+    "prompt_n": 13,
+    "predicted_n": 128
+  },
+  "probes": [
+    {
+      "rep": 0,
+      "wall_s": 2.26,
+      "decode_tok_s": 45.512259052063236,
+      "prompt_tok_s": 44.75374253171921,
+      "prompt_n": 4,
+      "predicted_n": 99
+    },
+    {
+      "rep": 1,
+      "wall_s": 2.3,
+      "decode_tok_s": 45.666145768163936,
+      "prompt_tok_s": 42.68214605830381,
+      "prompt_n": 4,
+      "predicted_n": 101
+    },
+    {
+      "rep": 2,
+      "wall_s": 2.01,
+      "decode_tok_s": 44.90388455581078,
+      "prompt_tok_s": 42.08090053127137,
+      "prompt_n": 4,
+      "predicted_n": 86
+    }
+  ],
+  "status": "probe_failed",
+  "log_scan": {
+    "ok": true,
+    "lines": 38,
+    "key_lines": [
+      "0.09.826.256 I srv    load_model: initializing, n_slots = 4, n_ctx_slot = 4096, kv_unified = 'true'"
+    ]
+  }
+}

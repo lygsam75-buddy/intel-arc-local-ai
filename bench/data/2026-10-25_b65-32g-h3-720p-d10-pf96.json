@@ -1,0 +1,74 @@
+{
+  "schema": "arc-xpu-bench/1",
+  "tag": "b65-32g-h3-720p-d10-pf96",
+  "date": "2026-10-25",
+  "source": "local",
+  "batch": "交付配置（单文件 96 GB 页面文件）补测：720p 时长维度 10 秒",
+  "env": {
+    "gpu": "Intel Arc Pro B65 32G（卡 0，CPU 直连 x16，level_zero:0）",
+    "vram_visible_gib": 31.16,
+    "ram_gib": 31.11,
+    "pagefile_layout": "E: 98304 单文件（InitialSize = MaximumSize = 98304）",
+    "pagefile_total_mb": 98304,
+    "commit_limit_gib": 127.11,
+    "engine": "ComfyUI 0.39.0 · torch 2.12.0+xpu · Python 3.13.12",
+    "driver": "9150",
+    "ecc": "off",
+    "safety": "Job Object ProcessMemoryLimit=JobMemoryLimit=100 GiB；外部看门狗 2 s 采样、88% 自动杀进程（未触发）"
+  },
+  "workload": {
+    "model": "MiniMax H3",
+    "dit": "minimax_h3_fl2va_pruned_int8_convrot.safetensors（19.53 GB）",
+    "text_encoder": "qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors（14,960.20 MB）",
+    "resolution": "1280x720",
+    "steps": 6,
+    "duration_sec": 10.0,
+    "frames": 243,
+    "fps": 24,
+    "reserve_vram_gb": 4,
+    "command": "COMFY_PORT=8190 bench_f_h3.py --width 1280 --height 720 --duration 10 --steps 6 --fresh 0 --cached 0 --reserve-vram 4"
+  },
+  "cases": [
+    {
+      "name": "1280x720",
+      "role": "cold",
+      "ok": true,
+      "server_s": 1194.63,
+      "sit": 152.51,
+      "sampling_s": 915.06,
+      "fixed_overhead_s": 279.57,
+      "sampling_share_pct": 76.6,
+      "loads": 4,
+      "vram_post_gib": 25.73,
+      "dit_load": "loaded partially; 13568.32 MB usable, 13274.32 MB loaded, 6721.83 MB offloaded",
+      "commit_peak_gib": 99.42,
+      "commit_limit_gib": 127.11,
+      "commit_peak_frac": 0.782,
+      "job_peak_gib": 83.91
+    }
+  ],
+  "compare_vs_2026_10_21": [
+    {
+      "name": "1280x720 @ 10 s",
+      "server_then": 1166.44,
+      "server_now": 1194.63,
+      "delta_s": 28.19,
+      "delta_pct": 2.4,
+      "sit_then": 151.33,
+      "sit_now": 152.51,
+      "sit_delta_pct": 0.8,
+      "fixed_then_s": 258.4,
+      "fixed_now_s": 279.57,
+      "offload_then_mb": 6721,
+      "offload_now_mb": 6721.83,
+      "note": "装载判决逐项相同（usable 13,568 / loaded 13,274 / offloaded 6,722 MB）→ 两批是同一装载路径，可比。"
+    }
+  ],
+  "cross_batch_note": "2026-10-21 同批的 720p **5 秒**是 437.11 s（固定开销 183 s），交付配置 538.09 s（固定开销 282 s），差 **+99 s**；而同为 720p 的 10 秒档只差 +28 s（固定开销 +21 s）。→ 端到端差**不是「整批统一变慢」**，5 秒这一格差得最多；机制未定位，**跨配置仍只比单步**（本档单步 +0.8%）。",
+  "conclusion": [
+    "✅ 720p 10 秒在交付配置下跑通：**1,194.63 s（19.9 分钟）· 152.51 s/it · 卸 6,721.83 MB**。",
+    "✅ 与 2026-10-21 早期基准同档 1,166.44 s 只差 **+2.4%**（单步 +0.8%），且装载判决逐项相同 → **时长档的端到端数字可以跨这两批并排**。",
+    "✅ 采样占比 76.6% → 10 秒档已经是采样主导，固定开销（279.57 s）在端到端里只占 23.4%。",
+    "⚠️ 本轮功耗采样（整卡域 1）报 43.6 W 均 / 45.3 W 峰，与 2026-10-21 同档 113.9 W 均不一致 → **归属存疑，本轮不作为结论引用**。"
+  ]
+}

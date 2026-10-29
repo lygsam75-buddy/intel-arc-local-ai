@@ -1,0 +1,86 @@
+{
+  "schema": "arc-xpu-bench/1",
+  "tag": "b65-32g-q8_0-dual-row-recheck",
+  "date": "2026-10-24",
+  "source": "local",
+  "env": {
+    "os": "Windows-11-10.0.26300-SP0",
+    "cpu": "AMD Ryzen 5 9600X 6-Core",
+    "gpu": "2x Intel Arc Pro B65 32G",
+    "vram_visible_gib": 31.16,
+    "driver": "9150",
+    "ecc": "off",
+    "engine": "llama.cpp",
+    "engine_version": "0.6.0-dev (build 11431, commit c25030496)",
+    "backend": "SYCL",
+    "cpu_threads": 6,
+    "card0": "CPU 直连 x16",
+    "card1": "芯片组 x4"
+  },
+  "model": {
+    "name": "Qwen3.6-35B-A3B-Q8_0",
+    "quant": "Q8_0",
+    "size_gib": 34.37,
+    "file": "Qwen3.6-35B-A3B-Q8_0.gguf",
+    "sha256": "d1a395809f65a43a13ad119eb4e7acdef1ac6d68120f39902c8ab96e72794a59"
+  },
+  "measure": {
+    "harness": "llama-server（--no-warmup）直接启动，只观察装载阶段",
+    "ctx": 4096,
+    "ctk": "q8_0",
+    "ctv": "q8_0",
+    "fa": "on",
+    "dev": "SYCL0,SYCL1",
+    "ngl": 99,
+    "reps": 1,
+    "statistic": "单次（加载即失败，无重复价值）",
+    "note": "复现 2026-10-23 记录里 `-sm row` 加载即退出的现象。两个比例各起一次，都在装载权重阶段进程退出，未进入推理，因此没有速度样本。"
+  },
+  "samples": [
+    {
+      "tag": "row",
+      "cards": 2,
+      "device_selector": "level_zero:0,1",
+      "dev": "SYCL0,SYCL1",
+      "split_mode": "row",
+      "tensor_split": "50,50",
+      "ctx": 4096,
+      "model": "Qwen3.6-35B-A3B-Q8_0.gguf",
+      "loaded": false,
+      "failure": "装载阶段进程退出（进程码非 0，日志无 OOM 行）",
+      "errors": [
+        "<本机工作目录>\\llama.cpp\\ggml\\src\\ggml-backend.cpp:1081: pre-allocated tensor (blk.0.attn_norm.weight) in a buffer (SYCL_Split) that cannot run the operation (NONE)"
+      ],
+      "log": "dsb_row.log"
+    },
+    {
+      "tag": "row7030",
+      "cards": 2,
+      "device_selector": "level_zero:0,1",
+      "dev": "SYCL0,SYCL1",
+      "split_mode": "row",
+      "tensor_split": "70,30",
+      "ctx": 4096,
+      "model": "Qwen3.6-35B-A3B-Q8_0.gguf",
+      "loaded": false,
+      "failure": "装载阶段进程退出（进程码非 0，日志无 OOM 行）",
+      "errors": [
+        "<本机工作目录>\\llama.cpp\\ggml\\src\\ggml-backend.cpp:1081: pre-allocated tensor (blk.0.attn_norm.weight) in a buffer (SYCL_Split) that cannot run the operation (NONE)"
+      ],
+      "log": "dsb_row7030.log"
+    }
+  ],
+  "summary": {
+    "attempts": 2,
+    "loaded": 0,
+    "failed_stage": "权重复制到 split buffer（blk.0.attn_norm.weight）",
+    "error_identical_across_ts": true
+  },
+  "conclusion": [
+    "`-sm row` 在本机 build 11431 上**装载阶段就退出**，两次（-ts 50,50 与 70,30）报错逐字一致，与 2026-10-23 那次完全一样。",
+    "报错点是 `ggml-backend.cpp:1081` 的 pre-allocated tensor 校验：`blk.0.attn_norm.weight` 落在 `SYCL_Split` buffer 上，而该 buffer 的 buft 声明自己不能做任何操作（`NONE`）。",
+    "日志里没有 OOM / OUT_OF_RESOURCES / DEVICE_LOST 行 → **不是显存不够，是后端能力声明与 row 切分方式对不上**。",
+    "外部 6 卡 Battlematrix 用 `--split-mode row` 跑得通，说明这是**本机这份 build 的问题**，不是 row 模式在 SYCL 上根本不可用。",
+    "**对客口径：双卡只推 `-sm layer`。** row 不做承诺，也不拿它当备选。"
+  ]
+}

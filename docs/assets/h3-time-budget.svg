@@ -1,0 +1,42 @@
+<svg viewBox="0 0 680 336" width="100%" role="img" xmlns="http://www.w3.org/2000/svg" font-family="'Microsoft YaHei','PingFang SC','Noto Sans SC',sans-serif">
+<title>端到端的时间账：固定开销与采样段各占多少</title>
+<desc>480p 五秒档固定开销 112.7 秒、采样 39.8 秒（26%）；即使采样快 4 倍，端到端也只能从 152.5 秒压到 122.7 秒，上限 1.24 倍。1080p 采样占 81%，同样的假设上限 2.55 倍。</desc>
+<text x="40" y="30" font-size="14" fill="#2C2C2A">端到端的时间账：B70 · 6 步 · 124 帧 · 单卡 · 32 GB 内存</text>
+<text x="40" y="48" font-size="12" fill="#5F5E5A">每档的轴长 = 它自己的端到端秒数；绿段 = 「采样快 4 倍」能省下的全部</text>
+<rect x="40" y="60" width="10" height="10" rx="2" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="0.5"/>
+<text x="56" y="69" font-size="12" fill="#5F5E5A">固定开销（读模型 · 编码 · VAE 解码 · 封装）</text>
+<rect x="386" y="60" width="10" height="10" rx="2" fill="#B5D4F4" stroke="#185FA5" stroke-width="0.5"/>
+<text x="402" y="69" font-size="12" fill="#5F5E5A">采样</text>
+<rect x="452" y="60" width="10" height="10" rx="2" fill="#C0DD97" stroke="#3B6D11" stroke-width="0.5"/>
+<text x="468" y="69" font-size="12" fill="#5F5E5A">加速后省掉</text>
+
+<text x="40" y="90" font-size="13" fill="#2C2C2A">480p · 5 秒｜轴 0 至 152.5 s</text>
+<text x="148" y="106" font-size="12" fill="#5F5E5A" text-anchor="end">现状</text>
+<rect x="160" y="94" width="295.6" height="24" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="0.5"/>
+<text x="307.8" y="106" font-size="12" fill="#444441" text-anchor="middle" dominant-baseline="central">固定开销 112.7 s</text>
+<rect x="455.6" y="94" width="104.4" height="24" fill="#B5D4F4" stroke="#185FA5" stroke-width="0.5"/>
+<text x="507.8" y="106" font-size="12" fill="#042C53" text-anchor="middle" dominant-baseline="central">39.8 s · 26%</text>
+<text x="148" y="136" font-size="12" fill="#5F5E5A" text-anchor="end">采样 ×4</text>
+<rect x="160" y="124" width="295.6" height="24" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="0.5"/>
+<rect x="455.6" y="124" width="26.2" height="24" fill="#B5D4F4" stroke="#185FA5" stroke-width="0.5"/>
+<rect x="481.8" y="124" width="78.2" height="24" fill="#C0DD97" stroke="#3B6D11" stroke-width="0.5"/>
+<text x="520.9" y="136" font-size="12" fill="#173404" text-anchor="middle" dominant-baseline="central">省 19.6%</text>
+<text x="160" y="164" font-size="12" fill="#5F5E5A">上限 1.24 倍：152.5 s → 122.7 s；剩 112.7 s 一动不动（B65 同档 1.19 倍）</text>
+
+<line x1="40" y1="176" x2="640" y2="176" stroke="#B4B2A9" stroke-width="0.5"/>
+<text x="40" y="196" font-size="13" fill="#2C2C2A">1080p · 5 秒｜轴 0 至 841.0 s</text>
+<text x="148" y="212" font-size="12" fill="#5F5E5A" text-anchor="end">现状</text>
+<rect x="160" y="200" width="75.6" height="24" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="0.5"/>
+<text x="197.8" y="212" font-size="12" fill="#444441" text-anchor="middle" dominant-baseline="central">159 s</text>
+<rect x="235.6" y="200" width="324.4" height="24" fill="#B5D4F4" stroke="#185FA5" stroke-width="0.5"/>
+<text x="397.8" y="212" font-size="12" fill="#042C53" text-anchor="middle" dominant-baseline="central">682.0 s · 81%</text>
+<text x="148" y="242" font-size="12" fill="#5F5E5A" text-anchor="end">采样 ×4</text>
+<rect x="160" y="230" width="75.6" height="24" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="0.5"/>
+<rect x="235.6" y="230" width="81.1" height="24" fill="#B5D4F4" stroke="#185FA5" stroke-width="0.5"/>
+<rect x="316.7" y="230" width="243.3" height="24" fill="#C0DD97" stroke="#3B6D11" stroke-width="0.5"/>
+<text x="438.3" y="242" font-size="12" fill="#173404" text-anchor="middle" dominant-baseline="central">省 60.8%</text>
+<text x="160" y="270" font-size="12" fill="#5F5E5A">上限 2.55 倍：841.0 s → 329.5 s；采样占去八成（B65 同档 2.47 倍）</text>
+<line x1="40" y1="284" x2="640" y2="284" stroke="#B4B2A9" stroke-width="0.5"/>
+<text x="40" y="304" font-size="12" fill="#5F5E5A">所以 480p 比的不是算力，是「谁先把 34 GB 模型读进来」：「差不了太多」是 1.2 倍的算术上限。</text>
+<text x="40" y="322" font-size="12" fill="#5F5E5A">个人机每条片子都重读一遍模型，这笔固定开销省不掉；服务器常驻、一次装载连出多条，才会被摊薄。</text>
+</svg>

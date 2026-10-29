@@ -1,0 +1,46 @@
+{
+  "schema": "arc-xpu-longctx/1",
+  "tag": "b65-32g-q4_0-longctx-c16k",
+  "date": "2026-10-23",
+  "source": "local",
+  "env": {
+    "gpu": "Intel Arc Pro B65 32G",
+    "driver": "9150",
+    "ecc": "off",
+    "backend": "SYCL",
+    "tool": "llama-server",
+    "device_selector": "opencl:0",
+    "sycl_path": "<ComfyUI 目录>/python_embeded/Library/bin",
+    "ram_gb": 31.1,
+    "commit_limit_gb": 95.1
+  },
+  "model": {
+    "name": "Qwen_Qwen3.6-35B-A3B-Q4_0",
+    "quant": "Q4_0",
+    "size_gib": 19.41
+  },
+  "ctx_size": 16384,
+  "ncmoe": 0,
+  "server_args": "-fa on -ctk q8_0 -ctv q8_0",
+  "log": "bench\\logs\\2026-10-23_b65-32g-q4_0-longctx-c16k.log",
+  "points": [
+    {
+      "target_tokens": 512,
+      "prompt_chars": 852,
+      "wall_s": 3.88,
+      "prompt_n": 508,
+      "prompt_tok_s": 349.17,
+      "predicted_n": 128,
+      "decode_tok_s": 52.42,
+      "prefill_s": 1.5
+    }
+  ],
+  "load_s": 18.1,
+  "status": "active",
+  "log_scan": {
+    "lines": 38,
+    "key_lines": [
+      "0.16.219.801 I srv    load_model: initializing, n_slots = 4, n_ctx_slot = 16384, kv_unified = 'true'"
+    ]
+  }
+}

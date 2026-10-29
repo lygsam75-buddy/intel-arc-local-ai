@@ -1,0 +1,56 @@
+<svg viewBox="0 0 680 330" width="100%" role="img" xmlns="http://www.w3.org/2000/svg" font-family="'Microsoft YaHei','PingFang SC','Noto Sans SC',sans-serif">
+<title>-ncmoe 扫描：主槽 x8 对第二槽 x4</title>
+<desc>折线图：横轴 -ncmoe 从 4 到 32，纵轴 decode tok/s。主槽在 ncmoe 8 达到 37.13，第二槽 36.66，两槽持平；ncmoe 4 时主槽 14.87、第二槽 6.08。</desc>
+<text x="40" y="30" font-size="15" font-weight="600" fill="#2C2C2A">-ncmoe 扫描：主槽 x8 对第二槽 x4</text>
+<text x="40" y="50" font-size="12" fill="#5F5E5A">同一张卡、同一份权重（Q4_0 · 19.41 GiB），只换插槽</text>
+<rect x="40" y="60" width="10" height="10" rx="2" fill="#185FA5"/>
+<text x="55" y="69" font-size="12" fill="#5F5E5A">主槽 PCIe 5.0 x8</text>
+<rect x="233.79999999999998" y="60" width="10" height="10" rx="2" fill="#993C1D"/>
+<text x="248.79999999999998" y="69" font-size="12" fill="#5F5E5A">第二槽 PCIe 4.0 x4</text>
+<line x1="76" y1="236.0" x2="640" y2="236.0" stroke="#B4B2A9" stroke-width="0.5"/>
+<text x="68" y="240.0" font-size="11" fill="#5F5E5A" text-anchor="end">0</text>
+<line x1="76" y1="198.5" x2="640" y2="198.5" stroke="#B4B2A9" stroke-width="0.5"/>
+<text x="68" y="202.5" font-size="11" fill="#5F5E5A" text-anchor="end">10</text>
+<line x1="76" y1="161.0" x2="640" y2="161.0" stroke="#B4B2A9" stroke-width="0.5"/>
+<text x="68" y="165.0" font-size="11" fill="#5F5E5A" text-anchor="end">20</text>
+<line x1="76" y1="123.5" x2="640" y2="123.5" stroke="#B4B2A9" stroke-width="0.5"/>
+<text x="68" y="127.5" font-size="11" fill="#5F5E5A" text-anchor="end">30</text>
+<line x1="76" y1="86.0" x2="640" y2="86.0" stroke="#B4B2A9" stroke-width="0.5"/>
+<text x="68" y="90.0" font-size="11" fill="#5F5E5A" text-anchor="end">40</text>
+<text x="76.0" y="252" font-size="11" fill="#5F5E5A" text-anchor="middle">4</text>
+<text x="138.7" y="252" font-size="11" fill="#5F5E5A" text-anchor="middle">5</text>
+<text x="201.3" y="252" font-size="11" fill="#5F5E5A" text-anchor="middle">6</text>
+<text x="264.0" y="252" font-size="11" fill="#5F5E5A" text-anchor="middle">7</text>
+<text x="326.7" y="252" font-size="11" fill="#5F5E5A" text-anchor="middle">8</text>
+<text x="389.3" y="252" font-size="11" fill="#5F5E5A" text-anchor="middle">12</text>
+<text x="452.0" y="252" font-size="11" fill="#5F5E5A" text-anchor="middle">16</text>
+<text x="514.7" y="252" font-size="11" fill="#5F5E5A" text-anchor="middle">20</text>
+<text x="577.3" y="252" font-size="11" fill="#5F5E5A" text-anchor="middle">24</text>
+<text x="640.0" y="252" font-size="11" fill="#5F5E5A" text-anchor="middle">32</text>
+<polyline points="76.0,180.2 138.7,164.5 201.3,157.2 264.0,142.9 326.7,96.8 389.3,106.5 452.0,112.2 514.7,114.2 577.3,121.2 640.0,126.4" fill="none" stroke="#185FA5" stroke-width="2"/>
+<circle cx="76.0" cy="180.2" r="3" fill="#185FA5"/>
+<circle cx="138.7" cy="164.5" r="3" fill="#185FA5"/>
+<circle cx="201.3" cy="157.2" r="3" fill="#185FA5"/>
+<circle cx="264.0" cy="142.9" r="3" fill="#185FA5"/>
+<circle cx="326.7" cy="96.8" r="3" fill="#185FA5"/>
+<circle cx="389.3" cy="106.5" r="3" fill="#185FA5"/>
+<circle cx="452.0" cy="112.2" r="3" fill="#185FA5"/>
+<circle cx="514.7" cy="114.2" r="3" fill="#185FA5"/>
+<circle cx="577.3" cy="121.2" r="3" fill="#185FA5"/>
+<circle cx="640.0" cy="126.4" r="3" fill="#185FA5"/>
+<polyline points="76.0,213.2 138.7,204.9 201.3,197.4 264.0,181.2 326.7,98.5 389.3,126.4 452.0,106.8 514.7,113.2 577.3,113.9 640.0,126.0" fill="none" stroke="#993C1D" stroke-width="2" stroke-dasharray="6,4"/>
+<circle cx="76.0" cy="213.2" r="3" fill="#993C1D"/>
+<circle cx="138.7" cy="204.9" r="3" fill="#993C1D"/>
+<circle cx="201.3" cy="197.4" r="3" fill="#993C1D"/>
+<circle cx="264.0" cy="181.2" r="3" fill="#993C1D"/>
+<circle cx="326.7" cy="98.5" r="3" fill="#993C1D"/>
+<circle cx="389.3" cy="126.4" r="3" fill="#993C1D"/>
+<circle cx="452.0" cy="106.8" r="3" fill="#993C1D"/>
+<circle cx="514.7" cy="113.2" r="3" fill="#993C1D"/>
+<circle cx="577.3" cy="113.9" r="3" fill="#993C1D"/>
+<circle cx="640.0" cy="126.0" r="3" fill="#993C1D"/>
+<text x="358.0" y="272" font-size="12" fill="#5F5E5A" text-anchor="middle">-ncmoe（前 N 层专家放 CPU）</text>
+<text x="20" y="161.0" font-size="12" fill="#5F5E5A" text-anchor="middle" transform="rotate(-90 20 161.0)">decode tok/s</text>
+<text x="40" y="298" font-size="12.5" fill="#444441">ncmoe 8 是唯一让两槽持平的取值：37.13 对 36.66；ncmoe 4 时第二槽只有主槽的 41%。</text>
+<text x="40" y="316" font-size="12" fill="#5F5E5A">判据：权重体积 vs 15.51 GiB —— 装不下就取 ncmoe 8。</text>
+</svg>

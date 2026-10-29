@@ -1,0 +1,113 @@
+{
+  "schema": "arc-xpu-capacity/1",
+  "tag": "b65-32g-q4_0-ctx3m-probe",
+  "date": "2026-10-24",
+  "source": "local",
+  "env": {
+    "os": "Windows-11-10.0.26300-SP0",
+    "cpu": "AMD Ryzen 5 9600X 6-Core",
+    "gpu": "2x Intel Arc Pro B65 32G",
+    "vram_visible_gib": 31.16,
+    "driver": "9150",
+    "ecc": "off",
+    "backend": "SYCL",
+    "engine": "llama.cpp",
+    "engine_version": "0.6.0-dev (build 11431, commit c25030496)",
+    "cpu_threads": 6,
+    "ram_gb": 31.11,
+    "pagefile_mb": 65536,
+    "commit_limit_gib": 95.11,
+    "card0": "CPU 直连 x16",
+    "card1": "芯片组 x4",
+    "pin": "双卡 level_zero:0,1 + -dev SYCL0,SYCL1 -sm layer -ts 50,50"
+  },
+  "model": {
+    "name": "Qwen3.6-35B-A3B",
+    "quant": "Q4_0",
+    "size_gib": 19.41,
+    "n_ctx_train": 262144,
+    "file": "Qwen_Qwen3.6-35B-A3B-Q4_0.gguf"
+  },
+  "kv": {
+    "type": "q8_0",
+    "ctk": "q8_0",
+    "ctv": "q8_0"
+  },
+  "method": "起 llama-server（-c 3145728 --parallel 12，kv_unified=false），先发短请求看 decode，再发一条 35,401 token 的长 prompt 看 prefill。全程同时记录主机提交内存（GlobalMemoryStatusEx）与两卡显存余量。",
+  "cases": [
+    {
+      "name": "load",
+      "ok": true,
+      "load_s": 55.8,
+      "n_slots": 12,
+      "n_ctx_slot": 262144,
+      "kv_unified": false,
+      "note": "装载成功，与 2026-10-23 容量记录（p12）一致：两卡各只剩 0.19 / 0.22 GiB。"
+    },
+    {
+      "name": "short",
+      "ok": true,
+      "prompt_tokens": 19,
+      "gen_tokens": 128,
+      "prefill_tok_s": 53.38,
+      "prefill_ms": 355.96,
+      "decode_tok_s": 31.86,
+      "decode_n": 128,
+      "wall_s": 4.34,
+      "note": "3M 分配状态下短请求完全正常 → 「起得来、答得动」这一层是真的。"
+    },
+    {
+      "name": "long",
+      "ok": false,
+      "prompt_tokens": 35401,
+      "prefill_done_tokens": 8192,
+      "prefill_progress": 0.23,
+      "prefill_tok_s_by_chunk": [
+        615.43,
+        217.21,
+        134.08
+      ],
+      "stall_s": 840,
+      "outcome": "机器静默卡死（无蓝屏 / 无 minidump / 无 WATCHDOG dump），手动重启",
+      "note": "prefill 停在 8192/35401 token 后 14 分钟无任何进展：GPU 空转、CPU 约 40% 单核、日志无新行。此后整机失去响应。"
+    }
+  ],
+  "memory_evidence": {
+    "sampled_at": "2026-10-24 16:48（长 prompt 停滞后）",
+    "llama_server_private_gib": 73.11,
+    "llama_server_working_set_gib": 17.89,
+    "committed_gib": 91.79,
+    "commit_limit_gib": 95.11,
+    "commit_frac": 0.966,
+    "ram_free_gib": 3.25,
+    "pagefile_used_mb": 23508,
+    "pagefile_allocated_mb": 65536,
+    "gpu_engine_util": "0（compute/copy 引擎均无占用）"
+  },
+  "crash_evidence": {
+    "kernel_power_41_at": "2026-10-24 17:01:19",
+    "last_system_event_before_freeze": "2026-10-24 16:58:18",
+    "minidump": "无（最新 minidump 仍是 2026-10-23 19:49 的 0x101）",
+    "watchdog_dump": "无（最新 WATCHDOG dump 仍是 2026-10-21 13:52）",
+    "wer_report": "无 BlueScreen / LiveKernelEvent 新报告",
+    "conclusion": "不是 GPU TDR：没有 WATCHDOG dump、没有 0x116 / 0x101。是主机提交内存顶穿导致的整机静默卡死。"
+  },
+  "control": {
+    "file": "2026-10-24_b65-32g-q4_0-ctx262144-single-ctrl.json",
+    "setup": "同一模型、同一条 35,401 token prompt，单卡 -c 262144 --parallel 1",
+    "result": "prefill 937.39 tok/s / 38.64 s 跑完，decode 39.07 tok/s，提交量 41.60 / 95.11 GiB（43.7%），全程无错。",
+    "meaning": "prompt 本身、模型、flash-attn 都没问题。问题只出在 3M 这一档的分配上。"
+  },
+  "conclusion": [
+    "3M 上下文是**分配上限，不是可用上限**：起得来、短请求正常（19 token prefill 53.38 tok/s、128 token decode 31.86 tok/s），但一条 35k token 的长 prompt 直接把整机跑成静默卡死。",
+    "死因不是显存不够、不是 prompt 太大、不是 GPU 超时，是**主机提交内存顶穿**：3M 档把进程私有内存推到 73 GB，整机提交 91.79 / 95.11 GiB（96.6%），物理内存只剩 3.25 GiB、页面文件已用 23.5 GB。",
+    "卡住的形态很典型：prefill 停在 8192 token 后 GPU 完全空转、CPU 空转 14 分钟不报错——SYCL / Level Zero 的分配失败路径不返回错误，退化成重试，重试又把提交量继续往上顶，直到内核也分配不出内存。",
+    "对照组（同 prompt、单卡 262144）prefill 937.39 tok/s 跑完、提交量只有 43.7% → **变量就是 3M 这一档的分配**，单变量对照成立。",
+    "🔴 页面文件 64 GB 是帮凶：32 GB 物理内存 + 64 GB 页面文件 = 系统敢承诺 95.11 GiB，于是「进程该报 OOM 自己退」变成了「整机卡死要手动重启」。",
+    "对外口径：3M 只作「分配上限」记录；**可用上限仍按 双卡默认 1.75M / 单卡 1M 报**。"
+  ],
+  "log": [
+    "dcp_dual_ctx3145728_par12.log",
+    "dcp_dual_ctx262144_par1_single.log"
+  ]
+}

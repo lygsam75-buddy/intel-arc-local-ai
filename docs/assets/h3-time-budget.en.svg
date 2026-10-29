@@ -1,0 +1,43 @@
+<svg viewBox="0 0 680 344" width="100%" role="img" xmlns="http://www.w3.org/2000/svg" font-family="'Microsoft YaHei','PingFang SC','Noto Sans SC',sans-serif">
+<title>End-to-end time budget: fixed overhead versus sampling</title>
+<desc>At 480p five seconds the fixed overhead is 112.7 s and sampling 39.8 s (26%); even a 4x faster sampler only takes end-to-end from 152.5 s to 122.7 s, a 1.24x ceiling. At 1080p sampling is 81%, and the same assumption caps it at 2.55x.</desc>
+<text x="40" y="30" font-size="14" fill="#2C2C2A">End-to-end time budget: B70 · 6 steps · 124 frames · one card · 32 GB RAM</text>
+<text x="40" y="48" font-size="12" fill="#5F5E5A">Bar length = that tier's end-to-end seconds; green = what a 4x faster sampler saves</text>
+<rect x="40" y="60" width="10" height="10" rx="2" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="0.5"/>
+<text x="56" y="69" font-size="12" fill="#5F5E5A">Fixed overhead (load · encode · decode · mux)</text>
+<rect x="386" y="60" width="10" height="10" rx="2" fill="#B5D4F4" stroke="#185FA5" stroke-width="0.5"/>
+<text x="402" y="69" font-size="12" fill="#5F5E5A">Sampling</text>
+<rect x="474" y="60" width="10" height="10" rx="2" fill="#C0DD97" stroke="#3B6D11" stroke-width="0.5"/>
+<text x="490" y="69" font-size="12" fill="#5F5E5A">Saved by 4x</text>
+
+<text x="40" y="90" font-size="13" fill="#2C2C2A">480p · 5 s | axis 0 to 152.5 s</text>
+<text x="148" y="106" font-size="12" fill="#5F5E5A" text-anchor="end">current</text>
+<rect x="160" y="94" width="295.6" height="24" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="0.5"/>
+<text x="307.8" y="106" font-size="12" fill="#444441" text-anchor="middle" dominant-baseline="central">Fixed overhead 112.7 s</text>
+<rect x="455.6" y="94" width="104.4" height="24" fill="#B5D4F4" stroke="#185FA5" stroke-width="0.5"/>
+<text x="507.8" y="106" font-size="12" fill="#042C53" text-anchor="middle" dominant-baseline="central">39.8 s · 26%</text>
+<text x="148" y="136" font-size="12" fill="#5F5E5A" text-anchor="end">sampler ×4</text>
+<rect x="160" y="124" width="295.6" height="24" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="0.5"/>
+<rect x="455.6" y="124" width="26.2" height="24" fill="#B5D4F4" stroke="#185FA5" stroke-width="0.5"/>
+<rect x="481.8" y="124" width="78.2" height="24" fill="#C0DD97" stroke="#3B6D11" stroke-width="0.5"/>
+<text x="520.9" y="136" font-size="12" fill="#173404" text-anchor="middle" dominant-baseline="central">saves 19.6%</text>
+<text x="160" y="164" font-size="12" fill="#5F5E5A">1.24x ceiling: 152.5 → 122.7 s; 112.7 s of it never moves (B65: 1.19x)</text>
+
+<line x1="40" y1="176" x2="640" y2="176" stroke="#B4B2A9" stroke-width="0.5"/>
+<text x="40" y="196" font-size="13" fill="#2C2C2A">1080p · 5 s | axis 0 to 841.0 s</text>
+<text x="148" y="212" font-size="12" fill="#5F5E5A" text-anchor="end">current</text>
+<rect x="160" y="200" width="75.6" height="24" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="0.5"/>
+<text x="197.8" y="212" font-size="12" fill="#444441" text-anchor="middle" dominant-baseline="central">159 s</text>
+<rect x="235.6" y="200" width="324.4" height="24" fill="#B5D4F4" stroke="#185FA5" stroke-width="0.5"/>
+<text x="397.8" y="212" font-size="12" fill="#042C53" text-anchor="middle" dominant-baseline="central">682.0 s · 81%</text>
+<text x="148" y="242" font-size="12" fill="#5F5E5A" text-anchor="end">sampler ×4</text>
+<rect x="160" y="230" width="75.6" height="24" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="0.5"/>
+<rect x="235.6" y="230" width="81.1" height="24" fill="#B5D4F4" stroke="#185FA5" stroke-width="0.5"/>
+<rect x="316.7" y="230" width="243.3" height="24" fill="#C0DD97" stroke="#3B6D11" stroke-width="0.5"/>
+<text x="438.3" y="242" font-size="12" fill="#173404" text-anchor="middle" dominant-baseline="central">saves 60.8%</text>
+<text x="160" y="270" font-size="12" fill="#5F5E5A">2.55x ceiling: 841.0 → 329.5 s; sampling is 4/5 of it (B65: 2.47x)</text>
+<line x1="40" y1="284" x2="640" y2="284" stroke="#B4B2A9" stroke-width="0.5"/>
+<text x="40" y="300" font-size="11.5" fill="#5F5E5A">So the 480p limit is not compute but which stage reads the 34 GB model in first:</text>
+<text x="40" y="315" font-size="11.5" fill="#5F5E5A">"Not much difference" is not a figure of speech here - it is a 1.2x arithmetic ceiling.</text>
+<text x="40" y="330" font-size="11.5" fill="#5F5E5A">A personal machine re-reads the model per clip; a resident server amortises it.</text>
+</svg>

@@ -1,0 +1,281 @@
+{
+  "schema": "arc-xpu-bench/1",
+  "tag": "b60-h3-duration-ladder",
+  "date": "2026-10-26",
+  "status": "active",
+  "source": "local",
+  "batch": "B60 24 GB 的 H3 时长阶梯补齐（480p 5/10/15/20 秒、720p 10/15 秒、1080p 10 秒），并顺带把「卸载到主机内存」的代价拆开：每步到底搬没搬。5 秒三档沿用 2026-10-20 扫描批（同一 ComfyUI 安装、同一栈、同一 reserve 4）。",
+  "tool": "bench_f_h3.py + ComfyUI /prompt + /history；单步轨迹由服务端 tqdm 累计时刻差分",
+  "env": {
+    "gpu": "Intel Arc Pro B60 24G",
+    "chip": "E211",
+    "subsys": "25421EF7",
+    "board_code": "2542",
+    "board_vendor": "GUNNIR 蓝戟 (PCI vendor 1EF7)",
+    "vram_visible_gib": 23.33,
+    "ecc": "off",
+    "driver": "32.0.101.9150",
+    "cpu": "AMD Ryzen 5 9600X",
+    "ram_gb": 32,
+    "os": "Windows",
+    "pcie": "PCIe 5.0 x8（B60 的链路宽度是刻意设计，不是插槽限制）",
+    "reserve_vram_gb": 4,
+    "dynamic_vram": true,
+    "attention_backend": "sdpa（CUTE 关闭）",
+    "stack_variant": "int8fix"
+  },
+  "workload": {
+    "model": "MiniMax H3",
+    "task": "image-to-video",
+    "steps": 6,
+    "fps": 24,
+    "dit_file": "minimax_h3_fl2va_pruned_int8_convrot.safetensors",
+    "text_encoder_file": "qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors",
+    "sampler": "euler",
+    "scheduler": "simple",
+    "dit_total_mb": 19996.14,
+    "frames_rule": "124 / 243 / 362 / 484 帧分别对应 5 / 10 / 15 / 20 秒"
+  },
+  "ladder": [
+    {
+      "resolution": "864x480",
+      "pixels": 414720,
+      "frames": 124,
+      "duration": "5 秒",
+      "px_frame_m": 51.4,
+      "efficiency_m_per_min": 15.2,
+      "usable_mb": 16488.11,
+      "loaded_mb": 16267.59,
+      "offload_mb": 3728.55,
+      "steady_sit_sec": 11.0,
+      "mean_sit_sec": 11.83,
+      "step1_penalty_sec": 5.0,
+      "server_s": 203.03,
+      "batch": "2026-10-20",
+      "s_per_gb_of_offload": 1.34,
+      "note": "5 秒档取自 2026-10-20 扫描批；其余为 2026-10-26 时长阶梯批"
+    },
+    {
+      "resolution": "864x480",
+      "pixels": 414720,
+      "frames": 243,
+      "duration": "10 秒",
+      "px_frame_m": 100.8,
+      "efficiency_m_per_min": 16.3,
+      "usable_mb": 13356.6,
+      "loaded_mb": 13062.6,
+      "offload_mb": 6933.55,
+      "steady_sit_sec": 33.6,
+      "mean_sit_sec": 36.15,
+      "step1_penalty_sec": 13.5,
+      "server_s": 370.74,
+      "batch": "2026-10-26",
+      "s_per_gb_of_offload": 1.95,
+      "note": "本批"
+    },
+    {
+      "resolution": "864x480",
+      "pixels": 414720,
+      "frames": 362,
+      "duration": "15 秒",
+      "px_frame_m": 150.1,
+      "efficiency_m_per_min": 15.1,
+      "usable_mb": 10225.08,
+      "loaded_mb": 9894.25,
+      "offload_mb": 10101.9,
+      "steady_sit_sec": 69.6,
+      "mean_sit_sec": 72.6,
+      "step1_penalty_sec": 19.0,
+      "server_s": 596.98,
+      "batch": "2026-10-26",
+      "s_per_gb_of_offload": 1.88,
+      "note": "本批"
+    },
+    {
+      "resolution": "864x480",
+      "pixels": 414720,
+      "frames": 484,
+      "duration": "20 秒",
+      "px_frame_m": 200.7,
+      "efficiency_m_per_min": 13.1,
+      "usable_mb": 9557.69,
+      "loaded_mb": 9226.86,
+      "offload_mb": 10769.28,
+      "steady_sit_sec": 118.0,
+      "mean_sit_sec": 122.06,
+      "step1_penalty_sec": 24.0,
+      "server_s": 917.44,
+      "batch": "2026-10-26",
+      "s_per_gb_of_offload": 2.23,
+      "note": "本批"
+    },
+    {
+      "resolution": "1280x720",
+      "pixels": 921600,
+      "frames": 124,
+      "duration": "5 秒",
+      "px_frame_m": 114.3,
+      "efficiency_m_per_min": 16.0,
+      "usable_mb": 12479.32,
+      "loaded_mb": 12148.49,
+      "offload_mb": 7847.65,
+      "steady_sit_sec": 43.0,
+      "mean_sit_sec": 45.33,
+      "step1_penalty_sec": 14.0,
+      "server_s": 427.31,
+      "batch": "2026-10-20",
+      "s_per_gb_of_offload": 1.78,
+      "note": "5 秒档取自 2026-10-20 扫描批；其余为 2026-10-26 时长阶梯批"
+    },
+    {
+      "resolution": "1280x720",
+      "pixels": 921600,
+      "frames": 243,
+      "duration": "10 秒",
+      "px_frame_m": 223.9,
+      "efficiency_m_per_min": 12.1,
+      "usable_mb": 9557.69,
+      "loaded_mb": 9226.86,
+      "offload_mb": 10769.28,
+      "steady_sit_sec": 152.2,
+      "mean_sit_sec": 155.95,
+      "step1_penalty_sec": 20.5,
+      "server_s": 1106.12,
+      "batch": "2026-10-26",
+      "s_per_gb_of_offload": 1.9,
+      "note": "本批"
+    },
+    {
+      "resolution": "1280x720",
+      "pixels": 921600,
+      "frames": 362,
+      "duration": "15 秒",
+      "px_frame_m": 333.6,
+      "efficiency_m_per_min": 9.5,
+      "usable_mb": 9557.69,
+      "loaded_mb": 9226.86,
+      "offload_mb": 10769.28,
+      "steady_sit_sec": 313.5,
+      "mean_sit_sec": 317.11,
+      "step1_penalty_sec": 21.0,
+      "server_s": 2109.98,
+      "batch": "2026-10-26",
+      "s_per_gb_of_offload": 1.95,
+      "note": "本批"
+    },
+    {
+      "resolution": "1920x1088",
+      "pixels": 2088960,
+      "frames": 124,
+      "duration": "5 秒",
+      "px_frame_m": 259.0,
+      "efficiency_m_per_min": 11.7,
+      "usable_mb": 9557.69,
+      "loaded_mb": 9226.86,
+      "offload_mb": 10769.28,
+      "steady_sit_sec": 188.6,
+      "mean_sit_sec": 191.83,
+      "step1_penalty_sec": 19.4,
+      "server_s": 1327.67,
+      "batch": "2026-10-20",
+      "s_per_gb_of_offload": 1.8,
+      "note": "5 秒档取自 2026-10-20 扫描批；其余为 2026-10-26 时长阶梯批"
+    }
+  ],
+  "metrics": {
+    "steady_sit_sec": "第 2 至 6 步的均值（去掉第 1 步的一次性代价）",
+    "mean_sit_sec": "6 步累计平均 —— 也就是 ComfyUI 进度条与跑测器 last_sit 的口径，含第 1 步",
+    "step1_penalty_sec": "第 1 步耗时 − 稳态单步",
+    "efficiency_m_per_min": "px_frame_m ÷ 端到端分钟（越大越省时间）"
+  },
+  "offload_price": {
+    "finding": "第 1 步溢价只跟卸载量走，不跟帧数/分辨率走",
+    "range_s_per_gb": [
+      1.34,
+      2.23
+    ],
+    "typical_s_per_gb": 1.9,
+    "equivalent_gb_per_sec": 0.53,
+    "why_it_matters": "等效 0.5 GB/s 比 PCIe 5.0 x8 的能力（25 GB/s 量级）低一个数量级以上 → 这笔钱花在装载/腾挪逻辑上，不是链路带宽"
+  },
+  "offload_floor": {
+    "usable_mb": 9557.69,
+    "loaded_mb": 9226.86,
+    "offload_cap_mb": 10769.28,
+    "note": "loaded 降到 9,226.86 MB 就不再降，卸载封顶 10,769.28 MB = DiT 总量 19,996.14 − 9,226.86。480p·20 秒、720p·10 秒、720p·15 秒、1080p·5 秒四档撞的是同一个封顶。"
+  },
+  "cross_card": [
+    {
+      "case": "864×480 · 5 秒 · 124 帧",
+      "b60": {
+        "offload_mb": 3728.55,
+        "steady_sit_sec": 11.0
+      },
+      "b65": {
+        "offload_mb": 0.0,
+        "steady_sit_sec": 10.64
+      },
+      "delta_pct": 3.4,
+      "note": "B60 卸 3.7 GB 对 B65 全驻留"
+    },
+    {
+      "case": "1280×720 · 5 秒 · 124 帧",
+      "b60": {
+        "offload_mb": 7847.65,
+        "steady_sit_sec": 43.0
+      },
+      "b65": {
+        "offload_mb": 0.0,
+        "steady_sit_sec": 42.3
+      },
+      "delta_pct": 1.7,
+      "note": ""
+    },
+    {
+      "case": "1280×720 · 15 秒 · 362 帧",
+      "b60": {
+        "offload_mb": 10769.28,
+        "steady_sit_sec": 313.5
+      },
+      "b65": {
+        "offload_mb": 7564.24,
+        "steady_sit_sec": 311.0
+      },
+      "delta_pct": 0.8,
+      "note": "B60 卸载多 42%、链路 x8 对 x16，稳态只差 0.8%"
+    },
+    {
+      "case": "1920×1088 · 5 秒 · 124 帧",
+      "b60": {
+        "offload_mb": 10769.28,
+        "steady_sit_sec": 188.6
+      },
+      "b65": {
+        "offload_mb": 7564.24,
+        "steady_sit_sec": 188.11
+      },
+      "delta_pct": 0.3,
+      "note": ""
+    }
+  ],
+  "failure": {
+    "case": "1920×1088 · 10 秒 · 243 帧 · 518.0 M",
+    "verdict": "torch.OutOfMemoryError: XPU out of memory",
+    "detail": "Tried to allocate 7.89 GiB；GPU 总容量 23.33 GiB、当时只剩 6.65 GiB；落在 omni_xpu_kernel/int8 _tile_int8_linear 的输出缓冲（与本项目记录的 B 类签名一致），Prompt executed in 118.92 s",
+    "reading": "**24 GB 的 1080p 上限是 5 秒**。这不是慢，是装不下 —— 即使 10.77 GB 已经卸到主机内存，第 1 步的 int8 输出缓冲仍差 1.24 GiB",
+    "not_tested": "未在更小 --reserve-vram 下重试；同库既有结论是 reserve 4→1 不改变装载规划，不能指望它补上这 1.24 GiB"
+  },
+  "conclusion": [
+    "🔴 **卸载的钱是「每代一次」，不是「每步都付」**：B65 全驻留档第 1 步只贵 0.02 至 0.05 s；B60 每档第 1 步贵 5 至 24 s，之后五步完全平（±1 s）。",
+    "🔴 **第 1 步溢价 ∝ 卸载量，与帧数/分辨率无关**：同一卸载量 10,769 MB 的四档溢价 19.4 / 20.5 / 21.0 / 24.0 s，拟合 1.3 至 2.2 s/GB，典型 1.9 s/GB（等效 0.53 GB/s）。",
+    "🔴 **稳态那点差与卸载量无关**：卸载 0 → 10.8 GB，差值反而从 3.4% 缩到 0.3%。同分辨率同帧数的直接对照（720p·15 秒）B60 卸 10,769 MB、B65 卸 7,564 MB，稳态 313.5 对 311.0 s（+0.8%）。",
+    "→ 结论：**这条负载上链路宽度与卸载量都不决定稳态速度**；剩下 0.3 至 3.4% 落在「同 20 核、不同 DRAM（456 对 608 GB/s）与时钟」的量级，本项目不拆分（B60 已换下、B65 不在机，做不了同卡对照）。",
+    "→ 对客：**加显存比加链路值** —— 每少卸 1 GB 省约 1.9 s；换更宽的槽在这条负载上量不出来。",
+    "⚠️ 端到端只在同一批内横比：本表 5 秒档来自 2026-10-20、其余来自 2026-10-26，跨批有 ±10 至 15% 日间漂移；单步只动 0.1%。"
+  ],
+  "open_items": [
+    "1.9 s/GB 的等效速率没有模块级证据（eviction 判决 / 逐块搬出 / host 页缓存，未拆）。",
+    "720p·10 秒三连跑单步 148.8 → 152.6 → 155.2（+4.3% 上漂），同档 15 秒三连 313.4/313.6/313.4 稳；上漂原因未查，本表取三连均值。",
+    "不做同卡 x16 对照：B60 物理 x8，B65 不在机。"
+  ]
+}

@@ -1,0 +1,102 @@
+{
+  "schema": "arc-xpu-bench/1",
+  "domain": "memory-bandwidth",
+  "date": "2026-10-27",
+  "tag": "b60-24g-decode-bandwidth",
+  "status": "active",
+  "source": "local",
+  "tool": "bench/harness/gpu_bandwidth.py（Level Zero Sysman 计数器差分）+ llama-bench",
+  "batch": "B60 TF 收尾批（v7）单独取证 · 无并发 · 卡空载起跑 · 原始采样 bench/logs/bw_b60_decode.json",
+  "env": {
+    "gpu": "Intel Arc Pro B60 24G（TF · 200 W 墙）",
+    "chip": "E211",
+    "subsys": "25421EF7",
+    "board_code": "2542",
+    "board_vendor": "GUNNIR 蓝戟 (PCI vendor 1EF7)",
+    "vram_gib": 23.33,
+    "wall_limit_mw": 200000,
+    "driver": "32.0.101.9150",
+    "cpu": "AMD Ryzen 5 9600X",
+    "ram_gb": 32,
+    "llamabench_build": "b11753-vulkan",
+    "backend": "Vulkan",
+    "device_pinned": "-dev Vulkan1（第 0 张是核显，不钉会跑错卡）",
+    "model": "Qwen3.6-35B-A3B Q4_0 · 18.35 GiB · 全驻留",
+    "quant_note": "本 build 默认禁止 Q8_0→Q4_0 重量化，须显式 --allow-requantize；首次失败会留下 10,990,048 B 半截文件，必须先删再重跑",
+    "pagefile_gb": 96
+  },
+  "llamabench": {
+    "tg1024": {
+      "tok_s": 97.16,
+      "sd": 0.25,
+      "note": "长线解码，与带宽采样同一负载，取这一档做换算"
+    },
+    "tg128": {
+      "tok_s": 86.98,
+      "note": "短线解码，首 token 摊薄少 → 偏低。⚠️ 跨卡对照表（B65 89.27 / B70 115.56）用的是 tg128，与本档 tg1024 不可混比"
+    }
+  },
+  "decode_sampling": {
+    "window": "满载前 40 个 1 秒差分样本（第 41 至 50 个是 llama-bench 跑完后的衰减段，已剔除）",
+    "samples_used": 40,
+    "samples_total": 50,
+    "total_gb_s": {
+      "mean": 209.84,
+      "median": 210.12,
+      "max": 210.66,
+      "note": "均值按 40 个样本；中位数与峰值见本对象"
+    },
+    "read_gb_s": {
+      "mean": 189.9,
+      "max": 190.7
+    },
+    "write_gb_s": {
+      "mean": 19.9,
+      "max": 20.0
+    },
+    "util_pct_vs_spec": {
+      "mean": 46.02,
+      "peak": 46.2,
+      "note": "由未取整的 209.84 / 210.66 直接除 456 得出；旧记的「209.94 / 46.04%」是把 209.84 抄成了 209.94，已按日志重算"
+    },
+    "spec_bw_gb_s": 456.0,
+    "tail_decay": {
+      "first": 205.66,
+      "last": 168.68,
+      "note": "衰减段从 206 掉到 168；把 50 个样本一起平均会算成 45.0%，旧记的「191 GB/s / 42%」就是含衰减段的均口径"
+    }
+  },
+  "per_token": {
+    "bytes_gb_at_tg1024": 2.16,
+    "formula": "209.8 GB/s ÷ 97.16 tok/s = 2.16 GB/token",
+    "weights_gb": 18.35,
+    "note": "权重 18.35 GB 全驻留，实测每 token 搬 2.16 GB，差额是 attention / KV / 中间张量"
+  },
+  "cross_card_check": {
+    "b60": {
+      "cores": 20,
+      "bw_gb_s": 456,
+      "decode_tg128": 86.98,
+      "decode_tg1024": 97.16,
+      "util_pct": 46.02
+    },
+    "b65": {
+      "cores": 20,
+      "bw_gb_s": 608,
+      "decode_tg128": 89.27,
+      "util_pct": 32.0
+    },
+    "b70": {
+      "cores": 32,
+      "bw_gb_s": 608,
+      "decode_tg128": 115.56,
+      "util_pct": 42.0
+    },
+    "reading": "解码跟核数与功耗走，不跟带宽走：B65 与 B70 同为 608 GB/s，20 对 32 核差 29.4%；B60 带宽最低（456）却把占用率顶到 46.0%，是全库三张里最高——因为它核少、带宽也少，两头都没有余量"
+  },
+  "unmeasured": [
+    "B60 的 H3 采样期带宽未测（只有 B70 有 4.1% / 20.4% 那组）",
+    "B60 BS 一片没测（卡不在机）"
+  ],
+  "reading": "LLM 解码是带宽型负载：B60 把 456 GB/s 用掉 46.0%，是三张卡里占用率最高的一张；但它每 token 搬的 GB 数与 B70 同量级，说明瓶颈不在搬得多，而在核少、带宽也少"
+}

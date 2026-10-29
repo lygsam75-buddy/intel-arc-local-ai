@@ -1,0 +1,302 @@
+{
+  "schema": "comfyui-xpu-bench/1",
+  "domain": "comfyui-video",
+  "date": "2026-10-19",
+  "tag": "h3_1536x864_b70pw",
+  "status": "active",
+  "source": "local",
+  "tool": "bench_f_h3.py + ComfyUI /prompt + /history",
+  "batch": "B50 出视频分辨率天花板扫描（cold 单轮）",
+  "samples": [
+    {
+      "mode": "cold",
+      "ok": true,
+      "server_sec": 457.61,
+      "last_sit": "48.90 s/it",
+      "sampling_sec": 293.4,
+      "sampling_sec_per_step": 48.9,
+      "n_load": 4,
+      "vram_post_gib": null,
+      "power": {
+        "card_domain": 1,
+        "card_limit_mw": 290000,
+        "avg_w": 225.6,
+        "p50_w": 289.8,
+        "p90_w": 290.5,
+        "peak_w": 310.7,
+        "min_w": 50.9,
+        "energy_j": 103889.9,
+        "span_sec": 459.4,
+        "samples": 460,
+        "peak_basis": "1s",
+        "domains": {
+          "0": {
+            "avg_w": 150.0,
+            "p50_w": 194.5,
+            "p90_w": 195.8,
+            "peak_w": 207.7,
+            "min_w": 26.8,
+            "energy_j": 69064.5,
+            "span_sec": 459.4,
+            "samples": 460,
+            "counter_resets": 0,
+            "peak_basis": "1s"
+          },
+          "1": {
+            "avg_w": 225.6,
+            "p50_w": 289.8,
+            "p90_w": 290.5,
+            "peak_w": 310.7,
+            "min_w": 50.9,
+            "energy_j": 103889.9,
+            "span_sec": 459.4,
+            "samples": 460,
+            "counter_resets": 0,
+            "peak_basis": "1s"
+          },
+          "2": {
+            "avg_w": 2.6,
+            "p50_w": 2.8,
+            "p90_w": 4.0,
+            "peak_w": 20.5,
+            "min_w": 0.0,
+            "energy_j": 1185.7,
+            "span_sec": 459.4,
+            "samples": 460,
+            "counter_resets": 0,
+            "peak_basis": "1s"
+          },
+          "3": {
+            "avg_w": 0.0,
+            "p50_w": 0.0,
+            "p90_w": 0.0,
+            "peak_w": 0.0,
+            "min_w": 0.0,
+            "energy_j": 0.0,
+            "span_sec": 459.4,
+            "samples": 460,
+            "counter_resets": 0,
+            "peak_basis": "1s"
+          }
+        },
+        "busy_threshold_w": 232.0,
+        "busy_share": 0.7
+      }
+    },
+    {
+      "mode": "fresh",
+      "ok": true,
+      "server_sec": 440.3,
+      "last_sit": "48.68 s/it",
+      "sampling_sec": 292.08,
+      "sampling_sec_per_step": 48.68,
+      "n_load": 4,
+      "vram_post_gib": null,
+      "power": {
+        "card_domain": 1,
+        "card_limit_mw": 290000,
+        "avg_w": 232.6,
+        "p50_w": 289.8,
+        "p90_w": 290.5,
+        "peak_w": 314.0,
+        "min_w": 51.2,
+        "energy_j": 103135.1,
+        "span_sec": 442.4,
+        "samples": 443,
+        "peak_basis": "1s",
+        "domains": {
+          "0": {
+            "avg_w": 154.8,
+            "p50_w": 194.5,
+            "p90_w": 195.5,
+            "peak_w": 205.4,
+            "min_w": 27.0,
+            "energy_j": 68650.6,
+            "span_sec": 442.4,
+            "samples": 443,
+            "counter_resets": 0,
+            "peak_basis": "1s"
+          },
+          "1": {
+            "avg_w": 232.6,
+            "p50_w": 289.8,
+            "p90_w": 290.5,
+            "peak_w": 314.0,
+            "min_w": 51.2,
+            "energy_j": 103135.1,
+            "span_sec": 442.4,
+            "samples": 443,
+            "counter_resets": 0,
+            "peak_basis": "1s"
+          },
+          "2": {
+            "avg_w": 2.7,
+            "p50_w": 2.9,
+            "p90_w": 3.9,
+            "peak_w": 20.9,
+            "min_w": 0.0,
+            "energy_j": 1206.9,
+            "span_sec": 442.4,
+            "samples": 443,
+            "counter_resets": 0,
+            "peak_basis": "1s"
+          },
+          "3": {
+            "avg_w": 0.0,
+            "p50_w": 0.0,
+            "p90_w": 0.0,
+            "peak_w": 0.0,
+            "min_w": 0.0,
+            "energy_j": 0.0,
+            "span_sec": 442.4,
+            "samples": 443,
+            "counter_resets": 0,
+            "peak_basis": "1s"
+          }
+        },
+        "busy_threshold_w": 232.0,
+        "busy_share": 0.727
+      }
+    }
+  ],
+  "summary": {
+    "n_total": 2,
+    "n_ok": 2,
+    "n_fail": 0,
+    "server_sec_mean": 448.96,
+    "power": {
+      "basis": "整卡电源域 · 能耗计数器求差 · 均值覆盖整轮（含装载）",
+      "card_domain": 1,
+      "card_limit_mw": 290000,
+      "n_rounds": 2,
+      "avg_w_min": 225.6,
+      "avg_w_max": 232.6,
+      "p90_w_min": 290.5,
+      "p90_w_max": 290.5,
+      "peak_w_max": 314.0,
+      "peak_basis": "1s",
+      "energy_j_max": 103889.9,
+      "counter_resets_max": 0,
+      "busy_share_mean": 0.714
+    }
+  },
+  "workload": {
+    "model": "MiniMax H3",
+    "task": "image-to-video",
+    "steps": 6,
+    "duration_sec": 5.0,
+    "frames": 124,
+    "fps": 24,
+    "duration_sec_exact": 5.167,
+    "selector_megapixels": null,
+    "width": 1536,
+    "height": 864,
+    "resolution": "1536x864",
+    "dit_file": "minimax_h3_fl2va_pruned_int8_convrot.safetensors",
+    "text_encoder_file": "qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors",
+    "sampler": "euler",
+    "scheduler": "simple"
+  },
+  "env": {
+    "gpu": "Intel Arc Pro B70 32G",
+    "chip": "E223",
+    "subsys": "27421EF7",
+    "device_id": "PCI\\VEN_8086&DEV_E223&SUBSYS_27421EF7&REV_00",
+    "board_vendor": "GUNNIR 蓝戟 (PCI vendor 1EF7)",
+    "board_code": "2742",
+    "vram_visible_gib": 31.16,
+    "ecc": "off",
+    "driver": "32.0.101.8976",
+    "cpu": "AMD Ryzen 5 9600X",
+    "ram_gb": 32,
+    "os": "Windows",
+    "attention_backend": "sdpa (CUTE 关闭；CUTE 开着跑 H3 音频封装必崩)",
+    "stack_variant": "int8fix",
+    "int8fix_env": {
+      "OMNIXPU_INT8_COMPUTE": "1",
+      "OMNIXPU_INT8_SIGFIX": "1"
+    },
+    "env_confidence": {
+      "gpu": "recorded",
+      "vram_visible_gib": "recorded",
+      "ecc": "recorded",
+      "cpu": "recorded",
+      "ram_gb": "recorded",
+      "os": "recorded",
+      "width": "recorded",
+      "height": "recorded",
+      "resolution": "recorded",
+      "steps": "recorded",
+      "attention_backend": "recorded",
+      "chip": "recorded",
+      "subsys": "recorded",
+      "device_id": "recorded",
+      "board_vendor": "recorded",
+      "board_code": "recorded",
+      "driver": "inferred",
+      "reserve_vram_gb": "inferred"
+    },
+    "env_evidence": "AIB 身份由服务器日志的 `Device: xpu:0 ...` 行直接证明：Intel(R) Arc(TM) Pro B70 Graphics 出现在 <bench_f>\\server_h3_1536x864_b70pw.log。这四字段原为按注册表 PCI 枚举推断（backfill_aib.py），今有运行日志佐证，故 env_confidence 升为 recorded。"
+  },
+  "log_evidence": {
+    "status": "annotated",
+    "note": "本记录的时间分解与卡型号由 2 条服务器日志取证（<bench_f>\\server_h3_1536x864_b70pw.log）：每条日志的 `Prompt executed in X seconds` 均与对应样本的 server_sec 在 1.0s 容差内对上，确认是同一轮；日志中的 `Device: xpu:0 ...` 行是卡型号的直接证据。"
+  },
+  "timing_breakdown": {
+    "note": "按样本分列（同一组内不同步数/轮次）",
+    "runs": [
+      {
+        "source": "<bench_f>\\server_h3_1536x864_b70pw.log",
+        "prompt_executed_sec": 457.63,
+        "matched_sample": {
+          "steps": null,
+          "round": null,
+          "server_sec": 457.61
+        },
+        "dit_load_mode": "partially",
+        "dit_loaded_mb": 17064,
+        "dit_offloaded_mb": 2931,
+        "steps": 6,
+        "step_sec_trace": [
+          53,
+          48,
+          48,
+          48,
+          48,
+          48
+        ],
+        "sampling_sec": 293,
+        "sampling_sec_per_step": 48.83,
+        "fixed_overhead_sec": 164.6,
+        "sampling_share_pct": 64.0,
+        "overhead_base": "samples.server_sec (端到端)"
+      },
+      {
+        "source": "<bench_f>\\server_h3_1536x864_b70pw.log",
+        "prompt_executed_sec": 440.32,
+        "matched_sample": {
+          "steps": null,
+          "round": null,
+          "server_sec": 457.61
+        },
+        "dit_load_mode": "partially",
+        "dit_loaded_mb": 17064,
+        "dit_offloaded_mb": 2931,
+        "steps": 6,
+        "step_sec_trace": [
+          51,
+          48,
+          48,
+          48,
+          49,
+          48
+        ],
+        "sampling_sec": 292,
+        "sampling_sec_per_step": 48.67,
+        "fixed_overhead_sec": 165.6,
+        "sampling_share_pct": 63.8,
+        "overhead_base": "samples.server_sec (端到端)"
+      }
+    ]
+  }
+}

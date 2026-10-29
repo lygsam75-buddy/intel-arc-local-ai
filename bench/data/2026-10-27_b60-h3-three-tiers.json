@@ -1,0 +1,148 @@
+{
+  "schema": "arc-xpu-bench/1",
+  "tag": "b60-24g-h3-three-tiers-5s",
+  "date": "2026-10-27",
+  "status": "active",
+  "source": "B60 24G 实机实测（TF SKU，双槽 200 W）",
+  "batch": "2026-10-27 三档补测批",
+  "tool": "bench_f_h3.py（--expect-card B60 · 6 步 · 124 帧 · --fresh 1 --cached 1 · COMFY_PORT=8190）",
+  "env": {
+    "gpu": "Intel(R) Arc(TM) Pro B60 Graphics",
+    "gpu_subsys": "25421EF7（GUNNIR 蓝戟 · 板型号 2542）",
+    "vram_gib": 23.33,
+    "wall_limit_mw": 200000,
+    "comfyui": "D:/ComfyUI-qwen21",
+    "reserve_vram": 4,
+    "dynamic_vram": true,
+    "driver": "9150",
+    "vram_note": "23.33 GiB 由 torch.xpu.get_device_properties 报出，本批未核实 ECC 开关状态"
+  },
+  "workload": "MiniMax H3 文生视频 · 6 步 · 5 秒（124 帧）· 端到端含装载",
+  "purpose": "此前这三格是按 24 GB 预算模拟的（--reserve-vram 11.83），本次在 B60 实机补测，把模拟值换成实测值",
+  "tiers": [
+    {
+      "resolution": "1024x576",
+      "pixels": 589824,
+      "frames": 124,
+      "duration_s": 5.0,
+      "px_frame_m": 73.14,
+      "usable_mb": 15103.26,
+      "loaded_mb": 14882.74,
+      "offload_mb": 5113.41,
+      "cold": {
+        "server_s": 276.55,
+        "mean_sit_s": 21.62,
+        "p90_w": 152.9,
+        "energy_j": 26954.3
+      },
+      "fresh": {
+        "server_s": 250.86,
+        "mean_sit_s": 20.49,
+        "p90_w": 153.5,
+        "energy_j": 26278.1
+      },
+      "cached": {
+        "server_s": 253.56,
+        "mean_sit_s": 20.56,
+        "p90_w": 153.2,
+        "energy_j": 26409.0
+      },
+      "step1_penalty_s": 8.0,
+      "steady_sit_s": 19.0,
+      "s_per_gb": 1.56,
+      "efficiency_m_per_min": 15.9
+    },
+    {
+      "resolution": "1152x648",
+      "pixels": 746496,
+      "frames": 124,
+      "duration_s": 5.0,
+      "px_frame_m": 92.57,
+      "usable_mb": 13937.07,
+      "loaded_mb": 13716.54,
+      "offload_mb": 6279.6,
+      "cold": {
+        "server_s": 320.91,
+        "mean_sit_s": 30.52,
+        "p90_w": 151.8,
+        "energy_j": 35078.2
+      },
+      "fresh": {
+        "server_s": 307.42,
+        "mean_sit_s": 29.89,
+        "p90_w": 152.2,
+        "energy_j": 34749.1
+      },
+      "cached": {
+        "server_s": 306.81,
+        "mean_sit_s": 29.75,
+        "p90_w": 153.5,
+        "energy_j": 34561.0
+      },
+      "step1_penalty_s": 11.0,
+      "steady_sit_s": 28.0,
+      "s_per_gb": 1.75,
+      "efficiency_m_per_min": 17.3
+    },
+    {
+      "resolution": "1536x864",
+      "pixels": 1327104,
+      "frames": 124,
+      "duration_s": 5.0,
+      "px_frame_m": 164.56,
+      "usable_mb": 9557.69,
+      "loaded_mb": 9226.86,
+      "offload_mb": 10769.28,
+      "cold": {
+        "server_s": 656.66,
+        "mean_sit_s": 84.9,
+        "p90_w": 149.6,
+        "energy_j": 84814.8
+      },
+      "fresh": {
+        "server_s": 653.4,
+        "mean_sit_s": 84.79,
+        "p90_w": 149.7,
+        "energy_j": 84904.0
+      },
+      "cached": {
+        "server_s": 648.17,
+        "mean_sit_s": 84.44,
+        "p90_w": 149.5,
+        "energy_j": 84821.9
+      },
+      "step1_penalty_s": 22.0,
+      "steady_sit_s": 81.0,
+      "s_per_gb": 2.04,
+      "efficiency_m_per_min": 15.0
+    }
+  ],
+  "conclusions": [
+    "效率峰从 1280x720 移到 1152x648：17.3 对 16.1（+7.5%），时间少 25%（320.91 对 427.31 s），代价是画幅小 19%（0.75 对 0.92 MP）",
+    "模拟值系统性高估端到端 19% 至 45%（576p +45.2%、648p +38.6%、864p +17.4%）→ 5 秒档帧数少、单步本身就快，按 720p 的每像素代价外推会算贵",
+    "第 1 步溢价只跟卸载量走：8 / 11 / 22 s 对应 5,113 / 6,280 / 10,769 MB → 1.56 / 1.75 / 2.04 s per GB，与 2026-10-26 八档拟合的 1.3~2.2 s/GB 同区间",
+    "三档 P90 都落在 149.5 至 153.5 W，远低于 200 W 墙（75~77%）→ 5 秒档不是功耗受限档",
+    "卸载量随像素单调上升并在 1536x864 触顶 10,769.28 MB（loaded 9,226.86 MB 不再降）"
+  ],
+  "open_items": [
+    "1152x648 不是 16 的倍数（648/16=40.5），若内部补边到 656 行，标称像素会少算约 1.2% —— 未核实实际 latent 尺寸，不影响 13% 的效率差",
+    "三档都只跑 3 轮（1 冷启 + 2 热态），长期漂移未测"
+  ],
+  "files": {
+    "jsonl": [
+      "_bench_f/bench_f_h3_1024x576_b60d05.jsonl",
+      "_bench_f/bench_f_h3_1152x648_b60d05.jsonl",
+      "_bench_f/bench_f_h3_1536x864_b60d05.jsonl"
+    ],
+    "server_log": [
+      "_bench_f/server_h3_1024x576_b60d05.log",
+      "_bench_f/server_h3_1152x648_b60d05.log",
+      "_bench_f/server_h3_1536x864_b60d05.log"
+    ],
+    "power_csv": [
+      "_bench_f/power_h3_1024x576_b60d05.csv",
+      "_bench_f/power_h3_1152x648_b60d05.csv",
+      "_bench_f/power_h3_1536x864_b60d05.csv"
+    ]
+  }
+}

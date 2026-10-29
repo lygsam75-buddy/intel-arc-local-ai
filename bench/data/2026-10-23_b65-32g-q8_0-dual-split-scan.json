@@ -1,0 +1,346 @@
+{
+  "schema": "arc-xpu-bench/1",
+  "tag": "b65-32g-q8_0-dual-split-scan",
+  "date": "2026-10-23",
+  "source": "local",
+  "env": {
+    "os": "Windows-11-10.0.26300-SP0",
+    "cpu": "AMD Ryzen 5 9600X 6-Core",
+    "gpu": "2x Intel Arc Pro B65 32G",
+    "vram_visible_gib": 31.16,
+    "driver": "9150",
+    "ecc": "off",
+    "engine": "llama.cpp",
+    "engine_version": "0.6.0-dev (build 11431, commit c25030496)",
+    "backend": "SYCL",
+    "cpu_threads": 6
+  },
+  "model": {
+    "name": "Qwen3.6-35B-A3B-Q8_0",
+    "quant": "Q8_0",
+    "size_gib": 34.37,
+    "file": "Qwen3.6-35B-A3B-Q8_0.gguf",
+    "sha256": "d1a395809f65a43a13ad119eb4e7acdef1ac6d68120f39902c8ab96e72794a59"
+  },
+  "measure": {
+    "harness": "llama-server /v1/chat/completions",
+    "prompt_tokens": 19,
+    "gen_tokens": 128,
+    "reps": 3,
+    "statistic": "median",
+    "note": "llama-bench 的 -dev 语义是逐设备各跑一遍，做不了合并双卡跑，故双卡只能用 llama-server 量"
+  },
+  "samples": [
+    {
+      "tag": "ts5050",
+      "split_mode": "layer",
+      "tensor_split": "50,50",
+      "device_selector": "level_zero:0,1",
+      "dev": "SYCL0,SYCL1",
+      "ngl": 99,
+      "ctx": 4096,
+      "ctk": "q8_0",
+      "ctv": "q8_0",
+      "fa": "on",
+      "loaded": true,
+      "free_before_gib": [
+        31.16,
+        31.16
+      ],
+      "free_after_gib": [
+        13.69,
+        15.1
+      ],
+      "log": "dsb_ts5050.log",
+      "used_gib": [
+        17.47,
+        16.06
+      ],
+      "used_total_gib": 33.53,
+      "probe_http": 200,
+      "runs": [
+        {
+          "decode_tok_s": 31.97,
+          "decode_n": 128,
+          "prefill_tok_s": 44.9,
+          "prefill_n": 19
+        },
+        {
+          "decode_tok_s": 36.4,
+          "decode_n": 128,
+          "prefill_tok_s": 59.4,
+          "prefill_n": 19
+        },
+        {
+          "decode_tok_s": 35.14,
+          "decode_n": 128,
+          "prefill_tok_s": 60.78,
+          "prefill_n": 19
+        }
+      ],
+      "decode_tok_s": 35.14,
+      "decode_min": 31.97,
+      "decode_max": 36.4,
+      "prefill_tok_s": 59.4
+    },
+    {
+      "tag": "ts7030",
+      "split_mode": "layer",
+      "tensor_split": "70,30",
+      "device_selector": "level_zero:0,1",
+      "dev": "SYCL0,SYCL1",
+      "ngl": 99,
+      "ctx": 4096,
+      "ctk": "q8_0",
+      "ctv": "q8_0",
+      "fa": "on",
+      "loaded": true,
+      "free_before_gib": [
+        31.16,
+        31.16
+      ],
+      "free_after_gib": [
+        6.96,
+        21.83
+      ],
+      "log": "dsb_ts7030.log",
+      "used_gib": [
+        24.2,
+        9.33
+      ],
+      "used_total_gib": 33.53,
+      "probe_http": 200,
+      "runs": [
+        {
+          "decode_tok_s": 34.98,
+          "decode_n": 128,
+          "prefill_tok_s": 51.29,
+          "prefill_n": 19
+        },
+        {
+          "decode_tok_s": 36.91,
+          "decode_n": 128,
+          "prefill_tok_s": 62.1,
+          "prefill_n": 19
+        },
+        {
+          "decode_tok_s": 36.44,
+          "decode_n": 128,
+          "prefill_tok_s": 61.14,
+          "prefill_n": 19
+        }
+      ],
+      "decode_tok_s": 36.44,
+      "decode_min": 34.98,
+      "decode_max": 36.91,
+      "prefill_tok_s": 61.14
+    },
+    {
+      "tag": "ts8515",
+      "split_mode": "layer",
+      "tensor_split": "85,15",
+      "device_selector": "level_zero:0,1",
+      "dev": "SYCL0,SYCL1",
+      "ngl": 99,
+      "ctx": 4096,
+      "ctk": "q8_0",
+      "ctv": "q8_0",
+      "fa": "on",
+      "loaded": true,
+      "free_before_gib": [
+        31.16,
+        31.16
+      ],
+      "free_after_gib": [
+        1.91,
+        26.88
+      ],
+      "log": "dsb_ts8515.log",
+      "used_gib": [
+        29.25,
+        4.28
+      ],
+      "used_total_gib": 33.53,
+      "probe_http": 200,
+      "runs": [
+        {
+          "decode_tok_s": 35.74,
+          "decode_n": 128,
+          "prefill_tok_s": 42.41,
+          "prefill_n": 19
+        },
+        {
+          "decode_tok_s": 37.3,
+          "decode_n": 128,
+          "prefill_tok_s": 62.56,
+          "prefill_n": 19
+        },
+        {
+          "decode_tok_s": 37.47,
+          "decode_n": 128,
+          "prefill_tok_s": 63.38,
+          "prefill_n": 19
+        }
+      ],
+      "decode_tok_s": 37.3,
+      "decode_min": 35.74,
+      "decode_max": 37.47,
+      "prefill_tok_s": 62.56
+    },
+    {
+      "tag": "row",
+      "cards": 2,
+      "device_selector": "level_zero:0,1",
+      "dev": "SYCL0,SYCL1",
+      "ngl": 99,
+      "ctx": 4096,
+      "ctk": "q8_0",
+      "ctv": "q8_0",
+      "fa": "on",
+      "model": "Qwen3.6-35B-A3B-Q8_0.gguf",
+      "loaded": false,
+      "free_before_gib": [
+        31.16,
+        31.16
+      ],
+      "free_after_gib": null,
+      "log": "dsb_row.log",
+      "split_mode": "row",
+      "tensor_split": "50,50",
+      "failure": "(进程退出，日志无 OOM 行)"
+    },
+    {
+      "tag": "row7030",
+      "cards": 2,
+      "device_selector": "level_zero:0,1",
+      "dev": "SYCL0,SYCL1",
+      "ngl": 99,
+      "ctx": 4096,
+      "ctk": "q8_0",
+      "ctv": "q8_0",
+      "fa": "on",
+      "model": "Qwen3.6-35B-A3B-Q8_0.gguf",
+      "loaded": false,
+      "free_before_gib": [
+        31.16,
+        31.16
+      ],
+      "free_after_gib": null,
+      "log": "dsb_row7030.log",
+      "split_mode": "row",
+      "tensor_split": "70,30",
+      "failure": "(进程退出，日志无 OOM 行)"
+    },
+    {
+      "tag": "solo37",
+      "cards": 1,
+      "device_selector": "level_zero:0",
+      "dev": "SYCL0",
+      "ngl": 37,
+      "ctx": 4096,
+      "ctk": "q8_0",
+      "ctv": "q8_0",
+      "fa": "on",
+      "model": "Qwen3.6-35B-A3B-Q8_0.gguf",
+      "loaded": true,
+      "free_before_gib": [
+        31.16,
+        31.16
+      ],
+      "free_after_gib": [
+        0.38,
+        31.16
+      ],
+      "log": "dsb_solo37.log",
+      "used_gib": [
+        30.78,
+        0.0
+      ],
+      "used_total_gib": 30.78,
+      "runs": [
+        {
+          "decode_tok_s": 20.12,
+          "decode_n": 128,
+          "prefill_tok_s": 11.38,
+          "prefill_n": 19
+        },
+        {
+          "decode_tok_s": 31.46,
+          "decode_n": 128,
+          "prefill_tok_s": 57.78,
+          "prefill_n": 19
+        },
+        {
+          "decode_tok_s": 31.92,
+          "decode_n": 128,
+          "prefill_tok_s": 56.54,
+          "prefill_n": 19
+        }
+      ],
+      "decode_tok_s": 31.46,
+      "decode_min": 20.12,
+      "decode_max": 31.92,
+      "prefill_tok_s": 56.54
+    },
+    {
+      "tag": "solo99",
+      "cards": 1,
+      "device_selector": "level_zero:0",
+      "dev": "SYCL0",
+      "ngl": 99,
+      "ctx": 4096,
+      "ctk": "q8_0",
+      "ctv": "q8_0",
+      "fa": "on",
+      "model": "Qwen3.6-35B-A3B-Q8_0.gguf",
+      "loaded": true,
+      "free_before_gib": [
+        31.16,
+        31.16
+      ],
+      "free_after_gib": [
+        0.02,
+        31.16
+      ],
+      "log": "dsb_solo99.log",
+      "used_gib": [
+        31.14,
+        0.0
+      ],
+      "used_total_gib": 31.14,
+      "runs": [
+        {
+          "decode_tok_s": 13.3,
+          "decode_n": 128,
+          "prefill_tok_s": 6.93,
+          "prefill_n": 19
+        },
+        {
+          "decode_tok_s": 13.8,
+          "decode_n": 128,
+          "prefill_tok_s": 7.1,
+          "prefill_n": 19
+        },
+        {
+          "decode_tok_s": 13.81,
+          "decode_n": 128,
+          "prefill_tok_s": 6.96,
+          "prefill_n": 19
+        }
+      ],
+      "decode_tok_s": 13.8,
+      "decode_min": 13.3,
+      "decode_max": 13.81,
+      "prefill_tok_s": 6.96
+    }
+  ],
+  "summary": {
+    "dual_layer_5050": 35.14,
+    "dual_layer_7030": 36.44,
+    "dual_layer_8515": 37.3,
+    "dual_row": "load-fail",
+    "solo_ngl37": 31.46,
+    "solo_ngl99_spill": 13.8
+  },
+  "notes": "Q8_0 34.37 GiB 双卡 -sm layer 三档 -ts 与单卡同口径对照。结论一：双卡拆层不慢，35.14~37.30 tok/s，比单卡全驻 31.46 快 12~19%，比单卡 spill 13.80 快 2.5~2.7 倍。结论二：-ts 比例几乎不影响速度（35.14 -> 36.44 -> 37.30，微升只因更多层落在更快的 CPU 直连 x16 卡上），说明瓶颈不是「跨卡次数 / 同步开销」。结论三：-sm row 在本 build 上加载即失败（ggml-backend.cpp:1081 断言，SYCL_Split buffer 无法运行 NONE 操作），负结果照记。更正：2026-10-23 早先记的「双卡拆层 6.37 tok/s」是 llama-bench 逐设备跑法下的卡 1（芯片组 x4）单卡成绩，不是双卡。"
+}

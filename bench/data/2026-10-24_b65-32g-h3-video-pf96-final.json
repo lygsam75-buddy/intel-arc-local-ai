@@ -1,0 +1,108 @@
+{
+  "schema": "arc-xpu-bench/1",
+  "tag": "b65-32g-h3-video-pf96-final",
+  "date": "2026-10-24",
+  "source": "local",
+  "env": {
+    "gpu": "Intel Arc Pro B65 32G（卡 0，CPU 直连 x16，level_zero:0）",
+    "vram_visible_gib": 31.16,
+    "ram_gib": 31.11,
+    "pagefile_layout": "E: 98304 MB 单文件（固定，初始 = 最大），重启后落地",
+    "pagefile_total_mb": 98304,
+    "commit_limit_gib": 127.11,
+    "engine": "ComfyUI 0.39.0 · torch 2.12.0+xpu · omni_xpu_kernel 0.2.0b2+torch212.bmg · Python 3.13.12",
+    "driver": "9150",
+    "ecc": "off",
+    "safety": "Job Object 100 GiB；外部看门狗 2 s 采样 / 88% 自动杀（未触发）"
+  },
+  "workload": {
+    "model": "MiniMax H3",
+    "steps": 6,
+    "duration_sec": 5.0,
+    "reserve_vram_gb": 4,
+    "command": "COMFY_PORT=8190 bench_f_h3.py --steps 6 --duration 5 --reserve-vram 4",
+    "note": "1920x1088 用 --fresh 0 --cached 0（只跑冷启一轮）；480p / 720p 用 --fresh 1（冷 + 热两轮）。"
+  },
+  "cases": [
+    {
+      "name": "864x480",
+      "cold_s": 322.37,
+      "warm_s": 301.69,
+      "sit_cold": 11.03,
+      "sit_warm": 10.69,
+      "fixed_overhead_s": 256,
+      "sampling_share": 0.205,
+      "commit_peak_gib": 88.24,
+      "commit_peak_frac": 0.694,
+      "loads": 4,
+      "energy_j": 8566.0
+    },
+    {
+      "name": "1280x720",
+      "cold_s": 538.09,
+      "warm_s": 494.21,
+      "sit_cold": 42.69,
+      "sit_warm": 42.48,
+      "fixed_overhead_s": 282,
+      "sampling_share": 0.476,
+      "commit_peak_gib": 89.18,
+      "commit_peak_frac": 0.702,
+      "loads": 4,
+      "energy_j": 21512.5
+    },
+    {
+      "name": "1920x1088",
+      "cold_s": 1429.91,
+      "warm_s": null,
+      "sit_cold": 191.44,
+      "sit_warm": null,
+      "fixed_overhead_s": 281,
+      "sampling_share": 0.803,
+      "commit_peak_gib": 95.61,
+      "commit_peak_frac": 0.752,
+      "loads": 4,
+      "job_peak_gib": 83.72,
+      "energy_j": 9779.9
+    }
+  ],
+  "compare_vs_2026_10_21": {
+    "then_config": "e: 65536 / 131072（初始 64 GB、上限 128 GB，系统自扩到 ~96 GB）",
+    "cold_then": {
+      "864x480": 227.71,
+      "1280x720": 437.11,
+      "1920x1088": 1338.33
+    },
+    "sit_then": {
+      "864x480": 10.65,
+      "1280x720": 42.3,
+      "1920x1088": 188.64
+    },
+    "cold_delta_pct": {
+      "864x480": 41.6,
+      "1280x720": 23.1,
+      "1920x1088": 6.8
+    },
+    "sit_delta_pct": {
+      "864x480": 3.6,
+      "1280x720": 0.9,
+      "1920x1088": 1.5
+    },
+    "fixed_overhead_then_s": {
+      "864x480": 164,
+      "1280x720": 183,
+      "1920x1088": 194
+    },
+    "fixed_overhead_now_s": {
+      "864x480": 256,
+      "1280x720": 282,
+      "1920x1088": 281
+    }
+  },
+  "conclusion": [
+    "✅ **交付配置（单文件 96 GB 页面文件 / E:）三档全部跑通**：480p 322.37 / 720p 538.09 / 1080p 1,429.91 s（冷启）。",
+    "🔴 **端到端比 10-21 慢 6.8~41.6%，单步只差 0.9~3.6%** → 差异全部是固定开销：+92 / +99 / +87 s，**与分辨率无关**。",
+    "⚡ **「页面文件布局不同」这个猜测被否掉**：三文件拼法 318.57 / 518.21 s → 单文件 322.37 / 538.09 s，差异 ≤4%。成因未定位。",
+    "✅ **跨配置只能比单步**：10.65→11.03、42.30→42.69、188.64→191.44。",
+    "⭐ 峰值提交 88.24 / 89.18 / 95.61 GiB，对应 127.11 GiB 上限的 69% / 70% / 75% —— 96 GB 页面文件留出 24~30% 余量。"
+  ]
+}

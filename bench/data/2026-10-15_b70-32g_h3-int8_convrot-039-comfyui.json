@@ -1,0 +1,420 @@
+{
+  "schema": "comfyui-xpu-bench/1",
+  "domain": "comfyui-video",
+  "status": "active",
+  "source": "local",
+  "tool": "sweep_039*.py / smoke_039*.py + ComfyUI /prompt + /history",
+  "batch": "H3 冒烟（含 fresh/warm 口径）",
+  "tag": "h3-int8_convrot",
+  "samples": [
+    {
+      "role": "cold",
+      "ok": true,
+      "server_sec": 231.58,
+      "wall_sec": 234.41,
+      "tag_raw": "h3_480x864",
+      "seed": null
+    },
+    {
+      "role": "warm",
+      "ok": true,
+      "server_sec": 56.08,
+      "wall_sec": 58.09,
+      "tag_raw": "h3_480x864_warm",
+      "seed": null
+    },
+    {
+      "role": "warm",
+      "ok": true,
+      "server_sec": 55.77,
+      "wall_sec": 56.26,
+      "tag_raw": "h3_480x864_warm2",
+      "seed": null
+    },
+    {
+      "role": "fresh",
+      "ok": true,
+      "server_sec": 235.96,
+      "wall_sec": 238.87,
+      "tag_raw": "h3_480x864_fresh",
+      "seed": null
+    },
+    {
+      "role": "fresh",
+      "ok": true,
+      "server_sec": 203.55,
+      "wall_sec": 206.52,
+      "tag_raw": "h3_480x864_fresh",
+      "seed": null
+    },
+    {
+      "role": "cold",
+      "ok": true,
+      "server_sec": 303.29,
+      "wall_sec": 306.64,
+      "tag_raw": "h3_clean2_sdpa",
+      "seed": null
+    },
+    {
+      "role": "cold",
+      "ok": true,
+      "server_sec": 265.5,
+      "wall_sec": 268.55,
+      "tag_raw": "h3_clean3_sdpa",
+      "seed": null
+    },
+    {
+      "role": "cold",
+      "ok": true,
+      "server_sec": 234.94,
+      "wall_sec": 237.79,
+      "tag_raw": "h3_clean3_sdpa",
+      "seed": null
+    },
+    {
+      "role": "cold",
+      "ok": true,
+      "server_sec": 218.12,
+      "wall_sec": 220.84,
+      "tag_raw": "h3_clean3_sdpa",
+      "seed": null
+    }
+  ],
+  "summary": {
+    "n_ok": 9,
+    "n_fail": 0,
+    "n_total": 9,
+    "server_sec_mean": 200.53,
+    "server_sec_min": 55.77,
+    "server_sec_max": 303.29,
+    "cold_sec_mean": 250.69,
+    "warm_sec_mean": 55.92,
+    "fresh_sec_mean": 219.75
+  },
+  "workload": {
+    "model": "MiniMax H3",
+    "task": "image-to-video",
+    "steps": 6,
+    "dit_file": "minimax_h3_fl2va_pruned_int8_convrot.safetensors",
+    "dit_size_gib": 19.522,
+    "text_encoder_file": "qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors",
+    "text_encoder_size_gib": 13.933,
+    "vae_file": "minimax_h3_video_vae_fp16.safetensors",
+    "vae_size_gib": 4.625,
+    "sampler": "euler",
+    "scheduler": "simple",
+    "width": 864,
+    "height": 480,
+    "resolution": "864x480",
+    "frames": 124,
+    "fps": 24,
+    "duration_sec_exact": 5.167,
+    "selector_megapixels": 0.4
+  },
+  "env": {
+    "cpu": "AMD Ryzen 5 9600X",
+    "ram_gb": 32,
+    "os": "Windows",
+    "gpu": "Intel Arc Pro B70 32G",
+    "chip": "E223",
+    "subsys": "27421EF7",
+    "device_id": "PCI\\VEN_8086&DEV_E223&SUBSYS_27421EF7&REV_00",
+    "board_vendor": "GUNNIR 蓝戟 (PCI vendor 1EF7)",
+    "board_code": "2742",
+    "vram_visible_gib": 31.16,
+    "ecc": "off",
+    "driver": "32.0.101.8976",
+    "app": "ComfyUI",
+    "app_version": "0.39.0",
+    "comfy_kitchen": "0.2.37",
+    "comfy_kitchen_xpu_runtime": "0.2.33",
+    "backend": "XPU (SYCL)",
+    "stack_variant": "int8fix",
+    "int8fix_env": {
+      "OMNIXPU_INT8_COMPUTE": "1",
+      "OMNIXPU_INT8_SIGFIX": "1"
+    },
+    "comfyui_patch": "OMNIXPU_INT8_COMPUTE=1（能力声明）+ 签名适配",
+    "comfyui_patch_note": "0.39 的 supports_int8_compute() 对 is_intel_xpu() 硬编码 return False，且 ComfyUI-OmniXPU 把 comfy_kitchen 路由到 vendored 0.2.33 快照（8 参），而 0.39 按 12 参契约调用 —— 两处都要补，缺一不可。**与 2026-10-14 那批（torch213 内核 / 无 int8fix）不是同一栈。**",
+    "stack_note": "本批来自 2026-10-14/15 的 0.39 升级 A/B（`_upgrade/`），全部带 omni_int8fix 且用 **torch212.bmg 内核**；仓库里 2026-10-14 那批 B70 出图数据是 **torch213.bmg 内核**，**两者不可并排引用**——内核变体就是本实验的唯一变量。",
+    "kernel_variant": "omni_xpu_kernel 0.2.0b2+torch212.bmg",
+    "attention_backend": "inferred: 未留 boot 日志",
+    "env_confidence": {
+      "gpu": "recorded",
+      "chip": "recorded",
+      "subsys": "recorded",
+      "device_id": "recorded",
+      "board_vendor": "recorded",
+      "board_code": "recorded",
+      "driver": "inferred",
+      "vram_visible_gib": "recorded",
+      "ecc": "recorded",
+      "ram_gb": "recorded",
+      "cpu": "recorded",
+      "os": "recorded",
+      "app": "recorded",
+      "app_version": "recorded",
+      "comfy_kitchen": "recorded",
+      "omni_xpu_kernel": "recorded",
+      "comfy_kitchen_xpu_runtime": "inferred",
+      "kernel_variant": "inferred",
+      "attention_backend": "inferred",
+      "reserve_vram_gb": "inferred",
+      "steps": "recorded",
+      "cfg": "recorded",
+      "seed": "inferred",
+      "width": "recorded",
+      "height": "recorded",
+      "resolution": "recorded"
+    },
+    "env_evidence": "AIB 身份由服务器日志的 `Device: xpu:0 ...` 行直接证明：Intel(R) Arc(TM) Pro B70 Graphics 出现在 <upgrade>\\boot_039_v3.log；Intel(R) Arc(TM) Pro B70 Graphics 出现在 <upgrade>\\boot_039_v4.log；Intel(R) Arc(TM) Pro B70 Graphics 出现在 <upgrade>\\boot_clean2_sdpa.log；Intel(R) Arc(TM) Pro B70 Graphics 出现在 <upgrade>\\boot_clean3_sdpa.log。这四字段原为按注册表 PCI 枚举推断（backfill_aib.py），今有运行日志佐证，故 env_confidence 升为 recorded。"
+  },
+  "log_evidence": {
+    "status": "annotated",
+    "note": "本记录的时间分解与卡型号由 10 条服务器日志取证（<upgrade>\\boot_039_v3.log; <upgrade>\\boot_039_v4.log; <upgrade>\\boot_clean2_sdpa.log; <upgrade>\\boot_clean3_sdpa.log）：每条日志的 `Prompt executed in X seconds` 均与对应样本的 server_sec 在 1.0s 容差内对上，确认是同一轮；日志中的 `Device: xpu:0 ...` 行是卡型号的直接证据。"
+  },
+  "note": "本批的唯一实验变量是**内核变体与注意力后端**；与仓库里 2026-10-14 的 B70 出图记录（torch213.bmg、无 int8fix）**不可并排引用**。",
+  "timing_breakdown": {
+    "note": "按样本分列（同一组内不同步数/轮次）",
+    "runs": [
+      {
+        "source": "<upgrade>\\boot_039_v3.log",
+        "prompt_executed_sec": 231.6,
+        "matched_sample": {
+          "steps": null,
+          "round": null,
+          "server_sec": 231.58,
+          "role": "cold"
+        },
+        "dit_load_mode": "completely",
+        "dit_loaded_mb": 19996,
+        "dit_offloaded_mb": 0,
+        "steps": 6,
+        "step_sec_trace": [
+          7,
+          7,
+          7,
+          6,
+          7,
+          7
+        ],
+        "sampling_sec": 41,
+        "sampling_sec_per_step": 6.83,
+        "fixed_overhead_sec": 190.6,
+        "sampling_share_pct": 17.7,
+        "overhead_base": "samples.server_sec (端到端)"
+      },
+      {
+        "source": "<upgrade>\\boot_039_v3.log",
+        "prompt_executed_sec": 56.08,
+        "matched_sample": {
+          "steps": null,
+          "round": null,
+          "server_sec": 56.08,
+          "role": "warm"
+        },
+        "steps": 6,
+        "step_sec_trace": [
+          6,
+          7,
+          6,
+          7,
+          6,
+          7
+        ],
+        "sampling_sec": 39,
+        "sampling_sec_per_step": 6.5,
+        "fixed_overhead_sec": 17.1,
+        "sampling_share_pct": 69.5,
+        "overhead_base": "samples.server_sec (端到端)"
+      },
+      {
+        "source": "<upgrade>\\boot_039_v3.log",
+        "prompt_executed_sec": 55.77,
+        "matched_sample": {
+          "steps": null,
+          "round": null,
+          "server_sec": 56.08,
+          "role": "warm"
+        },
+        "steps": 6,
+        "step_sec_trace": [
+          6,
+          7,
+          6,
+          7,
+          6,
+          7
+        ],
+        "sampling_sec": 39,
+        "sampling_sec_per_step": 6.5,
+        "fixed_overhead_sec": 17.1,
+        "sampling_share_pct": 69.5,
+        "overhead_base": "samples.server_sec (端到端)"
+      },
+      {
+        "source": "<upgrade>\\boot_039_v4.log",
+        "prompt_executed_sec": 235.98,
+        "matched_sample": {
+          "steps": null,
+          "round": null,
+          "server_sec": 235.96,
+          "role": "fresh"
+        },
+        "dit_load_mode": "completely",
+        "dit_loaded_mb": 19996,
+        "dit_offloaded_mb": 0,
+        "steps": 6,
+        "step_sec_trace": [
+          7,
+          7,
+          6,
+          7,
+          7,
+          6
+        ],
+        "sampling_sec": 40,
+        "sampling_sec_per_step": 6.67,
+        "fixed_overhead_sec": 196.0,
+        "sampling_share_pct": 17.0,
+        "overhead_base": "samples.server_sec (端到端)"
+      },
+      {
+        "source": "<upgrade>\\boot_039_v4.log",
+        "prompt_executed_sec": 203.57,
+        "matched_sample": {
+          "steps": null,
+          "round": null,
+          "server_sec": 203.55,
+          "role": "fresh"
+        },
+        "steps": 6,
+        "step_sec_trace": [
+          6,
+          7,
+          6,
+          7,
+          7,
+          6
+        ],
+        "sampling_sec": 39,
+        "sampling_sec_per_step": 6.5,
+        "fixed_overhead_sec": 164.6,
+        "sampling_share_pct": 19.2,
+        "overhead_base": "samples.server_sec (端到端)"
+      },
+      {
+        "source": "<upgrade>\\boot_039_v4.log",
+        "prompt_executed_sec": 55.57,
+        "matched_sample": {
+          "steps": null,
+          "round": null,
+          "server_sec": 56.08,
+          "role": "warm"
+        }
+      },
+      {
+        "source": "<upgrade>\\boot_clean2_sdpa.log",
+        "prompt_executed_sec": 303.31,
+        "matched_sample": {
+          "steps": null,
+          "round": null,
+          "server_sec": 303.29,
+          "role": "cold"
+        },
+        "dit_load_mode": "completely",
+        "dit_loaded_mb": 19996,
+        "dit_offloaded_mb": 0,
+        "steps": 6,
+        "step_sec_trace": [
+          7,
+          7,
+          7,
+          6,
+          7,
+          6
+        ],
+        "sampling_sec": 40,
+        "sampling_sec_per_step": 6.67,
+        "fixed_overhead_sec": 263.3,
+        "sampling_share_pct": 13.2,
+        "overhead_base": "samples.server_sec (端到端)"
+      },
+      {
+        "source": "<upgrade>\\boot_clean3_sdpa.log",
+        "prompt_executed_sec": 265.5,
+        "matched_sample": {
+          "steps": null,
+          "round": null,
+          "server_sec": 265.5,
+          "role": "cold"
+        },
+        "dit_load_mode": "completely",
+        "dit_loaded_mb": 19996,
+        "dit_offloaded_mb": 0,
+        "steps": 6,
+        "step_sec_trace": [
+          7,
+          7,
+          7,
+          6,
+          7,
+          6
+        ],
+        "sampling_sec": 40,
+        "sampling_sec_per_step": 6.67,
+        "fixed_overhead_sec": 225.5,
+        "sampling_share_pct": 15.1,
+        "overhead_base": "samples.server_sec (端到端)"
+      },
+      {
+        "source": "<upgrade>\\boot_clean3_sdpa.log",
+        "prompt_executed_sec": 234.96,
+        "matched_sample": {
+          "steps": null,
+          "round": null,
+          "server_sec": 235.96,
+          "role": "fresh"
+        },
+        "steps": 6,
+        "step_sec_trace": [
+          6,
+          7,
+          6,
+          7,
+          7,
+          6
+        ],
+        "sampling_sec": 39,
+        "sampling_sec_per_step": 6.5,
+        "fixed_overhead_sec": 197.0,
+        "sampling_share_pct": 16.5,
+        "overhead_base": "samples.server_sec (端到端)"
+      },
+      {
+        "source": "<upgrade>\\boot_clean3_sdpa.log",
+        "prompt_executed_sec": 218.12,
+        "matched_sample": {
+          "steps": null,
+          "round": null,
+          "server_sec": 218.12,
+          "role": "cold"
+        },
+        "steps": 6,
+        "step_sec_trace": [
+          6,
+          7,
+          7,
+          6,
+          7,
+          6
+        ],
+        "sampling_sec": 39,
+        "sampling_sec_per_step": 6.5,
+        "fixed_overhead_sec": 179.1,
+        "sampling_share_pct": 17.9,
+        "overhead_base": "samples.server_sec (端到端)"
+      }
+    ]
+  }
+}

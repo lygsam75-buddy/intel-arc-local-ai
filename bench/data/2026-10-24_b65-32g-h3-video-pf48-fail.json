@@ -1,0 +1,70 @@
+{
+  "schema": "arc-xpu-capacity/1",
+  "tag": "b65-32g-h3-video-pf48-fail",
+  "date": "2026-10-24",
+  "source": "local",
+  "env": {
+    "gpu": "Intel Arc Pro B65 32G（卡 0，CPU 直连 x16）",
+    "vram_visible_gib": 31.16,
+    "ram_gib": 31.11,
+    "pagefile_initial_mb": 49152,
+    "pagefile_maximum_mb": 49152,
+    "commit_limit_gib": 79.11,
+    "engine": "ComfyUI 0.39.0 · torch 2.12.0+xpu · omni_xpu_kernel 0.2.0b2+torch212.bmg · Python 3.13.12",
+    "driver": "9150",
+    "ecc": "off",
+    "disk_free_gib": {
+      "E": 117.4
+    },
+    "note": "48 GB 固定页面文件（初始=最大=49152），Windows 增大页面文件即时生效、无需重启"
+  },
+  "workload": {
+    "model": "MiniMax H3",
+    "dit": "minimax_h3_fl2va_pruned_int8_convrot.safetensors（19.53 GB）",
+    "text_encoder": "qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors（14 960.20 MB）",
+    "steps": 6,
+    "duration_sec": 5.0,
+    "reserve_vram_gb": 4
+  },
+  "method": "48 GB 固定页面文件下按产品页同口径跑三档分辨率；同时 1 s 间隔采整机提交量。",
+  "cases": [
+    {
+      "name": "1920x1088",
+      "runs": 3,
+      "ok": false,
+      "exit_code": 3221225477,
+      "exit_code_hex": "0xC0000005（ACCESS_VIOLATION）",
+      "crash_point": "load_torch_file → torch/storage.py:471 __getitem__（safetensors 映射访问）",
+      "commit_peak_gib": 57.76,
+      "commit_limit_gib": 79.11,
+      "commit_peak_frac": 0.73
+    },
+    {
+      "name": "864x480",
+      "runs": 1,
+      "ok": false,
+      "exit_code": 3221225477,
+      "exit_code_hex": "0xC0000005（ACCESS_VIOLATION）",
+      "crash_point": "同上"
+    }
+  ],
+  "controls": {
+    "env_diff_vs_2026_10_21": "逐项一致：torch 2.12.0+xpu / omni_xpu_kernel 0.2.0b2+torch212.bmg / Python 3.13.12 / Total VRAM 31907 MB / total RAM 31860 MB / Set vram state NORMAL_VRAM / Device xpu:0 B65 / Windows 单 GPU 强制模式",
+    "disk": "E: 剩余 117.4 GB，页面文件 AllocatedBaseSize 49152 MB、实际占用 3 163 MB",
+    "conclusion": "环境无差异、磁盘充足、commit 只用 73% → 崩溃不是 commit 顶穿，也不是环境变化"
+  },
+  "conclusion": [
+    "🔴 **48 GB 固定页面文件也不够 H3 出视频**：1920×1088 三次、864×480 一次，全部 `0xC0000005` 崩在 `load_torch_file` 的 safetensors 映射访问（4/4 复现）。",
+    "🔴 **与分辨率无关、与 commit 无关**：崩前 commit 峰值只有 57.76 / 79.11 GiB（73%）；480p 与 1080p 崩点、退出码、能耗（2 680~3 300 J）几乎相同。",
+    "⭐ **对照 32 GB**：32 GB 时报 `os error 1455`（commit 顶到 63.11 就被拦住）；48 GB 时 commit 有余量，但 safetensors 的大块映射读不进来 → 走 AV 崩。**同一个装载点，两种失败形态，都说明这个文件装载对内存的要求高于「commit 计数」表面值。**",
+    "✅ **结论：页面文件回到 64 GB 固定（65536）** —— 那是 2026-10-21 实测跑通三档分辨率时的配置。48 GB 是估算值（≈77 GiB），被实测推翻，记录在此。",
+    "⭐ **3M 的防护已不依赖页面文件大小**：`dual_ctx_probe.py --job-commit-gib 62` 给进程 commit 封顶，实测 3M 装载 18.0 s 干净自退（见 `...-ctx3m-loadonly-pf48-job62.json`）。所以页面文件只需「够装」，不必再靠「设小」来拦 3M。"
+  ],
+  "log": [
+    "run_b65-h3-1920x1088-pf48.log",
+    "run_b65-h3-pf48b.log",
+    "run_b65-h3-pf48c.log",
+    "run_b65-h3-480p-pf48.log",
+    "peak_h3_pf48.log"
+  ]
+}

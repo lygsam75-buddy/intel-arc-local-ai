@@ -1,0 +1,87 @@
+{
+  "schema": "arc-xpu-bench/1",
+  "tag": "b65-32g-h3-720p-480p-pf96",
+  "date": "2026-10-24",
+  "source": "local",
+  "env": {
+    "gpu": "Intel Arc Pro B65 32G（卡 0，CPU 直连 x16，level_zero:0）",
+    "vram_visible_gib": 31.16,
+    "ram_gib": 31.11,
+    "pagefile_layout": "E: 49152 + F: 16384 + D: 32768（合计 96 GB，均为固定大小）",
+    "pagefile_total_mb": 98304,
+    "commit_limit_gib": 127.11,
+    "engine": "ComfyUI 0.39.0 · torch 2.12.0+xpu · omni_xpu_kernel 0.2.0b2+torch212.bmg · Python 3.13.12",
+    "driver": "9150",
+    "ecc": "off",
+    "safety": "Job Object ProcessMemoryLimit=JobMemoryLimit=100 GiB；外部看门狗 2 s 采样、88% 自动杀进程（未触发）"
+  },
+  "workload": {
+    "model": "MiniMax H3",
+    "dit": "minimax_h3_fl2va_pruned_int8_convrot.safetensors（19.53 GB）",
+    "text_encoder": "qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors（14 960.20 MB）",
+    "steps": 6,
+    "duration_sec": 5.0,
+    "reserve_vram_gb": 4,
+    "command": "COMFY_PORT=8190 bench_f_h3.py --steps 6 --duration 5 --fresh 1 --cached 0 --reserve-vram 4"
+  },
+  "cases": [
+    {
+      "name": "864x480",
+      "ok": true,
+      "cold_s": 318.57,
+      "warm_s": 282.67,
+      "sit_cold": 11.01,
+      "sit_warm": 10.69,
+      "loads": 4,
+      "vram_post_gib": 6.11,
+      "commit_peak_gib": 88.67,
+      "commit_limit_gib": 127.11,
+      "commit_peak_frac": 0.697,
+      "energy_j": 1624.8
+    },
+    {
+      "name": "1280x720",
+      "ok": true,
+      "cold_s": 518.21,
+      "warm_s": 485.54,
+      "sit_cold": 42.68,
+      "sit_warm": 42.47,
+      "loads": 4,
+      "vram_post_gib": 6.11,
+      "commit_peak_gib": 88.32,
+      "commit_limit_gib": 127.11,
+      "commit_peak_frac": 0.695,
+      "energy_j": 8379.6
+    }
+  ],
+  "compare_vs_2026_10_21": [
+    {
+      "name": "864x480",
+      "cold_then": 227.71,
+      "cold_now": 318.57,
+      "cold_delta_pct": 39.9,
+      "sit_then": 10.65,
+      "sit_now": 11.01,
+      "sit_delta_pct": 3.4,
+      "fixed_overhead_then_s": 164,
+      "fixed_overhead_now_s": 253
+    },
+    {
+      "name": "1280x720",
+      "cold_then": 437.11,
+      "cold_now": 518.21,
+      "cold_delta_pct": 18.6,
+      "sit_then": 42.3,
+      "sit_now": 42.68,
+      "sit_delta_pct": 0.9,
+      "fixed_overhead_then_s": 183,
+      "fixed_overhead_now_s": 262
+    }
+  ],
+  "conclusion": [
+    "🔴 **装载是主项，分辨率只加一点**：480p 峰值提交 88.67 GiB、720p 88.32 GiB、1080p 97.99 GiB —— 480p 与 720p 基本相同。",
+    "🔴 **端到端慢 19~40%，单步只差 0.4~3.4%**：差异全落在固定开销（+79~90 s）。两次页面文件布局不同，未做单变量对照，不给原因。",
+    "✅ **跨配置只能比单步**（42.30 → 42.68 / 10.65 → 11.01）；端到端受固定开销支配，不能跨配置并排。",
+    "✅ **64 GB 提交上限连 720p 都只剩 7% 余量**（88.32 / 95.11 = 92.9%）→ 出视频定稿 96 GB 固定页面文件。"
+  ]
+}

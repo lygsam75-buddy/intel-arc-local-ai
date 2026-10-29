@@ -1,0 +1,213 @@
+{
+  "schema": "comfyui-xpu-bench/1",
+  "tag": "comfyui-qwen-image-2.1-int8_convrot",
+  "date": "2026-10-16",
+  "source": "local",
+  "domain": "comfyui-image",
+  "tool": "sweep.py + ComfyUI /prompt + /history",
+  "status": "discarded",
+  "env": {
+    "cpu": "AMD Ryzen 5 9600X",
+    "ram_gb": 32,
+    "os": "Windows",
+    "gpu": "Intel Arc Pro B50 LP 16G",
+    "chip": "E212",
+    "subsys": "25221EF7",
+    "device_id": "PCI\\VEN_8086&DEV_E212&SUBSYS_25221EF7&REV_00",
+    "board_vendor": "GUNNIR 蓝戟 (PCI vendor 1EF7)",
+    "board_code": "2522",
+    "vram_visible_gib": 15.51,
+    "ecc": "off",
+    "driver": "32.0.101.8976",
+    "stack": {
+      "torch": "2.12",
+      "omni_xpu_kernel": "0.2.0b2+torch212.bmg",
+      "stack_note": "跑在 python_embeded（torch 2.12），与 B70 2026-10-14 那批（torch 2.13 / kernel torch213）**不是同一栈**"
+    },
+    "torch": "2.12",
+    "omni_xpu_kernel": "0.2.0b2+torch212.bmg",
+    "stack_note": "跑在 python_embeded（torch 2.12），与 B70 2026-10-14 那批（torch 2.13 / kernel torch213）**不是同一栈**",
+    "app": "ComfyUI",
+    "app_version": "0.39.0",
+    "comfy_kitchen": "0.2.37",
+    "comfy_kitchen_xpu_runtime": "0.2.33",
+    "backend": "XPU (SYCL)",
+    "env_confidence": {
+      "gpu": "recorded",
+      "vram_visible_gib": "recorded",
+      "ecc": "recorded",
+      "cpu": "recorded",
+      "ram_gb": "recorded",
+      "os": "recorded",
+      "app": "recorded",
+      "app_version": "recorded",
+      "comfy_kitchen": "recorded",
+      "omni_xpu_kernel": "recorded",
+      "chip": "recorded",
+      "subsys": "recorded",
+      "device_id": "recorded",
+      "board_vendor": "recorded",
+      "driver": "inferred",
+      "board_code": "recorded",
+      "width": "recorded",
+      "height": "recorded",
+      "resolution": "recorded",
+      "steps": "recorded",
+      "cfg": "recorded",
+      "reserve_vram_gb": "inferred",
+      "seed": "inferred"
+    },
+    "batch_mark": "base",
+    "env_evidence": "AIB 身份由服务器日志的 `Device: xpu:0 ...` 行直接证明：Intel(R) Arc(TM) Pro B50 Graphics 出现在 <bench_f>\\server_sweep_b50base.log。这四字段原为按注册表 PCI 枚举推断（backfill_aib.py），今有运行日志佐证，故 env_confidence 升为 recorded。"
+  },
+  "envvars": {
+    "ZE_ENABLE_PCI_ID_DEVICE_ORDER": "1",
+    "SYCL_CACHE_PERSISTENT": "1"
+  },
+  "workload": {
+    "model": "Qwen-Image 2.1",
+    "task": "text-to-image",
+    "workflow": "官方 t2i 模板（QwenImage21Cache → KSampler）",
+    "dit_file": "qwen_image_2.1_int8_convrot.safetensors",
+    "dit_size_gib": 6.758,
+    "text_encoder_file": "qwen3vl_8b_int8_convrot.safetensors",
+    "text_encoder_size_gib": 8.709,
+    "vae_file": "qwen_image_2.1_vae_bf16.safetensors",
+    "vae_size_gib": 0.629,
+    "steps": 25,
+    "cfg": 1.0,
+    "sampler": "euler",
+    "scheduler": "simple",
+    "width": 1280,
+    "height": 720,
+    "resolution": "1280x720"
+  },
+  "reserve_vram_gb": 4,
+  "samples": [
+    {
+      "role": "first",
+      "ok": false,
+      "server_sec": null,
+      "wall_sec": 38.1,
+      "log_prompt_executed_s": 37.4,
+      "loads": 2,
+      "loaded_complete": 2,
+      "offload": 1,
+      "seed": 701,
+      "oom": false,
+      "device_lost": false,
+      "cuda_pin_crash": false
+    },
+    {
+      "role": "resident",
+      "ok": false,
+      "server_sec": null,
+      "wall_sec": 2.0,
+      "log_prompt_executed_s": 0.05,
+      "loads": 0,
+      "loaded_complete": 0,
+      "offload": 0,
+      "seed": 702,
+      "oom": false,
+      "device_lost": false,
+      "cuda_pin_crash": false
+    },
+    {
+      "role": "resident",
+      "ok": false,
+      "server_sec": null,
+      "wall_sec": 2.0,
+      "log_prompt_executed_s": 0.08,
+      "loads": 0,
+      "loaded_complete": 0,
+      "offload": 0,
+      "seed": 703,
+      "oom": false,
+      "device_lost": false,
+      "cuda_pin_crash": false
+    },
+    {
+      "role": "newprompt",
+      "ok": false,
+      "server_sec": null,
+      "wall_sec": 4.0,
+      "log_prompt_executed_s": 3.97,
+      "loads": 0,
+      "loaded_complete": 2,
+      "offload": 2,
+      "seed": 704,
+      "oom": false,
+      "device_lost": false,
+      "cuda_pin_crash": false
+    }
+  ],
+  "summary": {
+    "n_total": 4,
+    "n_ok": 0,
+    "n_fail": 4,
+    "n_failed_with_server_reported_sec": 4,
+    "server_reported_sec_on_failure": [
+      0.05,
+      0.08,
+      3.97,
+      37.4
+    ],
+    "collector_flags": [
+      "cuda_pin_crash=False",
+      "device_lost=False",
+      "oom=False"
+    ]
+  },
+  "notes": "口径：服务端 execution_start → execution_success，不含排队。**分辨率必读**：出图/出音频的时间与分辨率（音频为时长）强相关，workload 里的 width/height 是该数字的量纲。`first` 含模型加载、`resident` 是同提示词换种子（稳态）、`newprompt` 是换提示词（ComfyUI 节点缓存全失效）——三者不可混比。seed 由 sweep.py 的计划表推得（标 inferred）。文本编码器 2.1 本机只有 int8 版（无 bf16 8B），故 bf16 行的 TE与对照口径有偏差，见 SWEEP_REPORT.md。",
+  "discard_reason": "客户端 4/4 轮判失败，其中 4 轮服务端报过执行时长：0.05, 0.08, 3.97, 37.4 秒。采集器打的诊断标记：cuda_pin_crash=False、device_lost=False、oom=False。**该组不构成有效性能证据**（时长不可引用）；失败类型需查服务端日志区分——节点抛异常会是秒级，设备失联则先跑完再炸。",
+  "superseded_by": null,
+  "timing_breakdown": {
+    "note": "按样本分列（同一组内不同步数/轮次）",
+    "runs": [
+      {
+        "source": "<bench_f>\\server_sweep_b50base.log",
+        "prompt_executed_sec": 37.4,
+        "matched_sample": {
+          "steps": null,
+          "round": null,
+          "server_sec": null,
+          "role": "first"
+        }
+      },
+      {
+        "source": "<bench_f>\\server_sweep_b50base.log",
+        "prompt_executed_sec": 0.05,
+        "matched_sample": {
+          "steps": null,
+          "round": null,
+          "server_sec": null,
+          "role": "resident"
+        }
+      },
+      {
+        "source": "<bench_f>\\server_sweep_b50base.log",
+        "prompt_executed_sec": 0.08,
+        "matched_sample": {
+          "steps": null,
+          "round": null,
+          "server_sec": null,
+          "role": "resident"
+        }
+      },
+      {
+        "source": "<bench_f>\\server_sweep_b50base.log",
+        "prompt_executed_sec": 3.97,
+        "matched_sample": {
+          "steps": null,
+          "round": null,
+          "server_sec": null,
+          "role": "newprompt"
+        }
+      }
+    ]
+  },
+  "log_evidence": {
+    "status": "annotated",
+    "note": "本记录的时间分解与卡型号由 4 条服务器日志取证（<bench_f>\\server_sweep_b50base.log）：每条日志的 `Prompt executed in X seconds` 均与对应样本的 server_sec 在 1.0s 容差内对上，确认是同一轮；日志中的 `Device: xpu:0 ...` 行是卡型号的直接证据。"
+  }
+}

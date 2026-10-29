@@ -1,0 +1,90 @@
+{
+  "schema": "arc-xpu-ctx-sweep/1",
+  "tag": "b60-ctx::c4096-faON-q8",
+  "date": "2026-10-20",
+  "source": "local",
+  "env": {
+    "gpu": "Intel Arc Pro B60 24G",
+    "driver": "32.0.101.9150",
+    "ecc": "off",
+    "backend": "SYCL",
+    "tool": "llama-server",
+    "device_selector": "opencl:0",
+    "sycl_path": "<SYCL 运行时目录>;<oneMKL 目录>",
+    "ram_gb": 31.1,
+    "commit_limit_gb": 95.1,
+    "slot": "CPU 直连槽",
+    "chip": "E211",
+    "subsys": "25421EF7",
+    "vbios": "OPROM CODE VERSION:2304140000_OPROM DATA VERSION:2304140000",
+    "vram_visible_gib": 23.33
+  },
+  "model": {
+    "name": "Qwen_Qwen3.6-35B-A3B-Q4_0",
+    "quant": "Q4_0",
+    "size_gib": 19.41
+  },
+  "config_name": "c4096-faON-q8",
+  "ncmoe": 0,
+  "server_args": [
+    "-c",
+    "4096",
+    "-fa",
+    "on",
+    "-ctk",
+    "q8_0",
+    "-ctv",
+    "q8_0"
+  ],
+  "log": "..\\logs\\2026-10-20_c4096-faON-q8.log",
+  "load_s": 20.6,
+  "warmup": {
+    "rep": 0,
+    "wall_s": 2.25,
+    "decode_tok_s": 51.616034175135866,
+    "prompt_tok_s": 35.99821670372637,
+    "prompt_n": 13,
+    "predicted_n": 98
+  },
+  "probes": [
+    {
+      "rep": 0,
+      "wall_s": 1.89,
+      "decode_tok_s": 51.54584892410511,
+      "prompt_tok_s": 57.44980323442392,
+      "prompt_n": 4,
+      "predicted_n": 94
+    },
+    {
+      "rep": 1,
+      "wall_s": 1.93,
+      "decode_tok_s": 51.767252254191376,
+      "prompt_tok_s": 56.63235689711316,
+      "prompt_n": 4,
+      "predicted_n": 96
+    },
+    {
+      "rep": 2,
+      "wall_s": 1.78,
+      "decode_tok_s": 51.64896749558312,
+      "prompt_tok_s": 57.21560269485489,
+      "prompt_n": 4,
+      "predicted_n": 88
+    }
+  ],
+  "decode_tok_s": 51.65,
+  "decode_min": 51.55,
+  "decode_max": 51.77,
+  "decode_n": 3,
+  "early_stop": 3,
+  "prompt_tok_s": 57.1,
+  "spread_pct": 0.4,
+  "status": "active",
+  "log_scan": {
+    "ok": true,
+    "lines": 58,
+    "key_lines": [
+      "0.19.614.462 I srv    load_model: initializing, n_slots = 4, n_ctx_slot = 4096, kv_unified = 'true'"
+    ]
+  }
+}

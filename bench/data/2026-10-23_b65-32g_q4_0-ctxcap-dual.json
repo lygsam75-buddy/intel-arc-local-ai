@@ -1,0 +1,518 @@
+{
+  "schema": "arc-xpu-capacity/1",
+  "tag": "b65-32g-q4_0-ctxcap-dual",
+  "date": "2026-10-23",
+  "source": "local",
+  "env": {
+    "gpu": "2× Intel Arc Pro B65 32G",
+    "usable_gib_per_card": 31.16,
+    "driver": "9150",
+    "ecc": "off",
+    "backend": "SYCL",
+    "engine": "llama.cpp",
+    "engine_version": "build 11431 (commit c25030496)",
+    "ram_gb": 31.1,
+    "card0": "CPU 直连 x16",
+    "card1": "芯片组 x4",
+    "pin": "单卡 ONEAPI_DEVICE_SELECTOR=level_zero:0；双卡 level_zero:0,1 + -dev SYCL0,SYCL1 -sm layer",
+    "pagefile_mb": 65536,
+    "pagefile_note": "当时 e://pagefile.sys 为 65536 MB（最大 131072 MB），commit limit 95.11 GiB。2026-10-24 17:00 的整机卡死证明这个配置下 3M 档不安全；20:31 起改为 32768/32768 MB（commit limit 63.11 GiB），本记录的 3M 档在该配置下不可复现。"
+  },
+  "model": {
+    "name": "Qwen3.6-35B-A3B",
+    "quant": "Q4_0",
+    "size_gib": 19.41,
+    "n_ctx_train": 262144
+  },
+  "kv": {
+    "type": "q8_0",
+    "ctk": "q8_0",
+    "ctv": "q8_0"
+  },
+  "method": "起 llama-server（--no-warmup），量「起没起来」与「起之后两张卡各剩多少显存」；起得来再发一条 /v1/chat/completions 确认能答。判据：显存要随 ctx 按比例涨才算装下 —— 进程起得来但显存不涨，说明没真分配，不算。",
+  "baseline_gib": 18.32,
+  "baseline_note": "baseline_gib = 单卡 4096 档实测占用（权重 19.41 GiB + 计算缓冲），kv_gib = 合计占用 − baseline",
+  "cases": [
+    {
+      "name": "k4k",
+      "cards": 1,
+      "ctx_tokens": 4096,
+      "parallel": null,
+      "kv_unified": true,
+      "n_slots": 4,
+      "n_ctx_slot": 4096,
+      "ok": true,
+      "free_gib": [
+        12.84,
+        31.16
+      ],
+      "used_gib": [
+        18.32,
+        0.0
+      ],
+      "used_total_gib": 18.32,
+      "kv_gib": 0.0,
+      "kv_gib_per_mtoken": 0.0
+    },
+    {
+      "name": "c262s",
+      "cards": 1,
+      "ctx_tokens": 262144,
+      "parallel": null,
+      "kv_unified": true,
+      "n_slots": 4,
+      "n_ctx_slot": 262144,
+      "ok": true,
+      "free_gib": [
+        9.5,
+        31.16
+      ],
+      "used_gib": [
+        21.66,
+        0.0
+      ],
+      "used_total_gib": 21.66,
+      "kv_gib": 3.34,
+      "kv_gib_per_mtoken": 13.4
+    },
+    {
+      "name": "c524s",
+      "cards": 1,
+      "ctx_tokens": 524288,
+      "parallel": null,
+      "kv_unified": true,
+      "n_slots": 4,
+      "n_ctx_slot": 262144,
+      "ok": true,
+      "free_gib": [
+        6.09,
+        31.16
+      ],
+      "used_gib": [
+        25.07,
+        0.0
+      ],
+      "used_total_gib": 25.07,
+      "kv_gib": 6.75,
+      "kv_gib_per_mtoken": 13.5
+    },
+    {
+      "name": "c1m",
+      "cards": 1,
+      "ctx_tokens": 1048576,
+      "parallel": null,
+      "kv_unified": true,
+      "n_slots": 4,
+      "n_ctx_slot": 262144,
+      "ok": true,
+      "free_gib": [
+        0.03,
+        31.16
+      ],
+      "used_gib": [
+        31.13,
+        0.0
+      ],
+      "used_total_gib": 31.13,
+      "kv_gib": 12.81,
+      "kv_gib_per_mtoken": 12.8
+    },
+    {
+      "name": "s2m",
+      "cards": 1,
+      "ctx_tokens": 2097152,
+      "parallel": null,
+      "kv_unified": null,
+      "n_slots": null,
+      "n_ctx_slot": null,
+      "ok": false,
+      "failure": "进程静默消失：日志停在 'slot context exceeds training context - capping'，无 OOM 报错行"
+    },
+    {
+      "name": "s1m3",
+      "cards": 1,
+      "ctx_tokens": 786432,
+      "parallel": 3,
+      "kv_unified": false,
+      "n_slots": 3,
+      "n_ctx_slot": 262144,
+      "ok": true,
+      "free_gib": [
+        3.25,
+        31.16
+      ],
+      "used_gib": [
+        27.91,
+        0.0
+      ],
+      "used_total_gib": 27.91,
+      "kv_gib": 9.59,
+      "kv_gib_per_mtoken": 12.8
+    },
+    {
+      "name": "s1mp4",
+      "cards": 1,
+      "ctx_tokens": 1048576,
+      "parallel": 4,
+      "kv_unified": false,
+      "n_slots": 4,
+      "n_ctx_slot": 262144,
+      "ok": true,
+      "free_gib": [
+        0.03,
+        31.16
+      ],
+      "used_gib": [
+        31.13,
+        0.0
+      ],
+      "used_total_gib": 31.13,
+      "kv_gib": 12.81,
+      "kv_gib_per_mtoken": 12.8
+    },
+    {
+      "name": "s15m",
+      "cards": 1,
+      "ctx_tokens": 1572864,
+      "parallel": 6,
+      "kv_unified": false,
+      "n_slots": 6,
+      "n_ctx_slot": 262144,
+      "ok": true,
+      "free_gib": [
+        0.16,
+        31.16
+      ],
+      "used_gib": [
+        31.0,
+        0.0
+      ],
+      "used_total_gib": 31.0,
+      "kv_gib": 12.68,
+      "kv_gib_per_mtoken": 8.5
+    },
+    {
+      "name": "s2mp8",
+      "cards": 1,
+      "ctx_tokens": 2097152,
+      "parallel": 8,
+      "kv_unified": false,
+      "n_slots": 8,
+      "n_ctx_slot": 262144,
+      "ok": true,
+      "free_gib": [
+        0.21,
+        31.16
+      ],
+      "used_gib": [
+        30.95,
+        0.0
+      ],
+      "used_total_gib": 30.95,
+      "kv_gib": 12.63,
+      "kv_gib_per_mtoken": 6.3
+    },
+    {
+      "name": "s3mp12",
+      "cards": 1,
+      "ctx_tokens": 3145728,
+      "parallel": 12,
+      "kv_unified": false,
+      "n_slots": 12,
+      "n_ctx_slot": 262144,
+      "ok": false,
+      "failure": "起不来（OOM）"
+    },
+    {
+      "name": "s4mp16",
+      "cards": 1,
+      "ctx_tokens": 4194304,
+      "parallel": 16,
+      "kv_unified": false,
+      "n_slots": 16,
+      "n_ctx_slot": 262144,
+      "ok": false,
+      "failure": "起不来（OOM）"
+    },
+    {
+      "name": "c262d",
+      "cards": 2,
+      "ctx_tokens": 262144,
+      "parallel": null,
+      "kv_unified": true,
+      "n_slots": 4,
+      "n_ctx_slot": 262144,
+      "ok": true,
+      "free_gib": [
+        18.99,
+        19.81
+      ],
+      "used_gib": [
+        12.17,
+        11.35
+      ],
+      "used_total_gib": 23.52,
+      "kv_gib": 5.2,
+      "kv_gib_per_mtoken": 20.8
+    },
+    {
+      "name": "c524d",
+      "cards": 2,
+      "ctx_tokens": 524288,
+      "parallel": null,
+      "kv_unified": true,
+      "n_slots": 4,
+      "n_ctx_slot": 262144,
+      "ok": true,
+      "free_gib": [
+        16.16,
+        16.98
+      ],
+      "used_gib": [
+        15.0,
+        14.18
+      ],
+      "used_total_gib": 29.18,
+      "kv_gib": 10.86,
+      "kv_gib_per_mtoken": 21.7
+    },
+    {
+      "name": "c1md",
+      "cards": 2,
+      "ctx_tokens": 1048576,
+      "parallel": null,
+      "kv_unified": true,
+      "n_slots": 4,
+      "n_ctx_slot": 262144,
+      "ok": true,
+      "free_gib": [
+        10.5,
+        11.32
+      ],
+      "used_gib": [
+        20.66,
+        19.84
+      ],
+      "used_total_gib": 40.5,
+      "kv_gib": 22.18,
+      "kv_gib_per_mtoken": 22.2
+    },
+    {
+      "name": "d125m",
+      "cards": 2,
+      "ctx_tokens": 1310720,
+      "parallel": null,
+      "kv_unified": true,
+      "n_slots": 4,
+      "n_ctx_slot": 262144,
+      "ok": true,
+      "free_gib": [
+        7.67,
+        8.49
+      ],
+      "used_gib": [
+        23.49,
+        22.67
+      ],
+      "used_total_gib": 46.16,
+      "kv_gib": 27.84,
+      "kv_gib_per_mtoken": 22.3
+    },
+    {
+      "name": "d15m",
+      "cards": 2,
+      "ctx_tokens": 1572864,
+      "parallel": null,
+      "kv_unified": true,
+      "n_slots": 4,
+      "n_ctx_slot": 262144,
+      "ok": true,
+      "free_gib": [
+        4.84,
+        5.66
+      ],
+      "used_gib": [
+        26.32,
+        25.5
+      ],
+      "used_total_gib": 51.82,
+      "kv_gib": 33.5,
+      "kv_gib_per_mtoken": 22.3
+    },
+    {
+      "name": "d175m",
+      "cards": 2,
+      "ctx_tokens": 1835008,
+      "parallel": null,
+      "kv_unified": true,
+      "n_slots": 4,
+      "n_ctx_slot": 262144,
+      "ok": true,
+      "free_gib": [
+        2.01,
+        2.83
+      ],
+      "used_gib": [
+        29.15,
+        28.33
+      ],
+      "used_total_gib": 57.48,
+      "kv_gib": 39.16,
+      "kv_gib_per_mtoken": 22.4
+    },
+    {
+      "name": "d2m",
+      "cards": 2,
+      "ctx_tokens": 2097152,
+      "parallel": null,
+      "kv_unified": true,
+      "n_slots": 4,
+      "n_ctx_slot": 262144,
+      "ok": false,
+      "failure": "UR_RESULT_ERROR_OUT_OF_DEVICE_MEMORY（39），发生在权重上传阶段 ggml_backend_sycl_buffer_set_tensor"
+    },
+    {
+      "name": "d1mp4",
+      "cards": 2,
+      "ctx_tokens": 1048576,
+      "parallel": 4,
+      "kv_unified": false,
+      "n_slots": 4,
+      "n_ctx_slot": 262144,
+      "ok": true,
+      "free_gib": [
+        13.51,
+        14.33
+      ],
+      "used_gib": [
+        17.65,
+        16.83
+      ],
+      "used_total_gib": 34.48,
+      "kv_gib": 16.16,
+      "kv_gib_per_mtoken": 16.2
+    },
+    {
+      "name": "p7",
+      "cards": 2,
+      "ctx_tokens": 1835008,
+      "parallel": 7,
+      "kv_unified": false,
+      "n_slots": 7,
+      "n_ctx_slot": 262144,
+      "ok": true,
+      "free_gib": [
+        7.91,
+        8.75
+      ],
+      "used_gib": [
+        23.25,
+        22.41
+      ],
+      "used_total_gib": 45.66,
+      "kv_gib": 27.34,
+      "kv_gib_per_mtoken": 15.6
+    },
+    {
+      "name": "p8v",
+      "cards": 2,
+      "ctx_tokens": 2097152,
+      "parallel": 8,
+      "kv_unified": false,
+      "n_slots": 8,
+      "n_ctx_slot": 262144,
+      "ok": true,
+      "free_gib": [
+        6.07,
+        6.9
+      ],
+      "used_gib": [
+        25.09,
+        24.26
+      ],
+      "used_total_gib": 49.35,
+      "kv_gib": 31.03,
+      "kv_gib_per_mtoken": 15.5
+    },
+    {
+      "name": "p10",
+      "cards": 2,
+      "ctx_tokens": 2621440,
+      "parallel": 10,
+      "kv_unified": false,
+      "n_slots": 10,
+      "n_ctx_slot": 262144,
+      "ok": true,
+      "free_gib": [
+        2.33,
+        3.17
+      ],
+      "used_gib": [
+        28.83,
+        27.99
+      ],
+      "used_total_gib": 56.82,
+      "kv_gib": 38.5,
+      "kv_gib_per_mtoken": 15.4
+    },
+    {
+      "name": "p12",
+      "cards": 2,
+      "ctx_tokens": 3145728,
+      "parallel": 12,
+      "kv_unified": false,
+      "n_slots": 12,
+      "n_ctx_slot": 262144,
+      "ok": true,
+      "free_gib": [
+        0.19,
+        0.22
+      ],
+      "used_gib": [
+        30.97,
+        30.94
+      ],
+      "used_total_gib": 61.91,
+      "kv_gib": 43.59,
+      "kv_gib_per_mtoken": 14.5
+    },
+    {
+      "name": "p16",
+      "cards": 2,
+      "ctx_tokens": 4194304,
+      "parallel": 16,
+      "kv_unified": false,
+      "n_slots": 16,
+      "n_ctx_slot": 262144,
+      "ok": false,
+      "failure": "UR_RESULT_ERROR_OUT_OF_RESOURCES（40），OP SCALE 阶段"
+    }
+  ],
+  "summary": {
+    "single_max_allocated_ctx": 1048576,
+    "single_max_slots": 4,
+    "dual_max_allocated_ctx_unified": 1835008,
+    "dual_max_allocated_ctx_explicit_parallel": 3145728,
+    "dual_max_slots_explicit_parallel": 12,
+    "single_kv_gib_per_mtoken": 12.8,
+    "dual_kv_gib_per_mtoken_unified": 22.4,
+    "dual_kv_gib_per_mtoken_explicit_parallel": 14.5,
+    "single_headroom_at_ceiling_gib": 0.03,
+    "dual_headroom_at_ceiling_gib": [
+      0.19,
+      0.22
+    ]
+  },
+  "conclusion": [
+    "单卡：能真吃进显存的上下文上限是 1M token（KV q8_0 占 12.8 GiB，卡上只剩 0.03 GiB），即 4 个满长会话。",
+    "单卡把 -c 写到 1.5M / 2M 也能起、也能答，但显存一点都不多占（31.00 / 30.95 vs 1M 的 31.13）—— 没真分配，不算装下。",
+    "双卡默认（不写 --parallel）：装到 1.75M token（剩 2.01 / 2.83 GiB），2M 起不来。日志里 kv_unified=true。",
+    "双卡显式写 --parallel（日志 kv_unified=false）：装到 3M token（剩 0.19 / 0.22 GiB），4M 起不来。",
+    "同一个 ctx、同样 4 个 slot，只有 kv_unified 不同：1M 时 40.50 GiB（true）vs 34.48 GiB（false），差 6.02 GiB。",
+    "所以双卡买到的上下文容量是 3 倍（1M → 3M，4 个满长会话 → 12 个），不是 2 倍：",
+    "  单卡 31.16 GiB 里 18.32 GiB 被权重和计算缓冲占掉，只剩 12.8 GiB 给 KV；",
+    "  双卡每卡只摊到约 9.7 GiB 权重，两卡合起来给 KV 的空间约 42.9 GiB。",
+    "前提是显式写 --parallel = ctx/262144；不写就只有 1.75 倍，而且更容易 OOM。"
+  ],
+  "log": "bench\\logs\\b2_capacity.log（原始分档日志 b2_*.log 同目录）"
+}

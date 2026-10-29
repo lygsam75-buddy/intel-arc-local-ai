@@ -1,0 +1,71 @@
+{
+  "schema": "arc-xpu-bench/1",
+  "tag": "b50-16g-alone-ncmoe-r3-pcie4x4-ncmoe4",
+  "date": "2026-10-15",
+  "source": "local",
+  "env": {
+    "gpu": "Intel Arc Pro B50 LP 16G",
+    "driver": "32.0.101.8976",
+    "ecc": "off",
+    "backend": "SYCL",
+    "tool": "llama-bench",
+    "device_selector": "opencl:0",
+    "sycl_path": "<SYCL 运行时目录>;<oneMKL 目录>",
+    "ram_gb": 31.1,
+    "pagefile_gb": 64,
+    "commit_limit_gb": 95.1,
+    "env_confidence": {
+      "ram_gb": "inferred",
+      "pagefile_gb": "inferred",
+      "commit_limit_gb": "inferred",
+      "slot": "inferred"
+    },
+    "slot": "PCIE2 (chipset-attached x4, B50 negotiates x4)"
+  },
+  "model": {
+    "name": "Qwen_Qwen3.6-35B-A3B-Q4_0",
+    "quant": "Q4_0",
+    "file": "Qwen_Qwen3.6-35B-A3B-Q4_0.gguf",
+    "size_gib": 19.41
+  },
+  "ncmoe": 4,
+  "args": [
+    "-ngl",
+    "999",
+    "-fa",
+    "on",
+    "-ctk",
+    "q8_0",
+    "-ctv",
+    "q8_0",
+    "-ncmoe",
+    "4",
+    "-p",
+    "512",
+    "-n",
+    "128",
+    "-r",
+    "3"
+  ],
+  "samples": [
+    {
+      "prompt_tok_s": 28.55,
+      "decode_tok_s": 2.77
+    }
+  ],
+  "summary": {
+    "prompt_tok_s": 28.55,
+    "decode_tok_s": 2.77
+  },
+  "raw_meta": {
+    "model_type": "qwen35moe 35B.A3B Q4_0",
+    "n_gpu_layers": 999,
+    "n_cpu_moe": 4,
+    "n_batch": 2048,
+    "n_ubatch": 512,
+    "gpu_info": "Intel(R) Arc(TM) Pro B50 Graphics"
+  },
+  "status": "active",
+  "notes": "专家卸载切分点扫描，r=3。B50 场景下 decode 稳态与 reps 无关（实测 3.13 vs 3.06），prompt 仅作参考。",
+  "env_backfill": "ram_gb/pagefile_gb/commit_limit_gb 为 backfill 补写。来源：docs/test-rig.md 的平台规格（2×16 GB DDR5-6400，系统可见 31.1 GiB；页面文件手动 64 GB，提交上限 95.1 GiB）。本仓库 bench/data 全部 source=local，均出自同一台测试机，但该字段在采集时未写入，故标 inferred 而非 recorded。 env.slot 为 2026-10-16 backfill 补写，标 inferred：槽位在采集当时未落盘，由**文件名 token** 重建（pcie5x8 -> PCIE1 CPU 直连 x8；pcie4x4 -> PCIE2 芯片组 x4）。口径依据：docs/slot-comparison.md §1「测试条件」表 + docs/test-rig.md 的 PCIe 拓扑取证。注：env.device_selector 不可作槽位旁证——B50 单独在机时副槽也报 opencl:0。"
+}

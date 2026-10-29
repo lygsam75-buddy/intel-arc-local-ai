@@ -1,0 +1,315 @@
+{
+  "schema": "arc-xpu-bench/1",
+  "tag": "2026-10-24_b65-32g-dual-ts-scan2",
+  "date": "2026-10-24",
+  "source": "local",
+  "env": {
+    "os": "Windows-11-10.0.26300-SP0",
+    "cpu": "AMD Ryzen 5 9600X 6-Core",
+    "gpu": "2x Intel Arc Pro B65 32G",
+    "vram_visible_gib": 31.16,
+    "driver": "9150",
+    "ecc": "off",
+    "engine": "llama.cpp",
+    "engine_version": "0.6.0-dev (build 11431, commit c25030496)",
+    "backend": "SYCL",
+    "cpu_threads": 6,
+    "card0": "CPU 直连 x16",
+    "card1": "芯片组 x4"
+  },
+  "model": {
+    "name": "Qwen3.6-35B-A3B",
+    "quant": "Q8_0",
+    "size_gib": 34.37,
+    "file": "Qwen3.6-35B-A3B-Q8_0.gguf"
+  },
+  "measure": {
+    "harness": "llama-server /v1/chat/completions",
+    "prompt_tokens": 19,
+    "gen_tokens": 128,
+    "reps": 3,
+    "statistic": "median",
+    "ctx": 4096,
+    "ctk": "q8_0",
+    "ctv": "q8_0",
+    "fa": "on",
+    "note": "2026-10-24 17:37~17:47 同一时段连跑，是「双卡 vs 单卡」目前最紧的同场次对照。"
+  },
+  "samples": [
+    {
+      "tag": "ts5050_q4",
+      "cards": 2,
+      "device_selector": "level_zero:0,1",
+      "dev": "SYCL0,SYCL1",
+      "ngl": 99,
+      "ctx": 4096,
+      "ctk": "q8_0",
+      "ctv": "q8_0",
+      "fa": "on",
+      "model": "Qwen_Qwen3.6-35B-A3B-Q4_0.gguf",
+      "pinned_mem": "auto",
+      "dev2dev_memcpy": "auto",
+      "loaded": true,
+      "free_before_gib": [
+        31.16,
+        31.16
+      ],
+      "free_after_gib": [
+        21.77,
+        22.59
+      ],
+      "log": "dsb_ts5050_q4.log",
+      "split_mode": "layer",
+      "tensor_split": "50,50",
+      "used_gib": [
+        9.39,
+        8.57
+      ],
+      "used_total_gib": 17.96,
+      "runs": [
+        {
+          "decode_tok_s": 49.8,
+          "decode_n": 128,
+          "prefill_tok_s": 66.45,
+          "prefill_n": 19
+        },
+        {
+          "decode_tok_s": 49.64,
+          "decode_n": 128,
+          "prefill_tok_s": 80.45,
+          "prefill_n": 19
+        },
+        {
+          "decode_tok_s": 50.55,
+          "decode_n": 128,
+          "prefill_tok_s": 86.9,
+          "prefill_n": 19
+        }
+      ],
+      "decode_tok_s": 49.8,
+      "decode_min": 49.64,
+      "decode_max": 50.55,
+      "prefill_tok_s": 80.45
+    },
+    {
+      "tag": "ts9010_q4",
+      "cards": 2,
+      "device_selector": "level_zero:0,1",
+      "dev": "SYCL0,SYCL1",
+      "ngl": 99,
+      "ctx": 4096,
+      "ctk": "q8_0",
+      "ctv": "q8_0",
+      "fa": "on",
+      "model": "Qwen_Qwen3.6-35B-A3B-Q4_0.gguf",
+      "pinned_mem": "auto",
+      "dev2dev_memcpy": "auto",
+      "loaded": true,
+      "free_before_gib": [
+        31.16,
+        31.16
+      ],
+      "free_after_gib": [
+        14.07,
+        30.29
+      ],
+      "log": "dsb_ts9010_q4.log",
+      "split_mode": "layer",
+      "tensor_split": "90,10",
+      "used_gib": [
+        17.09,
+        0.87
+      ],
+      "used_total_gib": 17.96,
+      "runs": [
+        {
+          "decode_tok_s": 50.46,
+          "decode_n": 128,
+          "prefill_tok_s": 74.1,
+          "prefill_n": 19
+        },
+        {
+          "decode_tok_s": 50.95,
+          "decode_n": 128,
+          "prefill_tok_s": 86.96,
+          "prefill_n": 19
+        },
+        {
+          "decode_tok_s": 51.52,
+          "decode_n": 128,
+          "prefill_tok_s": 88.91,
+          "prefill_n": 19
+        }
+      ],
+      "decode_tok_s": 50.95,
+      "decode_min": 50.46,
+      "decode_max": 51.52,
+      "prefill_tok_s": 86.96
+    },
+    {
+      "tag": "ts6040",
+      "cards": 2,
+      "device_selector": "level_zero:0,1",
+      "dev": "SYCL0,SYCL1",
+      "ngl": 99,
+      "ctx": 4096,
+      "ctk": "q8_0",
+      "ctv": "q8_0",
+      "fa": "on",
+      "model": "Qwen3.6-35B-A3B-Q8_0.gguf",
+      "pinned_mem": "auto",
+      "dev2dev_memcpy": "auto",
+      "loaded": true,
+      "free_before_gib": [
+        31.16,
+        31.16
+      ],
+      "free_after_gib": [
+        10.33,
+        18.46
+      ],
+      "log": "dsb_ts6040.log",
+      "split_mode": "layer",
+      "tensor_split": "60,40",
+      "used_gib": [
+        20.83,
+        12.7
+      ],
+      "used_total_gib": 33.53,
+      "runs": [
+        {
+          "decode_tok_s": 36.94,
+          "decode_n": 128,
+          "prefill_tok_s": 44.56,
+          "prefill_n": 19
+        },
+        {
+          "decode_tok_s": 37.47,
+          "decode_n": 128,
+          "prefill_tok_s": 62.47,
+          "prefill_n": 19
+        },
+        {
+          "decode_tok_s": 37.35,
+          "decode_n": 128,
+          "prefill_tok_s": 61.51,
+          "prefill_n": 19
+        }
+      ],
+      "decode_tok_s": 37.35,
+      "decode_min": 36.94,
+      "decode_max": 37.47,
+      "prefill_tok_s": 61.51
+    },
+    {
+      "tag": "ts8020",
+      "cards": 2,
+      "device_selector": "level_zero:0,1",
+      "dev": "SYCL0,SYCL1",
+      "ngl": 99,
+      "ctx": 4096,
+      "ctk": "q8_0",
+      "ctv": "q8_0",
+      "fa": "on",
+      "model": "Qwen3.6-35B-A3B-Q8_0.gguf",
+      "pinned_mem": "auto",
+      "dev2dev_memcpy": "auto",
+      "loaded": true,
+      "free_before_gib": [
+        31.16,
+        31.16
+      ],
+      "free_after_gib": [
+        3.6,
+        25.19
+      ],
+      "log": "dsb_ts8020.log",
+      "split_mode": "layer",
+      "tensor_split": "80,20",
+      "used_gib": [
+        27.56,
+        5.97
+      ],
+      "used_total_gib": 33.53,
+      "runs": [
+        {
+          "decode_tok_s": 37.32,
+          "decode_n": 128,
+          "prefill_tok_s": 53.73,
+          "prefill_n": 19
+        },
+        {
+          "decode_tok_s": 37.76,
+          "decode_n": 128,
+          "prefill_tok_s": 63.6,
+          "prefill_n": 19
+        },
+        {
+          "decode_tok_s": 37.24,
+          "decode_n": 128,
+          "prefill_tok_s": 62.94,
+          "prefill_n": 19
+        }
+      ],
+      "decode_tok_s": 37.32,
+      "decode_min": 37.24,
+      "decode_max": 37.76,
+      "prefill_tok_s": 62.94
+    },
+    {
+      "tag": "ts9010",
+      "cards": 2,
+      "device_selector": "level_zero:0,1",
+      "dev": "SYCL0,SYCL1",
+      "ngl": 99,
+      "ctx": 4096,
+      "ctk": "q8_0",
+      "ctv": "q8_0",
+      "fa": "on",
+      "model": "Qwen3.6-35B-A3B-Q8_0.gguf",
+      "pinned_mem": "auto",
+      "dev2dev_memcpy": "auto",
+      "loaded": true,
+      "free_before_gib": [
+        31.16,
+        31.16
+      ],
+      "free_after_gib": [
+        0.24,
+        28.56
+      ],
+      "log": "dsb_ts9010.log",
+      "split_mode": "layer",
+      "tensor_split": "90,10",
+      "used_gib": [
+        30.92,
+        2.6
+      ],
+      "used_total_gib": 33.52,
+      "runs": [
+        {
+          "decode_tok_s": 37.33,
+          "decode_n": 128,
+          "prefill_tok_s": 53.58,
+          "prefill_n": 19
+        },
+        {
+          "decode_tok_s": 37.8,
+          "decode_n": 128,
+          "prefill_tok_s": 63.35,
+          "prefill_n": 19
+        },
+        {
+          "decode_tok_s": 37.41,
+          "decode_n": 128,
+          "prefill_tok_s": 63.12,
+          "prefill_n": 19
+        }
+      ],
+      "decode_tok_s": 37.41,
+      "decode_min": 37.33,
+      "decode_max": 37.8,
+      "prefill_tok_s": 63.12
+    }
+  ]
+}

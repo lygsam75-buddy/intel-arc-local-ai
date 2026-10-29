@@ -1,0 +1,209 @@
+{
+  "schema": "arc-xpu-vision-probe/1",
+  "tag": "b60-24g-q4_0-vision-nothink",
+  "date": "2026-10-20",
+  "source": "local",
+  "env": {
+    "gpu": "Intel Arc Pro B60 24G",
+    "driver": "32.0.101.9150",
+    "ecc": "off",
+    "backend": "SYCL",
+    "tool": "llama-server /v1/chat/completions",
+    "device_selector": "opencl:0",
+    "sycl_path": "<oneAPI 编译器目录>/bin;<oneMKL 目录>/bin",
+    "ram_gb": 31.1,
+    "commit_limit_gb": 95.1,
+    "slot": "CPU 直连槽",
+    "chip": "E211",
+    "subsys": "25421EF7",
+    "vbios": "2304140000",
+    "vram_visible_gib": 23.33,
+    "engine_version": "0.6.0-dev (build 11431, commit c25030496)",
+    "engine_version_source": "llama-server --version"
+  },
+  "model": {
+    "name": "Qwen_Qwen3.6-35B-A3B-Q4_0",
+    "quant": "Q4_0",
+    "size_gib": 19.41
+  },
+  "mmproj": {
+    "file": "mmproj-Qwen3.6-35B-A3B-Q8_0.gguf",
+    "size_gib": 0.57
+  },
+  "ncmoe": 0,
+  "ctx": 16384,
+  "image_min_tokens": 1024,
+  "server_args": [
+    "-m",
+    "<模型目录>/Qwen_Qwen3.6-35B-A3B-Q4_0.gguf",
+    "-ngl",
+    "999",
+    "-ncmoe",
+    "0",
+    "--host",
+    "127.0.0.1",
+    "--port",
+    "8098",
+    "-c",
+    "16384",
+    "--parallel",
+    "1",
+    "--cache-type-k",
+    "q8_0",
+    "--cache-type-v",
+    "q8_0",
+    "--fit",
+    "off",
+    "-lm",
+    "dio",
+    "--jinja",
+    "--mmproj",
+    "<模型目录>/mmproj-Qwen3.6-35B-A3B-Q8_0.gguf",
+    "--image-min-tokens",
+    "1024",
+    "--api-key",
+    "local"
+  ],
+  "log": "bench\\logs\\2026-10-20_b60-24g-q4_0-vision-nothink.log",
+  "test_image": {
+    "path": "bench/data/assets/vision_test.png",
+    "w": 640,
+    "h": 360,
+    "bytes": 3207,
+    "expected": [
+      "red",
+      "green",
+      "blue"
+    ]
+  },
+  "prompt": "List the shapes in this image. For each one give its color. Answer in one short line, left to right.",
+  "load_s": 19.1,
+  "vram_after_load": {
+    "pid": 31076,
+    "name": "llama-server.exe",
+    "vram_dedicated_mb": 20016.8,
+    "vram_shared_mb": 334.2,
+    "ram_working_set_mb": 655.4,
+    "ram_commit_mb": 21578.3,
+    "ram_page_faults": 353701
+  },
+  "runs": [
+    {
+      "rep": 0,
+      "wall_s": 6.98,
+      "answer": "red square, green circle, blue square",
+      "reasoning_head": "",
+      "message_keys": [
+        "content",
+        "role"
+      ],
+      "finish_reason": "stop",
+      "decode_tok_s": 47.76233462291636,
+      "prompt_tok_s": 164.27489019190347,
+      "prompt_n": 1113,
+      "predicted_n": 9,
+      "usage": {
+        "completion_tokens": 9,
+        "prompt_tokens": 1113,
+        "total_tokens": 1122,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      }
+    },
+    {
+      "rep": 1,
+      "wall_s": 0.26,
+      "answer": "red square, green circle, blue square",
+      "reasoning_head": "",
+      "message_keys": [
+        "content",
+        "role"
+      ],
+      "finish_reason": "stop",
+      "decode_tok_s": 50.69965524234435,
+      "prompt_tok_s": 49.09903274905484,
+      "prompt_n": 4,
+      "predicted_n": 9,
+      "usage": {
+        "completion_tokens": 9,
+        "prompt_tokens": 1113,
+        "total_tokens": 1122,
+        "prompt_tokens_details": {
+          "cached_tokens": 1109
+        }
+      }
+    },
+    {
+      "rep": 2,
+      "wall_s": 0.25,
+      "answer": "red square, green circle, blue square",
+      "reasoning_head": "",
+      "message_keys": [
+        "content",
+        "role"
+      ],
+      "finish_reason": "stop",
+      "decode_tok_s": 50.783010543822556,
+      "prompt_tok_s": 54.61198186882202,
+      "prompt_n": 4,
+      "predicted_n": 9,
+      "usage": {
+        "completion_tokens": 9,
+        "prompt_tokens": 1113,
+        "total_tokens": 1122,
+        "prompt_tokens_details": {
+          "cached_tokens": 1109
+        }
+      }
+    }
+  ],
+  "vram_after_probe": {
+    "pid": 31076,
+    "name": "llama-server.exe",
+    "vram_dedicated_mb": 20278.4,
+    "vram_shared_mb": 334.2,
+    "ram_working_set_mb": 783.9,
+    "ram_commit_mb": 21959.5,
+    "ram_page_faults": 502353
+  },
+  "decode_tok_s": 49.75,
+  "prompt_tok_s": 89.33,
+  "image_prompt_n": 1113,
+  "content_check": {
+    "expected_colors": [
+      "red",
+      "green",
+      "blue"
+    ],
+    "found": [
+      "red",
+      "green",
+      "blue"
+    ],
+    "pass": true,
+    "answers": [
+      "red square, green circle, blue square",
+      "red square, green circle, blue square",
+      "red square, green circle, blue square"
+    ],
+    "reasoning_heads": [
+      "",
+      "",
+      ""
+    ]
+  },
+  "status": "active",
+  "log_scan": {
+    "lines": 60,
+    "clip_loaded": [
+      "loaded multimodal model, '<模型目录>/mmproj-Qwen3.6-35B-A3B-Q8_0.gguf'"
+    ],
+    "mmproj_note": [
+      "mmproj-Qwen3.6-35B-A3B-Q8_0.gguf'"
+    ],
+    "key_lines": [
+      "0.18.298.124 I srv    load_model: loaded multimodal model, '<模型目录>/mmproj-Qwen3.6-35B-A3B-Q8_0.gguf'"
+    ]
+  }
+}

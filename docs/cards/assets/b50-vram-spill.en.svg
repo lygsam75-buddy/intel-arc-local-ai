@@ -1,0 +1,45 @@
+<svg viewBox="0 0 680 320" width="100%" role="img" xmlns="http://www.w3.org/2000/svg" font-family="'Microsoft YaHei','PingFang SC','Noto Sans SC',sans-serif">
+<title>Cross the usable VRAM line and decode drops: five configurations</title>
+<desc>Bar chart: VRAM in use and decode speed for five quantisation and context configurations. IQ2_M q8_0 262144 uses 15,540 MB, no spill, 44.93 tok/s; Q3_K_S 262144 uses 16,086 MB, spills 2,332 MB, decode falls to 15.74.</desc>
+<text x="40" y="30" font-size="15" font-weight="600" fill="#2C2C2A">Cross the usable VRAM line and decode drops: five configurations</text>
+<text x="40" y="50" font-size="12" fill="#5F5E5A">B50 16G has 15,882 MB usable (15.51 GiB); beyond that it spills to host memory</text>
+<rect x="40" y="60" width="10" height="10" rx="2" fill="#1D9E75"/>
+<text x="55" y="69" font-size="12" fill="#5F5E5A">No spill (full speed)</text>
+<rect x="232.4" y="60" width="10" height="10" rx="2" fill="#E24B4A"/>
+<text x="247.4" y="69" font-size="12" fill="#5F5E5A">Spilling (slower)</text>
+<line x1="76" y1="236.0" x2="640" y2="236.0" stroke="#B4B2A9" stroke-width="0.5"/>
+<text x="68" y="240.0" font-size="11" fill="#5F5E5A" text-anchor="end">14,000</text>
+<line x1="76" y1="198.5" x2="640" y2="198.5" stroke="#B4B2A9" stroke-width="0.5"/>
+<text x="68" y="202.5" font-size="11" fill="#5F5E5A" text-anchor="end">14,700</text>
+<line x1="76" y1="161.0" x2="640" y2="161.0" stroke="#B4B2A9" stroke-width="0.5"/>
+<text x="68" y="165.0" font-size="11" fill="#5F5E5A" text-anchor="end">15,400</text>
+<line x1="76" y1="123.5" x2="640" y2="123.5" stroke="#B4B2A9" stroke-width="0.5"/>
+<text x="68" y="127.5" font-size="11" fill="#5F5E5A" text-anchor="end">16,100</text>
+<line x1="76" y1="86.0" x2="640" y2="86.0" stroke="#B4B2A9" stroke-width="0.5"/>
+<text x="68" y="90.0" font-size="11" fill="#5F5E5A" text-anchor="end">16,800</text>
+<rect x="102.4" y="153.5" width="60" height="82.5" fill="#1D9E75"/>
+<text x="132.4" y="146.5" font-size="12" font-weight="600" fill="#1D9E75" text-anchor="middle">44.93 tok/s</text>
+<text x="132.4" y="254" font-size="11" fill="#2C2C2A" text-anchor="middle">IQ2_M · q8_0</text>
+<text x="132.4" y="268" font-size="11" fill="#5F5E5A" text-anchor="middle">-c 262144</text>
+<rect x="215.2" y="154.9" width="60" height="81.1" fill="#1D9E75"/>
+<text x="245.2" y="147.9" font-size="12" font-weight="600" fill="#1D9E75" text-anchor="middle">37.13 tok/s</text>
+<text x="245.2" y="254" font-size="11" fill="#2C2C2A" text-anchor="middle">Q3_K_S · q8_0</text>
+<text x="245.2" y="268" font-size="11" fill="#5F5E5A" text-anchor="middle">-c 65536</text>
+<rect x="328.0" y="121.9" width="60" height="114.1" fill="#E24B4A"/>
+<text x="358.0" y="114.9" font-size="12" font-weight="600" fill="#E24B4A" text-anchor="middle">30.25 tok/s</text>
+<text x="358.0" y="254" font-size="11" fill="#2C2C2A" text-anchor="middle">Q3_K_S · q8_0</text>
+<text x="358.0" y="268" font-size="11" fill="#5F5E5A" text-anchor="middle">-c 131072</text>
+<rect x="440.8" y="119.0" width="60" height="117.0" fill="#E24B4A"/>
+<text x="470.8" y="112.0" font-size="12" font-weight="600" fill="#E24B4A" text-anchor="middle">33.52 tok/s</text>
+<text x="470.8" y="254" font-size="11" fill="#2C2C2A" text-anchor="middle">IQ2_M · f16</text>
+<text x="470.8" y="268" font-size="11" fill="#5F5E5A" text-anchor="middle">-c 262144</text>
+<rect x="553.6" y="124.2" width="60" height="111.8" fill="#E24B4A"/>
+<text x="583.6" y="117.2" font-size="12" font-weight="600" fill="#E24B4A" text-anchor="middle">15.74 tok/s</text>
+<text x="583.6" y="254" font-size="11" fill="#2C2C2A" text-anchor="middle">Q3_K_S · q8_0</text>
+<text x="583.6" y="268" font-size="11" fill="#5F5E5A" text-anchor="middle">-c 262144</text>
+<line x1="76" y1="135.2" x2="640" y2="135.2" stroke="#888780" stroke-width="2" stroke-dasharray="6,4"/>
+<text x="80" y="129.2" font-size="11" fill="#5F5E5A">Usable 15,882 MB</text>
+<text x="20" y="161.0" font-size="12" fill="#5F5E5A" text-anchor="middle" transform="rotate(-90 20 161.0)">VRAM in use (MB)</text>
+<text x="40" y="292" font-size="12.5" fill="#444441">The config spilling 2,332 MB keeps only 15.74 tok/s (-58%); spilling 412 MB drops to 30.25.</text>
+<text x="40" y="310" font-size="12" fill="#5F5E5A">What decides speed is how much spills, not the -c number itself.</text>
+</svg>

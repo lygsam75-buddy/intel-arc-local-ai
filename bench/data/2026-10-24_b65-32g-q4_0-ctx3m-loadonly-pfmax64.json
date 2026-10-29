@@ -1,0 +1,57 @@
+{
+  "schema": "arc-xpu-capacity/1",
+  "tag": "b65-32g-q4_0-ctx3m-loadonly-pfmax64",
+  "date": "2026-10-24",
+  "source": "local",
+  "env": {
+    "os": "Windows-11-10.0.26300-SP0",
+    "cpu": "AMD Ryzen 5 9600X 6-Core",
+    "gpu": "2x Intel Arc Pro B65 32G",
+    "vram_visible_gib": 31.16,
+    "driver": "9150",
+    "ecc": "off",
+    "backend": "SYCL",
+    "engine": "llama.cpp",
+    "engine_version": "0.6.0-dev (build 11431, commit c25030496)",
+    "cpu_threads": 6,
+    "pagefile_initial_mb": 32768,
+    "pagefile_maximum_mb": 65536,
+    "card0": "CPU 直连 x16",
+    "card1": "芯片组 x4",
+    "pin": "双卡 level_zero:0,1 + -dev SYCL0,SYCL1 -sm layer -ts 50,50"
+  },
+  "model": {
+    "name": "Qwen3.6-35B-A3B",
+    "quant": "Q4_0",
+    "size_gib": 19.41,
+    "file": "Qwen_Qwen3.6-35B-A3B-Q4_0.gguf"
+  },
+  "kv": {
+    "type": "q8_0",
+    "ctk": "q8_0",
+    "ctv": "q8_0"
+  },
+  "method": "dual_ctx_probe.py --load-only 1（只起到 model loaded，不发任何请求），目的：验证「页面文件初始 32 GB」能不能拦住 3M 上下文的分配。",
+  "cases": [
+    {
+      "name": "load_only",
+      "ok": true,
+      "load_s": 54.9,
+      "commit_before_gib": 17.67,
+      "commit_limit_before_gib": 63.11,
+      "commit_after_gib": 86.02,
+      "commit_limit_after_gib": 86.97,
+      "commit_frac_after": 0.989,
+      "ram_free_after_gib": 0.62,
+      "note": "装载过程中 commit limit 从 63.11 涨到 86.97 GiB —— Windows 把页面文件从 32 GB 扩到了约 56 GB（最大值还留着 64 GB），提交量冲到 98.9%。"
+    }
+  ],
+  "conclusion": [
+    "🔴 **「初始 32 GB + 最大 64 GB」不锁死。** Windows 在压力下会把页面文件向最大值扩，commit limit 跟着涨回 86.97 GiB，3M 装载照样把提交量顶到 98.9% —— 和 17:00 那次整机卡死（96.6%）是同一个危险区。",
+    "→ 真正锁死必须**初始和最大都设成 32768**（20:31:38 重启后已改）。",
+    "本条记录是在旧配置（最大 64 GB）下量的，正是它证明了为什么要改最大值。"
+  ],
+  "log": [
+    "dcp_dual_ctx3145728_par12.log"
+  ]
+}

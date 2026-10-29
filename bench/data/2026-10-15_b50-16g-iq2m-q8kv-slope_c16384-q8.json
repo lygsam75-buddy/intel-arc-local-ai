@@ -1,0 +1,93 @@
+{
+  "schema": "arc-xpu-ctx-sweep/1",
+  "tag": "b50-16g-iq2m-q8kv-slope::c16384-q8",
+  "date": "2026-10-15",
+  "source": "local",
+  "env": {
+    "gpu": "Intel Arc Pro B50 LP 16G",
+    "driver": "32.0.101.8976",
+    "ecc": "off",
+    "backend": "SYCL",
+    "tool": "llama-server",
+    "device_selector": "opencl:0",
+    "sycl_path": "<SYCL 运行时目录>;<oneMKL 目录>",
+    "ram_gb": 31.1,
+    "commit_limit_gb": 95.1
+  },
+  "model": {
+    "name": "Qwen3.6-35B-A3B-UD-IQ2_M",
+    "quant": "IQ2_M",
+    "size_gib": 10.73
+  },
+  "config_name": "c16384-q8",
+  "ncmoe": 0,
+  "server_args": [
+    "-c",
+    "16384",
+    "-fa",
+    "on",
+    "-ctk",
+    "q8_0",
+    "-ctv",
+    "q8_0"
+  ],
+  "log": "bench\\logs\\2026-10-15_c16384-q8.log",
+  "load_s": 10.6,
+  "vram": {
+    "pid": 24364,
+    "name": "llama-server.exe",
+    "vram_dedicated_mb": 11365.2,
+    "vram_shared_mb": 44.1,
+    "ram_working_set_mb": 10999.8,
+    "ram_commit_mb": 12388.1
+  },
+  "warmup": {
+    "rep": 0,
+    "wall_s": 2.73,
+    "decode_tok_s": 45.26058251638687,
+    "prompt_tok_s": 35.88800733219596,
+    "prompt_n": 13,
+    "predicted_n": 108
+  },
+  "vram_after_probe": {
+    "pid": 24364,
+    "name": "llama-server.exe",
+    "vram_dedicated_mb": 11418.8,
+    "vram_shared_mb": 44.1,
+    "ram_working_set_mb": 11335.8,
+    "ram_commit_mb": 12771.7
+  },
+  "probes": [
+    {
+      "rep": 0,
+      "wall_s": 2.91,
+      "decode_tok_s": 45.33353703678584,
+      "prompt_tok_s": 44.30071324148319,
+      "prompt_n": 4,
+      "predicted_n": 128
+    },
+    {
+      "rep": 1,
+      "wall_s": 2.93,
+      "decode_tok_s": 45.096309026896215,
+      "prompt_tok_s": 44.390682395765126,
+      "prompt_n": 4,
+      "predicted_n": 128
+    }
+  ],
+  "decode_tok_s": 45.21,
+  "decode_min": 45.1,
+  "decode_max": 45.33,
+  "decode_n": 2,
+  "early_stop": 0,
+  "prompt_tok_s": 44.35,
+  "spread_pct": 0.5,
+  "status": "active",
+  "log_scan": {
+    "ok": true,
+    "lines": 31,
+    "key_lines": [
+      "0.10.207.807 I srv    load_model: initializing, n_slots = 4, n_ctx_slot = 16384, kv_unified = 'true'"
+    ]
+  }
+}

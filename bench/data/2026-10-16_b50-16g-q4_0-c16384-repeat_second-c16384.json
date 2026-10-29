@@ -1,0 +1,113 @@
+{
+  "schema": "arc-xpu-ctx-sweep/1",
+  "tag": "b50-16g-q4_0-c16384-repeat::second-c16384",
+  "date": "2026-10-16",
+  "source": "local",
+  "env": {
+    "gpu": "Intel Arc Pro B50 LP 16G",
+    "driver": "32.0.101.8976",
+    "ecc": "off",
+    "backend": "SYCL",
+    "tool": "llama-server",
+    "device_selector": "opencl:0",
+    "sycl_path": "<SYCL 运行时目录>;<oneMKL 目录>;<oneAPI 编译器目录>",
+    "ram_gb": 31.1,
+    "commit_limit_gb": 95.1,
+    "slot": "PCIE1 (CPU-attached x16, B50 negotiates x8)",
+    "chip": "E212",
+    "subsys": "25221EF7",
+    "vbios": "2304240000",
+    "vram_visible_gib": 15.51
+  },
+  "model": {
+    "name": "Qwen_Qwen3.6-35B-A3B-Q4_0",
+    "quant": "Q4_0",
+    "size_gib": 19.41
+  },
+  "config_name": "second-c16384",
+  "ncmoe": 8,
+  "server_args": [
+    "-c",
+    "16384"
+  ],
+  "log": "..\\logs\\2026-10-16_second-c16384.log",
+  "load_s": 16.5,
+  "vram": {
+    "pid": 20452,
+    "name": "llama-server.exe",
+    "vram_dedicated_mb": 15891.2,
+    "vram_shared_mb": 3848.1,
+    "ram_working_set_mb": 4299.9,
+    "ram_commit_mb": 20862.7,
+    "ram_page_faults": 1211869
+  },
+  "warmup": {
+    "rep": 0,
+    "wall_s": 3.66,
+    "decode_tok_s": 37.70421469266352,
+    "prompt_tok_s": 36.407631039465876,
+    "prompt_n": 13,
+    "predicted_n": 125
+  },
+  "vram_after_probe": {
+    "pid": 20452,
+    "name": "llama-server.exe",
+    "vram_dedicated_mb": 15944.6,
+    "vram_shared_mb": 3848.1,
+    "ram_working_set_mb": 4801.5,
+    "ram_commit_mb": 21367.6,
+    "ram_page_faults": 1430587
+  },
+  "page_faults_delta": 218718,
+  "probe_tokens_total": 439,
+  "page_faults_per_token": 498.2,
+  "probes": [
+    {
+      "rep": 0,
+      "wall_s": 2.58,
+      "decode_tok_s": 37.42399268442299,
+      "prompt_tok_s": 48.457829573813385,
+      "prompt_n": 4,
+      "predicted_n": 93
+    },
+    {
+      "rep": 1,
+      "wall_s": 2.98,
+      "decode_tok_s": 37.64631081839942,
+      "prompt_tok_s": 48.020937128588066,
+      "prompt_n": 4,
+      "predicted_n": 109
+    },
+    {
+      "rep": 2,
+      "wall_s": 3.0,
+      "decode_tok_s": 37.43647498151574,
+      "prompt_tok_s": 49.08397040236585,
+      "prompt_n": 4,
+      "predicted_n": 109
+    },
+    {
+      "rep": 3,
+      "wall_s": 3.48,
+      "decode_tok_s": 37.691421224781244,
+      "prompt_tok_s": 48.83050930221202,
+      "prompt_n": 4,
+      "predicted_n": 128
+    }
+  ],
+  "decode_tok_s": 37.55,
+  "decode_min": 37.42,
+  "decode_max": 37.69,
+  "decode_n": 4,
+  "early_stop": 3,
+  "prompt_tok_s": 48.6,
+  "spread_pct": 0.7,
+  "status": "active",
+  "log_scan": {
+    "ok": true,
+    "lines": 66,
+    "key_lines": [
+      "0.16.121.743 I srv    load_model: initializing, n_slots = 1, n_ctx_slot = 16384, kv_unified = 'false'"
+    ]
+  }
+}

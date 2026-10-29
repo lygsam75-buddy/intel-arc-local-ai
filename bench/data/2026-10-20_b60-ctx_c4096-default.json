@@ -1,0 +1,84 @@
+{
+  "schema": "arc-xpu-ctx-sweep/1",
+  "tag": "b60-ctx::c4096-default",
+  "date": "2026-10-20",
+  "source": "local",
+  "env": {
+    "gpu": "Intel Arc Pro B60 24G",
+    "driver": "32.0.101.9150",
+    "ecc": "off",
+    "backend": "SYCL",
+    "tool": "llama-server",
+    "device_selector": "opencl:0",
+    "sycl_path": "<SYCL 运行时目录>;<oneMKL 目录>",
+    "ram_gb": 31.1,
+    "commit_limit_gb": 95.1,
+    "slot": "CPU 直连槽",
+    "chip": "E211",
+    "subsys": "25421EF7",
+    "vbios": "OPROM CODE VERSION:2304140000_OPROM DATA VERSION:2304140000",
+    "vram_visible_gib": 23.33
+  },
+  "model": {
+    "name": "Qwen_Qwen3.6-35B-A3B-Q4_0",
+    "quant": "Q4_0",
+    "size_gib": 19.41
+  },
+  "config_name": "c4096-default",
+  "ncmoe": 0,
+  "server_args": [
+    "-c",
+    "4096"
+  ],
+  "log": "..\\logs\\2026-10-20_c4096-default.log",
+  "load_s": 14.5,
+  "warmup": {
+    "rep": 0,
+    "wall_s": 1.96,
+    "decode_tok_s": 52.22225564951147,
+    "prompt_tok_s": 65.65159205110723,
+    "prompt_n": 13,
+    "predicted_n": 93
+  },
+  "probes": [
+    {
+      "rep": 0,
+      "wall_s": 1.7,
+      "decode_tok_s": 52.20205676103638,
+      "prompt_tok_s": 57.86451024925138,
+      "prompt_n": 4,
+      "predicted_n": 85
+    },
+    {
+      "rep": 1,
+      "wall_s": 1.83,
+      "decode_tok_s": 52.21548585075093,
+      "prompt_tok_s": 57.54650476916658,
+      "prompt_n": 4,
+      "predicted_n": 92
+    },
+    {
+      "rep": 2,
+      "wall_s": 2.4,
+      "decode_tok_s": 50.27850390243543,
+      "prompt_tok_s": 55.66069241901369,
+      "prompt_n": 4,
+      "predicted_n": 117
+    }
+  ],
+  "decode_tok_s": 51.57,
+  "decode_min": 50.28,
+  "decode_max": 52.22,
+  "decode_n": 3,
+  "early_stop": 3,
+  "prompt_tok_s": 57.02,
+  "spread_pct": 3.8,
+  "status": "active",
+  "log_scan": {
+    "ok": true,
+    "lines": 58,
+    "key_lines": [
+      "0.13.578.812 I srv    load_model: initializing, n_slots = 4, n_ctx_slot = 4096, kv_unified = 'true'"
+    ]
+  }
+}

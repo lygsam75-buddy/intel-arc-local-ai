@@ -1,0 +1,70 @@
+{
+  "schema": "arc-xpu-capacity/1",
+  "tag": "b65-32g-q4_0-ctx3m-loadonly-pf3232",
+  "date": "2026-10-24",
+  "source": "local",
+  "env": {
+    "os": "Windows-11-10.0.26300-SP0",
+    "cpu": "AMD Ryzen 5 9600X 6-Core",
+    "gpu": "2x Intel Arc Pro B65 32G",
+    "vram_visible_gib": 31.16,
+    "driver": "9150",
+    "ecc": "off",
+    "backend": "SYCL",
+    "engine": "llama.cpp",
+    "engine_version": "0.6.0-dev (build 11431, commit c25030496)",
+    "cpu_threads": 6,
+    "pagefile_initial_mb": 32768,
+    "pagefile_maximum_mb": 32768,
+    "card0": "CPU 直连 x16",
+    "card1": "芯片组 x4",
+    "pin": "双卡 level_zero:0,1 + -dev SYCL0,SYCL1 -sm layer -ts 50,50"
+  },
+  "model": {
+    "name": "Qwen3.6-35B-A3B",
+    "quant": "Q4_0",
+    "size_gib": 19.41,
+    "file": "Qwen_Qwen3.6-35B-A3B-Q4_0.gguf"
+  },
+  "kv": {
+    "type": "q8_0",
+    "ctk": "q8_0",
+    "ctv": "q8_0"
+  },
+  "method": "dual_ctx_probe.py --load-only 1（只起到 model loaded，不发任何请求），目的：验证「初始=最大=32768」锁死 commit limit 后，3M 上下文装载的失败形态是不是「进程报 OOM 自己退、机器照常用」。带独立监控进程每 2 s 采样提交内存。",
+  "cases": [
+    {
+      "name": "load_only",
+      "ok": false,
+      "loaded": false,
+      "load_s": 20.4,
+      "commit_before_gib": 15.93,
+      "commit_limit_gib": 63.11,
+      "commit_limit_expanded": false,
+      "commit_peak_gib": 34.99,
+      "commit_peak_frac": 0.554,
+      "exit": "llama-server 自己报错退出（model loading error），20.4 s，无挂起、无 dump、机器无恙",
+      "errors": [
+        "0.01.135.824 W common_fit_params: failed to fit params to free device memory: n_gpu_layers already set by user to 99, abort",
+        "0.15.659.983 E srv  llama_server: exiting due to model loading error"
+      ],
+      "log_key_lines": [
+        "[SYCL-MEMTRACE] alloc FAILED: 16320.000 MiB buffer",
+        "ggml_backend_sycl_buffer_type_alloc_buffer: can't allocate 17112760320 Bytes of memory on device (SYCL1, KV cache)",
+        "llama_init_from_model: failed to initialize the context: failed to allocate buffer for kv cache",
+        "srv  llama_server: exiting due to model loading error"
+      ],
+      "note": "commit limit 63.11 GiB 全程没扩（监控 450 个采样、limit 恒 63.11）；提交峰值 34.99 GiB（55.4%），llama-server 退出后回落到约 14 GiB。对照组：同参数在「最大 64 GB」配置下分配被 Windows 扩页面文件救活，提交冲到 98.9%。"
+    }
+  ],
+  "conclusion": [
+    "🔴 **虚拟内存定案：初始与最大都设 32768 MB（32 GB 固定，e://pagefile.sys）。** 「初始小 + 最大大」等于没锁——Windows 压力下照样扩（实测扩到 86.97 GiB、提交 98.9%），锁死后 limit 恒 63.11 GiB。",
+    "锁死之后，3M 档的失败形态从「整机卡死要手动重启」变成「**进程报 OOM 自己退、机器照常用**」：装载 20.4 s 退出、提交峰值 55.4%、无任何 dump。",
+    "32 GB 物理 + 32 GB 页面文件 = commit limit 63.11 GiB，是这套交付配置的硬天花板。超过它的请求（3M 档）llama-server 起不来，**这是设计行为不是故障**。",
+    "对外口径不变：可用上限 = 单卡 1M / 双卡默认 1.75M；3M 只作「分配上限」历史记录。"
+  ],
+  "log": [
+    "dcp_dual_ctx3145728_par12.log",
+    "dcp_monitor_pf3232.log"
+  ]
+}

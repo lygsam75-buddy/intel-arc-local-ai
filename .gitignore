@@ -1,0 +1,34 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# 编辑器
+.vscode/
+.idea/
+*.swp
+
+# 大文件不进仓库（模型、构建产物）
+*.gguf
+*.bin
+*.exe
+*.zip
+
+# 日志默认排除。
+# bench/logs/ 只保留 README（说明归档规范），原始日志不随仓库分发
+*.log
+bench/logs/*
+!bench/logs/README.md
+
+# 本地环境覆盖
+local.env
+*.local.json
+
+# 新卡跑测队列的进度记账（本机状态，不入库）
+.new_card_state.json
+
+# 临时工作目录（cp 原始 jsonl → 对临时目录跑 → 再 cp 回来；乐享同步等一次性脚本）
+_tmp_mig*/
+_tmp_*/

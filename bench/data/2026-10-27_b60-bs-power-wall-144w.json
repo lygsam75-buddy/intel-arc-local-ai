@@ -1,0 +1,95 @@
+{
+  "schema": "arc-xpu-bench/1",
+  "id": "2026-10-27_b60-bs-power-wall-144w",
+  "date": "2026-10-27",
+  "title": "B60 BS 把功耗墙从 120 W 拉到 144 W 之后（附录，非出厂状态）",
+  "status": "active",
+  "domain": "h3-video-power-wall",
+  "tag": "b60-bs-power-wall-144w",
+  "source": "local",
+  "tool": "bench_f_h3.py --expect-card B60 --fresh 1 --cached 0（端口 8190）",
+  "env": {
+    "card": "Intel Arc Pro B60 Graphics · BS SKU（单槽 · 单 8pin）",
+    "vram_gib": 23.33
+  },
+  "conditions": {
+    "wall_factory_w": 120,
+    "wall_pulled_w": 144,
+    "headroom_w": 24,
+    "headroom_pct": 20,
+    "how": "IGS 调优把功耗限制拉到 120%（120 → 144 W）。单 8pin 额定 150 W，144 W = 96%，不超线。",
+    "verify": "zesPowerGetProperties.defaultLimit 恒为 120000 mW，看不出调优；判生效只看实测功率：P90 从 110.6 → 144.9 W、峰值 124.4 → 169.7 W。"
+  },
+  "tiers": [
+    {
+      "label_zh": "720p · 5 秒",
+      "label_en": "720p · 5 s",
+      "res": "1280x720",
+      "duration": 5,
+      "frames": 124,
+      "factory_120w": {
+        "mode": "fresh",
+        "server_s": 506.75,
+        "sit_s": 57.95,
+        "p90_w": 111.1,
+        "peak_w": 125.1,
+        "wh": 13.34
+      },
+      "pulled_144w": {
+        "mode": "fresh",
+        "server_s": 427.26,
+        "sit_s": 47.0,
+        "p90_w": 144.8,
+        "peak_w": 170.9,
+        "wh": 14.02
+      },
+      "delta_e2e_pct": -15.7,
+      "delta_sit_pct": -18.9,
+      "tf_same_tier": {
+        "mode": "fresh",
+        "server_s": 427.31,
+        "sit_s": 45.46,
+        "p90_w": 148.3
+      },
+      "vs_tf_e2e_pct": 0.0,
+      "vs_tf_sit_pct": 3.4
+    },
+    {
+      "label_zh": "720p · 10 秒",
+      "label_en": "720p · 10 s",
+      "res": "1280x720",
+      "duration": 10,
+      "frames": 243,
+      "factory_120w": {
+        "mode": "fresh",
+        "server_s": 1384.85,
+        "sit_s": 197.69,
+        "p90_w": 114.7,
+        "peak_w": 125.1,
+        "wh": 39.38
+      },
+      "pulled_144w": {
+        "mode": "fresh",
+        "server_s": 1117.31,
+        "sit_s": 156.21,
+        "p90_w": 146.9,
+        "peak_w": 163.6,
+        "wh": 41.76
+      },
+      "delta_e2e_pct": -19.3,
+      "delta_sit_pct": -21.0,
+      "tf_same_tier": {
+        "mode": "fresh",
+        "server_s": 1121.55,
+        "sit_s": 155.77,
+        "p90_w": 148.3
+      },
+      "vs_tf_e2e_pct": -0.4,
+      "vs_tf_sit_pct": 0.3
+    }
+  ],
+  "usage_rule": "🔴 拉墙数字不进出厂对照表（B60 页 §6 六档、README、汇总表），只能作附录并标明「非出厂状态、单卡实测」。出厂态 = BS 120 W。",
+  "pending": "1080p · 5 秒未测（需 25 分钟/轮）。",
+  "finding": "出厂 120 W 下 BS 比 TF 慢 18.6% / 23.5%；拉到 144 W 后两档端到端与 TF 持平（−0.01% / −0.4%），单步只差 3.4% / 0.3%。**差距主要来自功耗墙，不是频率。**",
+  "energy_note": "拉墙后功率更高：720p·10 每片 39.38 → 41.76 Wh（+6%），但一条省 4.5 分钟。"
+}

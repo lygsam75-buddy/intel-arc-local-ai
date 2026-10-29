@@ -1,0 +1,108 @@
+{
+  "schema": "arc-xpu-bench/1",
+  "tag": "2026-10-24_b65-32g-q4_0-ctx262144-single-ctrl",
+  "date": "2026-10-24",
+  "source": "local",
+  "env": {
+    "os": "Windows-11-10.0.26300-SP0",
+    "cpu": "AMD Ryzen 5 9600X 6-Core",
+    "gpu": "2x Intel Arc Pro B65 32G",
+    "vram_visible_gib": 31.16,
+    "driver": "9150",
+    "ecc": "off",
+    "engine": "llama.cpp",
+    "engine_version": "0.6.0-dev (build 11431, commit c25030496)",
+    "backend": "SYCL",
+    "cpu_threads": 6,
+    "card0": "CPU 直连 x16",
+    "card1": "芯片组 x4"
+  },
+  "model": {
+    "name": "Qwen3.6-35B-A3B",
+    "quant": "Q4_0",
+    "size_gib": 19.41,
+    "file": "Qwen_Qwen3.6-35B-A3B-Q4_0.gguf"
+  },
+  "measure": {
+    "harness": "llama-server /v1/chat/completions",
+    "prompt_tokens": 19,
+    "gen_tokens": 128,
+    "reps": 0,
+    "statistic": "median",
+    "ctx": 4096,
+    "ctk": "q8_0",
+    "ctv": "q8_0",
+    "fa": "on",
+    "note": "3M 上下文的对照组：同一模型、同一条 35,401 token prompt，单卡 -c 262144 --parallel 1。"
+  },
+  "samples": [
+    {
+      "tag": "dual_ctx262144_par1_single",
+      "ctx": 262144,
+      "parallel": 1,
+      "single": true,
+      "model": "Qwen_Qwen3.6-35B-A3B-Q4_0.gguf",
+      "dev": "SYCL0",
+      "split_mode": null,
+      "tensor_split": null,
+      "source": "dual_ctx_probe.py",
+      "window_tokens": 262144,
+      "log": "dcp_dual_ctx262144_par1_single.log",
+      "free_before_gib": [
+        31.16,
+        31.16
+      ],
+      "mem_before": {
+        "commit_limit_gib": 95.11,
+        "committed_gib": 18.12,
+        "commit_frac": 0.191,
+        "ram_free_gib": 17.8
+      },
+      "loaded": true,
+      "load_s": 23.0,
+      "free_after_gib": [
+        9.68,
+        31.16
+      ],
+      "used_gib": [
+        21.48,
+        0.0
+      ],
+      "mem_after_load": {
+        "commit_limit_gib": 95.11,
+        "committed_gib": 41.13,
+        "commit_frac": 0.432,
+        "ram_free_gib": 0.55
+      },
+      "short": {
+        "wall_s": 2.69,
+        "decode_tok_s": 53.01,
+        "decode_n": 128,
+        "prefill_tok_s": 81.07,
+        "prefill_n": 19
+      },
+      "mem_after_short": {
+        "commit_limit_gib": 95.11,
+        "committed_gib": 41.28,
+        "commit_frac": 0.434,
+        "ram_free_gib": 0.48
+      },
+      "long": {
+        "wall_s": 38.64,
+        "decode_tok_s": 39.07,
+        "decode_n": 32,
+        "prefill_tok_s": 937.39,
+        "prefill_n": 35401
+      },
+      "errors": [],
+      "alive_after": true,
+      "mem_after_long": {
+        "commit_limit_gib": 95.11,
+        "committed_gib": 41.6,
+        "commit_frac": 0.437,
+        "ram_free_gib": 0.56
+      },
+      "wall_s": 67.6
+    }
+  ]
+}

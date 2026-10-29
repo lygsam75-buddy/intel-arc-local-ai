@@ -1,0 +1,94 @@
+{
+  "schema": "arc-xpu-ctx-sweep/1",
+  "tag": "b50-16g-q3ks-ctx::c131072-q8",
+  "date": "2026-10-15",
+  "source": "local",
+  "env": {
+    "gpu": "Intel Arc Pro B50 LP 16G",
+    "driver": "32.0.101.8976",
+    "ecc": "off",
+    "backend": "SYCL",
+    "tool": "llama-server",
+    "device_selector": "opencl:0",
+    "sycl_path": "<SYCL 运行时目录>;<oneMKL 目录>",
+    "ram_gb": 31.1,
+    "commit_limit_gb": 95.1
+  },
+  "model": {
+    "name": "Qwen3.6-35B-A3B-UD-Q3_K_S",
+    "quant": "Q3_K_S",
+    "size_gib": 14.3
+  },
+  "config_name": "c131072-q8",
+  "ncmoe": 0,
+  "server_args": [
+    "-c",
+    "131072",
+    "-fa",
+    "on",
+    "-ctk",
+    "q8_0",
+    "-ctv",
+    "q8_0"
+  ],
+  "log": "bench/logs\\2026-10-15_c131072-q8.log",
+  "load_s": 22.6,
+  "vram": {
+    "pid": 15204,
+    "name": "llama-server.exe",
+    "vram_dedicated_mb": 16129.8,
+    "vram_shared_mb": 412.1,
+    "ram_working_set_mb": 23376.7,
+    "ram_commit_mb": 17544.3
+  },
+  "warmup": {
+    "rep": 0,
+    "wall_s": 4.59,
+    "decode_tok_s": 30.471733628101365,
+    "prompt_tok_s": 32.10716878985611,
+    "prompt_n": 13,
+    "predicted_n": 128
+  },
+  "vram_after_probe": {
+    "pid": 15204,
+    "name": "llama-server.exe",
+    "vram_dedicated_mb": 16183.0,
+    "vram_shared_mb": 412.1,
+    "ram_working_set_mb": 23690.1,
+    "ram_commit_mb": 17937.8
+  },
+  "probes": [
+    {
+      "rep": 0,
+      "wall_s": 4.33,
+      "decode_tok_s": 30.181002841054244,
+      "prompt_tok_s": 37.54035588257376,
+      "prompt_n": 4,
+      "predicted_n": 128
+    },
+    {
+      "rep": 1,
+      "wall_s": 3.33,
+      "decode_tok_s": 30.315078975567324,
+      "prompt_tok_s": 37.38806946703307,
+      "prompt_n": 4,
+      "predicted_n": 96
+    }
+  ],
+  "decode_tok_s": 30.25,
+  "decode_min": 30.18,
+  "decode_max": 30.32,
+  "decode_n": 2,
+  "early_stop": 1,
+  "prompt_tok_s": 37.46,
+  "spread_pct": 0.4,
+  "status": "active",
+  "log_scan": {
+    "ok": true,
+    "lines": 34,
+    "key_lines": [
+      "0.00.554.595 W common_fit_params: failed to fit params to free device memory: n_gpu_layers already set by user to 999, abort",
+      "0.22.051.584 I srv    load_model: initializing, n_slots = 4, n_ctx_slot = 131072, kv_unified = 'true'"
+    ]
+  }
+}

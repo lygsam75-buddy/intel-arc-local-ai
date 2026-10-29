@@ -1,0 +1,379 @@
+{
+  "schema": "arc-xpu-bench/1",
+  "tag": "b65-32g-q8_0-dual-dev2dev-scan",
+  "date": "2026-10-24",
+  "source": "local",
+  "env": {
+    "os": "Windows-11-10.0.26300-SP0",
+    "cpu": "AMD Ryzen 5 9600X 6-Core",
+    "gpu": "2x Intel Arc Pro B65 32G",
+    "vram_visible_gib": 31.16,
+    "driver": "9150",
+    "ecc": "off",
+    "engine": "llama.cpp",
+    "engine_version": "0.6.0-dev (build 11431, commit c25030496)",
+    "backend": "SYCL",
+    "cpu_threads": 6
+  },
+  "model": {
+    "name": "Qwen3.6-35B-A3B-Q8_0",
+    "quant": "Q8_0",
+    "size_gib": 34.37,
+    "file": "Qwen3.6-35B-A3B-Q8_0.gguf",
+    "sha256": "d1a395809f65a43a13ad119eb4e7acdef1ac6d68120f39902c8ab96e72794a59"
+  },
+  "measure": {
+    "harness": "llama-server /v1/chat/completions",
+    "prompt_tokens": 19,
+    "gen_tokens": 128,
+    "reps": 3,
+    "statistic": "median",
+    "note": "dev2dev 卡间拷贝路径专项：GGML_SYCL_DEV2DEV_MEMCPY = 0(SYCL peer/P2P) / 1(Level Zero 直拷) / 2(host 中转)，tensor 与 layer 各三档同批单变量对照。与同脚本 2026-10-24 早批（dual-tensor-scan）同口径但不同时段，跨批只当参考。"
+  },
+  "samples": [
+    {
+      "tag": "tensor5050",
+      "cards": 2,
+      "device_selector": "level_zero:0,1",
+      "dev": "SYCL0,SYCL1",
+      "ngl": 99,
+      "ctx": 4096,
+      "ctk": "q8_0",
+      "ctv": "q8_0",
+      "fa": "on",
+      "model": "Qwen3.6-35B-A3B-Q8_0.gguf",
+      "pinned_mem": "auto",
+      "loaded": true,
+      "free_before_gib": [
+        31.16,
+        31.16
+      ],
+      "free_after_gib": [
+        14.24,
+        14.43
+      ],
+      "log": "dsb_tensor5050.log",
+      "split_mode": "tensor",
+      "tensor_split": "50,50",
+      "used_gib": [
+        16.92,
+        16.73
+      ],
+      "used_total_gib": 33.65,
+      "runs": [
+        {
+          "decode_tok_s": 27.54,
+          "decode_n": 128,
+          "prefill_tok_s": 42.16,
+          "prefill_n": 19
+        },
+        {
+          "decode_tok_s": 29.08,
+          "decode_n": 128,
+          "prefill_tok_s": 47.34,
+          "prefill_n": 19
+        },
+        {
+          "decode_tok_s": 29.79,
+          "decode_n": 128,
+          "prefill_tok_s": 47.67,
+          "prefill_n": 19
+        }
+      ],
+      "decode_tok_s": 29.08,
+      "decode_min": 27.54,
+      "decode_max": 29.79,
+      "prefill_tok_s": 47.34,
+      "dev2dev_memcpy_path": "auto"
+    },
+    {
+      "tag": "tensor5050_l0",
+      "cards": 2,
+      "device_selector": "level_zero:0,1",
+      "dev": "SYCL0,SYCL1",
+      "ngl": 99,
+      "ctx": 4096,
+      "ctk": "q8_0",
+      "ctv": "q8_0",
+      "fa": "on",
+      "model": "Qwen3.6-35B-A3B-Q8_0.gguf",
+      "pinned_mem": "auto",
+      "loaded": true,
+      "free_before_gib": [
+        31.16,
+        31.16
+      ],
+      "free_after_gib": [
+        14.24,
+        14.43
+      ],
+      "log": "dsb_tensor5050_l0.log",
+      "split_mode": "tensor",
+      "tensor_split": "50,50",
+      "used_gib": [
+        16.92,
+        16.73
+      ],
+      "used_total_gib": 33.65,
+      "runs": [
+        {
+          "decode_tok_s": 27.4,
+          "decode_n": 128,
+          "prefill_tok_s": 41.2,
+          "prefill_n": 19
+        },
+        {
+          "decode_tok_s": 29.9,
+          "decode_n": 128,
+          "prefill_tok_s": 46.56,
+          "prefill_n": 19
+        },
+        {
+          "decode_tok_s": 29.19,
+          "decode_n": 128,
+          "prefill_tok_s": 44.8,
+          "prefill_n": 19
+        }
+      ],
+      "decode_tok_s": 29.19,
+      "decode_min": 27.4,
+      "decode_max": 29.9,
+      "prefill_tok_s": 44.8,
+      "dev2dev_memcpy_path": "1"
+    },
+    {
+      "tag": "tensor5050_fw",
+      "cards": 2,
+      "device_selector": "level_zero:0,1",
+      "dev": "SYCL0,SYCL1",
+      "ngl": 99,
+      "ctx": 4096,
+      "ctk": "q8_0",
+      "ctv": "q8_0",
+      "fa": "on",
+      "model": "Qwen3.6-35B-A3B-Q8_0.gguf",
+      "pinned_mem": "auto",
+      "loaded": true,
+      "free_before_gib": [
+        31.16,
+        31.16
+      ],
+      "free_after_gib": [
+        14.24,
+        14.43
+      ],
+      "log": "dsb_tensor5050_fw.log",
+      "split_mode": "tensor",
+      "tensor_split": "50,50",
+      "used_gib": [
+        16.92,
+        16.73
+      ],
+      "used_total_gib": 33.65,
+      "runs": [
+        {
+          "decode_tok_s": 27.66,
+          "decode_n": 128,
+          "prefill_tok_s": 42.17,
+          "prefill_n": 19
+        },
+        {
+          "decode_tok_s": 29.79,
+          "decode_n": 128,
+          "prefill_tok_s": 46.5,
+          "prefill_n": 19
+        },
+        {
+          "decode_tok_s": 29.5,
+          "decode_n": 128,
+          "prefill_tok_s": 39.31,
+          "prefill_n": 19
+        }
+      ],
+      "decode_tok_s": 29.5,
+      "decode_min": 27.66,
+      "decode_max": 29.79,
+      "prefill_tok_s": 42.17,
+      "dev2dev_memcpy_path": "2"
+    },
+    {
+      "tag": "ts5050",
+      "cards": 2,
+      "device_selector": "level_zero:0,1",
+      "dev": "SYCL0,SYCL1",
+      "ngl": 99,
+      "ctx": 4096,
+      "ctk": "q8_0",
+      "ctv": "q8_0",
+      "fa": "on",
+      "model": "Qwen3.6-35B-A3B-Q8_0.gguf",
+      "pinned_mem": "auto",
+      "loaded": true,
+      "free_before_gib": [
+        31.16,
+        31.16
+      ],
+      "free_after_gib": [
+        13.69,
+        15.1
+      ],
+      "log": "dsb_ts5050.log",
+      "split_mode": "layer",
+      "tensor_split": "50,50",
+      "used_gib": [
+        17.47,
+        16.06
+      ],
+      "used_total_gib": 33.53,
+      "runs": [
+        {
+          "decode_tok_s": 35.9,
+          "decode_n": 128,
+          "prefill_tok_s": 50.91,
+          "prefill_n": 19
+        },
+        {
+          "decode_tok_s": 37.29,
+          "decode_n": 128,
+          "prefill_tok_s": 61.77,
+          "prefill_n": 19
+        },
+        {
+          "decode_tok_s": 37.48,
+          "decode_n": 128,
+          "prefill_tok_s": 61.77,
+          "prefill_n": 19
+        }
+      ],
+      "decode_tok_s": 37.29,
+      "decode_min": 35.9,
+      "decode_max": 37.48,
+      "prefill_tok_s": 61.77,
+      "dev2dev_memcpy_path": "auto"
+    },
+    {
+      "tag": "ts5050_l0",
+      "cards": 2,
+      "device_selector": "level_zero:0,1",
+      "dev": "SYCL0,SYCL1",
+      "ngl": 99,
+      "ctx": 4096,
+      "ctk": "q8_0",
+      "ctv": "q8_0",
+      "fa": "on",
+      "model": "Qwen3.6-35B-A3B-Q8_0.gguf",
+      "pinned_mem": "auto",
+      "loaded": true,
+      "free_before_gib": [
+        31.16,
+        31.16
+      ],
+      "free_after_gib": [
+        13.69,
+        15.1
+      ],
+      "log": "dsb_ts5050_l0.log",
+      "split_mode": "layer",
+      "tensor_split": "50,50",
+      "used_gib": [
+        17.47,
+        16.06
+      ],
+      "used_total_gib": 33.53,
+      "runs": [
+        {
+          "decode_tok_s": 35.1,
+          "decode_n": 128,
+          "prefill_tok_s": 53.99,
+          "prefill_n": 19
+        },
+        {
+          "decode_tok_s": 37.1,
+          "decode_n": 128,
+          "prefill_tok_s": 60.15,
+          "prefill_n": 19
+        },
+        {
+          "decode_tok_s": 36.81,
+          "decode_n": 128,
+          "prefill_tok_s": 62.1,
+          "prefill_n": 19
+        }
+      ],
+      "decode_tok_s": 36.81,
+      "decode_min": 35.1,
+      "decode_max": 37.1,
+      "prefill_tok_s": 60.15,
+      "dev2dev_memcpy_path": "1"
+    },
+    {
+      "tag": "ts5050_fw",
+      "cards": 2,
+      "device_selector": "level_zero:0,1",
+      "dev": "SYCL0,SYCL1",
+      "ngl": 99,
+      "ctx": 4096,
+      "ctk": "q8_0",
+      "ctv": "q8_0",
+      "fa": "on",
+      "model": "Qwen3.6-35B-A3B-Q8_0.gguf",
+      "pinned_mem": "auto",
+      "loaded": true,
+      "free_before_gib": [
+        31.16,
+        31.16
+      ],
+      "free_after_gib": [
+        13.69,
+        15.1
+      ],
+      "log": "dsb_ts5050_fw.log",
+      "split_mode": "layer",
+      "tensor_split": "50,50",
+      "used_gib": [
+        17.47,
+        16.06
+      ],
+      "used_total_gib": 33.53,
+      "runs": [
+        {
+          "decode_tok_s": 36.0,
+          "decode_n": 128,
+          "prefill_tok_s": 54.41,
+          "prefill_n": 19
+        },
+        {
+          "decode_tok_s": 37.39,
+          "decode_n": 128,
+          "prefill_tok_s": 59.9,
+          "prefill_n": 19
+        },
+        {
+          "decode_tok_s": 37.38,
+          "decode_n": 128,
+          "prefill_tok_s": 61.82,
+          "prefill_n": 19
+        }
+      ],
+      "decode_tok_s": 37.38,
+      "decode_min": 36.0,
+      "decode_max": 37.39,
+      "prefill_tok_s": 59.9,
+      "dev2dev_memcpy_path": "2"
+    }
+  ],
+  "summary": {
+    "dual_tensor_5050_p2p": 29.08,
+    "dual_tensor_5050_l0direct": 29.19,
+    "dual_tensor_5050_hostforward": 29.5,
+    "dual_layer_5050_p2p": 37.29,
+    "dual_layer_5050_l0direct": 36.81,
+    "dual_layer_5050_hostforward": 37.38,
+    "prefill_dual_tensor_5050_p2p": 47.34,
+    "prefill_dual_tensor_5050_l0direct": 44.8,
+    "prefill_dual_tensor_5050_hostforward": 42.17,
+    "prefill_dual_layer_5050_p2p": 61.77,
+    "prefill_dual_layer_5050_l0direct": 60.15,
+    "prefill_dual_layer_5050_hostforward": 59.9
+  }
+}

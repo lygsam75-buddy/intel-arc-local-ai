@@ -1,0 +1,126 @@
+{
+  "schema": "comfyui-xpu-bench/1",
+  "domain": "comfyui-video",
+  "date": "2026-10-17",
+  "tag": "h3_1024x576_b50scan",
+  "status": "active",
+  "source": "local",
+  "tool": "bench_f_h3.py + ComfyUI /prompt + /history",
+  "batch": "B50 出视频分辨率天花板扫描（cold 单轮）",
+  "samples": [
+    {
+      "mode": "cold",
+      "ok": true,
+      "server_sec": 375.18,
+      "last_sit": "39.68 s/it",
+      "sampling_sec": 238.08,
+      "sampling_sec_per_step": 39.68,
+      "n_load": 4,
+      "vram_post_gib": null
+    },
+    {
+      "mode": "fresh",
+      "ok": false,
+      "server_sec": null,
+      "last_sit": null,
+      "sampling_sec": null,
+      "sampling_sec_per_step": null,
+      "n_load": 2,
+      "vram_post_gib": null
+    }
+  ],
+  "summary": {
+    "n_total": 2,
+    "n_ok": 1,
+    "n_fail": 1,
+    "server_sec_mean": 375.18
+  },
+  "workload": {
+    "model": "MiniMax H3",
+    "task": "image-to-video",
+    "steps": 6,
+    "duration_sec": 5.0,
+    "frames": 124,
+    "fps": 24,
+    "duration_sec_exact": 5.167,
+    "selector_megapixels": 0.4,
+    "width": 1024,
+    "height": 576,
+    "resolution": "1024x576",
+    "dit_file": "minimax_h3_fl2va_pruned_int8_convrot.safetensors",
+    "text_encoder_file": "qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors",
+    "sampler": "euler",
+    "scheduler": "simple"
+  },
+  "env": {
+    "gpu": "Intel Arc Pro B50 LP 16G",
+    "chip": "E212",
+    "subsys": "25221EF7",
+    "device_id": "PCI\\VEN_8086&DEV_E212&SUBSYS_25221EF7&REV_00",
+    "board_vendor": "GUNNIR 蓝戟 (PCI vendor 1EF7)",
+    "board_code": "2522",
+    "vram_visible_gib": 15.51,
+    "ecc": "off",
+    "driver": "32.0.101.8976",
+    "cpu": "AMD Ryzen 5 9600X",
+    "ram_gb": 32,
+    "os": "Windows",
+    "attention_backend": "sdpa (CUTE 关闭；CUTE 开着跑 H3 音频封装必崩)",
+    "stack_variant": "int8fix",
+    "int8fix_env": {
+      "OMNIXPU_INT8_COMPUTE": "1",
+      "OMNIXPU_INT8_SIGFIX": "1"
+    },
+    "env_confidence": {
+      "gpu": "recorded",
+      "vram_visible_gib": "recorded",
+      "ecc": "recorded",
+      "cpu": "recorded",
+      "ram_gb": "recorded",
+      "os": "recorded",
+      "width": "recorded",
+      "height": "recorded",
+      "resolution": "recorded",
+      "steps": "recorded",
+      "attention_backend": "recorded",
+      "chip": "recorded",
+      "subsys": "recorded",
+      "device_id": "recorded",
+      "board_vendor": "recorded",
+      "board_code": "recorded",
+      "driver": "inferred",
+      "reserve_vram_gb": "inferred"
+    },
+    "env_evidence": "AIB 身份由服务器日志的 `Device: xpu:0 ...` 行直接证明：Intel(R) Arc(TM) Pro B50 Graphics 出现在 <日志目录>\\server_h3_1024x576_b50scan.log。这四字段原为按注册表 PCI 枚举推断（backfill_aib.py），今有运行日志佐证，故 env_confidence 升为 recorded。"
+  },
+  "log_evidence": {
+    "status": "annotated",
+    "note": "本记录的时间分解与卡型号由 1 条服务器日志取证（<日志目录>\\server_h3_1024x576_b50scan.log）：每条日志的 `Prompt executed in X seconds` 均与对应样本的 server_sec 在 1.0s 容差内对上，确认是同一轮；日志中的 `Device: xpu:0 ...` 行是卡型号的直接证据。"
+  },
+  "timing_breakdown": {
+    "source": "<日志目录>\\server_h3_1024x576_b50scan.log",
+    "prompt_executed_sec": 375.19,
+    "matched_sample": {
+      "steps": null,
+      "round": null,
+      "server_sec": 375.18
+    },
+    "dit_load_mode": "partially",
+    "dit_loaded_mb": 8808,
+    "dit_offloaded_mb": 11188,
+    "steps": 6,
+    "step_sec_trace": [
+      58,
+      36,
+      36,
+      36,
+      36,
+      36
+    ],
+    "sampling_sec": 238,
+    "sampling_sec_per_step": 39.67,
+    "fixed_overhead_sec": 137.2,
+    "sampling_share_pct": 63.4,
+    "overhead_base": "samples.server_sec (端到端)"
+  }
+}

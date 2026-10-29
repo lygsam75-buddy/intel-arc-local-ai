@@ -1,0 +1,86 @@
+{
+  "schema": "arc-xpu-capacity/1",
+  "tag": "b65-32g-h3-video-commit-96g",
+  "date": "2026-10-24",
+  "source": "local",
+  "env": {
+    "gpu": "Intel Arc Pro B65 32G（卡 0，CPU 直连 x16）",
+    "vram_visible_gib": 31.16,
+    "ram_gib": 31.11,
+    "pagefile_layout": "E: 49152 MB + F: 16384 MB + D: 32768 MB（三个都是固定大小，合计 96 GB）",
+    "pagefile_total_mb": 98304,
+    "commit_limit_gib": 127.11,
+    "engine": "ComfyUI 0.39.0 · torch 2.12.0+xpu · omni_xpu_kernel 0.2.0b2+torch212.bmg · Python 3.13.12",
+    "driver": "9150",
+    "ecc": "off",
+    "note": "为了量出 1080p 的真实提交需求，把提交上限抬到 127.11 GiB；三个页面文件均为固定大小，未重启即时生效。"
+  },
+  "workload": {
+    "model": "MiniMax H3",
+    "dit": "minimax_h3_fl2va_pruned_int8_convrot.safetensors（19.53 GB）",
+    "text_encoder": "qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors（14 960.20 MB）",
+    "resolution": "1920x1088",
+    "steps": 1,
+    "duration_sec": 5.0,
+    "reserve_vram_gb": 4,
+    "note": "只跑 1 步：本条只量提交量，不取视频时间（时间口径见产品页 6 步表）。"
+  },
+  "method": "Job Object（ProcessMemoryLimit = JobMemoryLimit = 100 GiB）包住 bench_f_h3.py 与其服务子进程；另起看门狗每 2 s 采整机 Committed / Commit Limit，超 88% 自动杀进程。本次未触发。",
+  "cases": [
+    {
+      "name": "1920x1088",
+      "steps": 1,
+      "ok": true,
+      "end_to_end_s": 488.72,
+      "s_per_it": 215.49,
+      "loads": 4,
+      "vram_post_gib": 25.73,
+      "commit_peak_gib": 97.99,
+      "commit_limit_gib": 127.11,
+      "commit_peak_frac": 0.771,
+      "commit_peak_at": "22:13:07",
+      "commit_samples": 296,
+      "commit_window": "22:05:52 ~ 22:15:43",
+      "server_private_peak_gib": 82.95,
+      "energy_j": 9146.7
+    }
+  ],
+  "ladder_commit": [
+    {
+      "pagefile_mb": 32768,
+      "commit_limit_gib": 63.11,
+      "result": "装载 71.3~75.8 s 报 os error 1455，三档分辨率一致",
+      "commit_peak_gib": 57.21
+    },
+    {
+      "pagefile_mb": 49152,
+      "commit_limit_gib": 79.11,
+      "result": "0xC0000005 崩在 load_torch_file（4/4），commit 只用 73%",
+      "commit_peak_gib": 57.76
+    },
+    {
+      "pagefile_mb": 65536,
+      "commit_limit_gib": 95.11,
+      "result": "装载爬到 92.08 GiB（96.8%）仍未见顶，按护栏中止；离 100% 只剩 3 GiB",
+      "commit_peak_gib": 92.08
+    },
+    {
+      "pagefile_mb": 98304,
+      "commit_limit_gib": 127.11,
+      "result": "跑通，1 步 215.49 s / 端到端 488.72 s",
+      "commit_peak_gib": 97.99
+    }
+  ],
+  "controls": {
+    "same_session": "64 GB 与 96 GB 两次是同晚同一台机器、同一 ComfyUI 目录、同一 --reserve-vram 4、同一分辨率，唯一变量是提交上限",
+    "why_96_works": "96 GB 下测得真实需求 97.99 GiB；64 GB 的 limit 是 95.11 GiB，差约 2.9 GiB，所以装载走不到底",
+    "why_10_21_worked": "2026-10-21 跑三档时的配置是 e: 65536/131072（初始 64 GB、上限 128 GB），系统在压力下自己把页面文件扩到约 96 GB —— 所以那次「64 GB 也跑得通」是页面文件被扩出来的结果，不是 64 GB 够用"
+  },
+  "conclusion": [
+    "🔴 **H3 出视频的装载需求约 98 GiB 提交量，与分辨率无关**：1080p 实测 97.99 GiB；32/48 GB 时三档分辨率在同一处失败，48 GB 时 commit 只用 73% 也崩，说明瓶颈不是「commit 用满」而是「大块映射拿不到承诺」。",
+    "🔴🔴 **64 GB 固定页面文件不够**：limit 95.11 GiB，装载爬到 92.08 GiB 仍未到顶，余额只剩 3 GiB —— 这正是 2026-10-24 17:00 整机卡死的形态（分配失败不报错、退化成重试）。",
+    "✅ **要跑 H3 出视频，提交上限至少要 ~100 GiB，对应 96 GB 页面文件**（本机 31.11 GiB 物理 + 96 GB 页面文件 = 127.11 GiB，余量 23%）。",
+    "⭐ **10-21 那次「64 GB 跑通」是假象**：当时页面文件上限是 128 GB，系统自己扩了；把初始=最大锁在 64 GB 就复现不出来。",
+    "⚠️ 本条只测提交量，不替代产品页的 6 步时间表；1 步 215.49 s 与 6 步表里的单步 188.64 s 不同口径，不能并排。"
+  ]
+}

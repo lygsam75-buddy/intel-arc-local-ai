@@ -1,0 +1,35 @@
+{
+  "schema": "arc-xpu-capacity/1",
+  "tag": "b65-32g-commit-ceiling-pf48",
+  "date": "2026-10-24",
+  "source": "commit_ceiling_probe.py",
+  "env": {
+    "ram_gib": 31.11,
+    "pagefile_initial_mb": 49152,
+    "pagefile_maximum_mb": 49152,
+    "commit_limit_gib": 79.11,
+    "note": "e://pagefile.sys 固定 48 GB（初始=最大=49152）"
+  },
+  "method": "只向内核申请 commit（VirtualAlloc MEM_COMMIT，不 touch 页面、不碰显存），每 1 GiB 一步，剩余可用 commit 低于 guard 6 GiB 即停手并释放。目标 86 GiB。",
+  "cases": [
+    {
+      "name": "commit_ceiling",
+      "target_gib": 86.0,
+      "guard_gib": 6.0,
+      "allocated_gib": 55.0,
+      "verdict": "guard_stop",
+      "commit_limit_gib": 79.11,
+      "committed_before_gib": 17.58,
+      "avail_before_gib": 61.54,
+      "elapsed_s": 3.2
+    }
+  ],
+  "conclusion": [
+    "📐 **48 GB 固定页面文件 → commit limit 79.11 GiB。**",
+    "🔴 **86 GiB 提交不到**：带 6 GiB 保护线时最多提交 55.00 GiB（已用 17.58 + 可用 61.54），理论天花板 79.11 也远低于 86.02 → **3M 档必被拦，差 7 GiB**。",
+    "✅ 这一步完全不碰 GPU、不 touch 页面（不写盘），是「会不会被拦」的零风险等效证明。"
+  ],
+  "log": [
+    "bench/logs/dcp_dual_ctx3145728_par12.log"
+  ]
+}

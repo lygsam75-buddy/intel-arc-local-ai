@@ -1,0 +1,68 @@
+<svg viewBox="0 0 680 408" width="100%" role="img" xmlns="http://www.w3.org/2000/svg" font-family="'Microsoft YaHei','PingFang SC','Noto Sans SC',sans-serif">
+<title>跑一条 MiniMax H3 视频时，整机五段链路各自的负荷</title>
+<desc>NVMe、内存与页面文件、PCIe、显存、Xe2 核心五段串联。管径表示该段实际用量占自己规格上限的比例。显存容量与算力为五星瓶颈；PCIe 与显存带宽几乎闲置。</desc>
+<defs>
+<marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M2 1L8 5L2 9" fill="none" stroke="#888780" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</marker>
+</defs>
+
+<rect x="0" y="0" width="680" height="408" fill="#FFFFFF"/>
+
+<text x="40" y="34" font-size="15" font-weight="500" fill="#2C2C2A">跑一条 H3 视频时，整机五段链路各自的负荷</text>
+<text x="40" y="56" font-size="12" fill="#5F5E5A">管子的粗细 = 该段实际用量占自己规格上限的比例。红 = 卡住的地方，灰 = 闲着的地方。</text>
+<text x="40" y="76" font-size="12" fill="#5F5E5A">数字为实测：B70 32G · 720p 采样期。NVMe 那一格标注的是装载期峰值。</text>
+
+<text x="84" y="104" font-size="12" text-anchor="middle" fill="#888780">★★☆☆☆</text>
+<text x="212" y="104" font-size="12" text-anchor="middle" fill="#888780">★★★★☆</text>
+<text x="340" y="104" font-size="12" text-anchor="middle" fill="#888780">☆☆☆☆☆</text>
+<text x="468" y="104" font-size="12" text-anchor="middle" fill="#A32D2D">★★★★★</text>
+<text x="596" y="104" font-size="12" text-anchor="middle" fill="#A32D2D">★★★★★</text>
+
+<rect x="40" y="116" width="88" height="88" rx="8" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="0.5"/>
+<text x="84" y="140" font-size="11" text-anchor="middle" fill="#2C2C2A">NVMe 盘</text>
+<text x="84" y="170" font-size="20" font-weight="500" text-anchor="middle" fill="#2C2C2A">233</text>
+<text x="84" y="190" font-size="11" text-anchor="middle" fill="#2C2C2A">MB/s 峰读</text>
+
+<rect x="168" y="116" width="88" height="88" rx="8" fill="#FCEBEB" stroke="#A32D2D" stroke-width="0.5"/>
+<text x="212" y="140" font-size="11" text-anchor="middle" fill="#501313">内存+页文件</text>
+<text x="212" y="170" font-size="20" font-weight="500" text-anchor="middle" fill="#501313">482</text>
+<text x="212" y="190" font-size="11" text-anchor="middle" fill="#501313">MB 可用</text>
+
+<rect x="296" y="116" width="88" height="88" rx="8" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="0.5"/>
+<text x="340" y="140" font-size="11" text-anchor="middle" fill="#2C2C2A">PCIe Gen5</text>
+<text x="340" y="170" font-size="20" font-weight="500" text-anchor="middle" fill="#2C2C2A">0.27</text>
+<text x="340" y="190" font-size="11" text-anchor="middle" fill="#2C2C2A">% 带宽占用</text>
+
+<rect x="424" y="116" width="88" height="88" rx="8" fill="#FCEBEB" stroke="#A32D2D" stroke-width="0.5"/>
+<text x="468" y="140" font-size="11" text-anchor="middle" fill="#501313">显存</text>
+<text x="468" y="170" font-size="20" font-weight="500" text-anchor="middle" fill="#501313">31.16</text>
+<text x="468" y="190" font-size="11" text-anchor="middle" fill="#501313">GiB 需 39.55</text>
+
+<rect x="552" y="116" width="88" height="88" rx="8" fill="#FCEBEB" stroke="#A32D2D" stroke-width="0.5"/>
+<text x="596" y="140" font-size="11" text-anchor="middle" fill="#501313">Xe2 核心</text>
+<text x="596" y="170" font-size="20" font-weight="500" text-anchor="middle" fill="#501313">95</text>
+<text x="596" y="190" font-size="11" text-anchor="middle" fill="#501313">% 占空</text>
+
+<line x1="128" y1="160" x2="164" y2="160" stroke="#888780" stroke-width="3" marker-end="url(#ar)"/>
+<line x1="256" y1="160" x2="292" y2="160" stroke="#B4B2A9" stroke-width="1" marker-end="url(#ar)"/>
+<line x1="384" y1="160" x2="420" y2="160" stroke="#B4B2A9" stroke-width="1" marker-end="url(#ar)"/>
+<line x1="512" y1="160" x2="548" y2="160" stroke="#888780" stroke-width="2" marker-end="url(#ar)"/>
+
+<text x="148" y="220" font-size="11" text-anchor="middle" fill="#888780">装载期</text>
+<text x="276" y="220" font-size="11" text-anchor="middle" fill="#888780">0.17 GB/s</text>
+<text x="404" y="220" font-size="11" text-anchor="middle" fill="#888780">同上</text>
+<text x="532" y="220" font-size="11" text-anchor="middle" fill="#888780">带宽 3.9%</text>
+<text x="276" y="236" font-size="11" text-anchor="middle" fill="#888780">规格 63 GB/s</text>
+<text x="532" y="236" font-size="11" text-anchor="middle" fill="#888780">24.9 / 608</text>
+
+<rect x="40" y="256" width="600" height="60" rx="8" fill="#F7F6F2"/>
+<text x="56" y="278" font-size="13" font-weight="500" fill="#2C2C2A">唯一的墙在显存，不在通道</text>
+<text x="56" y="298" font-size="12" fill="#5F5E5A">模型要 39.55 GiB（DiT 19.53 + 文本编码 14.61 + 两个 VAE 5.41），显存只有 31.16 GiB ——</text>
+<text x="56" y="312" font-size="12" fill="#5F5E5A">八个失败档全是 XPU out of memory，与算力、主机内存都无关。</text>
+
+<rect x="40" y="324" width="600" height="60" rx="8" fill="#F7F6F2"/>
+<text x="56" y="346" font-size="13" font-weight="500" fill="#2C2C2A">算力跑满，带宽几乎没动</text>
+<text x="56" y="366" font-size="12" fill="#5F5E5A">Xe2 核心占空 95%，而显存带宽只用 3.9%、PCIe 只有 0.27% —— 这条链没有一处卡在传输上，</text>
+<text x="56" y="380" font-size="12" fill="#5F5E5A">所以把接口换更宽不会更快，把核心数加上去才会。</text>
+</svg>

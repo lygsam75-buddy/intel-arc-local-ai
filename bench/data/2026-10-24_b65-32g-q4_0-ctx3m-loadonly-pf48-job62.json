@@ -1,0 +1,64 @@
+{
+  "schema": "arc-xpu-capacity/1",
+  "tag": "b65-32g-q4_0-ctx3m-loadonly-pf48-job62",
+  "date": "2026-10-24",
+  "source": "local",
+  "env": {
+    "ram_gib": 31.11,
+    "pagefile_initial_mb": 49152,
+    "pagefile_maximum_mb": 49152,
+    "commit_limit_gib": 79.11,
+    "gpu": "2x Intel Arc Pro B65 32G",
+    "driver": "9150",
+    "ecc": "off"
+  },
+  "model": {
+    "name": "Qwen3.6-35B-A3B",
+    "quant": "Q4_0",
+    "size_gib": 19.41
+  },
+  "kv": {
+    "type": "q8_0",
+    "ctk": "q8_0",
+    "ctv": "q8_0"
+  },
+  "method": "dual_ctx_probe.py --load-only 1 --job-commit-gib 62 —— 先给 llama-server 设内核级 commit 硬上限（62 GiB），再让它装 3M。目的：确认 48 GB 配置下 3M 仍被拦，且失败形态是进程自退。",
+  "safety": {
+    "job_commit_limit_gib": 62.0,
+    "job_assigned": true,
+    "why": "17:00 那次整机卡死的机理是「分配失败不报错、退化成重试」把主机提交顶穿。Job Object 的 ProcessMemoryLimit 让超限分配直接失败、进程退出，风险从整机缩到一个进程。预留 79.11 − 62 = 17 GiB 给系统。",
+    "external_monitor": "不需要（job 限额已封顶）；GPU 显存侧失败与 32/32 那次同形态"
+  },
+  "cases": [
+    {
+      "name": "load_only_3m",
+      "ok": false,
+      "loaded": false,
+      "load_s": 18.0,
+      "commit_limit_gib": 79.11,
+      "committed_before_gib": 16.53,
+      "failure_point": "SYCL1 计算缓冲分配失败（SV 侧显存，不是 commit）",
+      "errors": [
+        "0.01.115.178 W common_fit_params: failed to fit params to free device memory: n_gpu_layers already set by user to 99, abort",
+        "0.15.261.037 E srv  llama_server: exiting due to model loading error"
+      ],
+      "log_key_lines": [
+        "ggml_gallocr_reserve_n_impl: failed to allocate SYCL1 buffer of size 7593396736",
+        "[SYCL-MEMTRACE] alloc FAILED:  6450.657 MiB buffer",
+        "ggml_backend_sycl_buffer_type_alloc_buffer: can't allocate 6764003968 Bytes of memory on device",
+        "llama_init_from_model: failed to initialize the context: failed to allocate compute pp buffers",
+        "srv  llama_server: exiting due to model loading error"
+      ],
+      "note": "18.0 s 退出，机器无恙、无新 WATCHDOG dump、uptime 连续。"
+    }
+  ],
+  "conclusion": [
+    "✅ **48 GB 固定页面文件下，3M 依然被拦，且失败形态干净**：18.0 s 报「显存分配失败」自退。",
+    "⭐ **先崩的是显存，不是 commit**：两卡显存各 31.16 GiB 装不下 43.59 GiB 的 KV + 计算缓冲，所以根本走不到「commit 顶穿」那一步 —— 这条路比 32/32 时更安全（后者也是显存先失败）。",
+    "⭐ **job 限额（62 GiB）是最后一道闸**：即使 SYCL 重试，进程 commit 也封在 62 GiB（limit 79.11 留 17 GiB 给系统）。",
+    "📐 配套的零 GPU 等效证明见 `2026-10-24_b65-32g-commit-ceiling-pf48.json`：86 GiB 提交不到（最多 55 GiB 就触保护线）。"
+  ],
+  "log": [
+    "dcp_dual_ctx3145728_par12.log"
+  ]
+}

@@ -1,0 +1,79 @@
+{
+  "schema": "arc-xpu-bench/1",
+  "tag": "b65-32g-h3-1080p-cold-hot-pf96",
+  "date": "2026-10-25",
+  "source": "local",
+  "batch": "交付配置（单文件 96 GB 页面文件）补测：1080p 冷启 + 热态",
+  "env": {
+    "gpu": "Intel Arc Pro B65 32G（卡 0，CPU 直连 x16，level_zero:0）",
+    "vram_visible_gib": 31.16,
+    "ram_gib": 31.11,
+    "pagefile_layout": "E: 98304 单文件（InitialSize = MaximumSize = 98304）",
+    "pagefile_total_mb": 98304,
+    "commit_limit_gib": 127.11,
+    "engine": "ComfyUI 0.39.0 · torch 2.12.0+xpu · Python 3.13.12",
+    "driver": "9150",
+    "ecc": "off",
+    "safety": "Job Object ProcessMemoryLimit=JobMemoryLimit=100 GiB；外部看门狗 2 s 采样、88% 自动杀进程（未触发）"
+  },
+  "workload": {
+    "model": "MiniMax H3",
+    "dit": "minimax_h3_fl2va_pruned_int8_convrot.safetensors（19.53 GB）",
+    "text_encoder": "qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors（14,960.20 MB）",
+    "resolution": "1920x1088",
+    "steps": 6,
+    "duration_sec": 5.0,
+    "frames": 124,
+    "fps": 24,
+    "reserve_vram_gb": 4,
+    "command": "COMFY_PORT=8190 bench_f_h3.py --width 1920 --height 1088 --duration 5 --steps 6 --fresh 1 --cached 0 --reserve-vram 4"
+  },
+  "cases": [
+    {
+      "name": "1920x1088",
+      "role": "cold",
+      "ok": true,
+      "server_s": 1421.27,
+      "sit": 190.74,
+      "sampling_s": 1144.44,
+      "fixed_overhead_s": 276.83,
+      "sampling_share_pct": 80.5,
+      "loads": 4,
+      "vram_post_gib": 25.73,
+      "dit_load": "loaded partially; 12762.74 MB usable, 12431.90 MB loaded, 7564.24 MB offloaded",
+      "commit_peak_gib": 99.83,
+      "commit_limit_gib": 127.11,
+      "commit_peak_frac": 0.785,
+      "job_peak_gib": 83.98
+    },
+    {
+      "name": "1920x1088",
+      "role": "fresh（同服务第二块）",
+      "ok": true,
+      "server_s": 1439.38,
+      "sit": 190.27,
+      "sampling_s": 1141.62,
+      "fixed_overhead_s": 297.76,
+      "sampling_share_pct": 79.3,
+      "loads": 4,
+      "vram_post_gib": 25.73,
+      "dit_load": "loaded partially; 12762.69 MB usable, 12431.85 MB loaded, 7564.29 MB offloaded",
+      "energy_note": "两轮装载判决逐项相同（usable / loaded / offloaded 差 0.05 MB 内）"
+    }
+  ],
+  "compare_vs_2026_10_24": {
+    "cold_then_s": 1429.91,
+    "cold_now_s": 1421.27,
+    "delta_pct": -0.6,
+    "sit_then": 191.44,
+    "sit_now": 190.74,
+    "delta_pct_sit": -0.4,
+    "note": "同配置隔日复现，冷启差 0.6%、单步差 0.4% → 这一档的复现性在 1% 内。"
+  },
+  "conclusion": [
+    "🔴 **1080p 上「服务别重启」不省时间**：冷启 1,421.27 s、热态 1,439.38 s，热态反而**慢 18.1 s（+1.3%）**，单步基本不动（190.74 → 190.27，−0.2%）。",
+    "🔴 机制与装载判决一致：1080p 两轮都 `loaded partially`、都卸 **7,564 MB**，第二轮没有「已驻留」可复用 —— 每次都要重新卸 7.5 GB。",
+    "✅ 所以产品页那条「低分辨率靠服务别重启省钱、高分辨率靠少跑几步省钱」在 1080p 上是**极端情形**：重启与否都不省。",
+    "✅ 与 2026-10-24 同配置冷启（1,429.91 s）差 −0.6%、单步 −0.4% → 复现性在 1% 内。"
+  ]
+}

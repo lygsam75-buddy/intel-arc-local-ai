@@ -1,0 +1,113 @@
+{
+  "schema": "arc-xpu-bench/1",
+  "tag": "b65-32g-h3-480p-720p-batch2-pf96",
+  "date": "2026-10-25",
+  "source": "local",
+  "batch": "把 B65 产品页 §6 主表统一成同一批：480p / 720p 冷 + 热复测（1080p 见 2026-10-25_b65-32g-h3-1080p-cold-hot-pf96.json）",
+  "env": {
+    "gpu": "Intel Arc Pro B65 32G（卡 0，CPU 直连 x16，level_zero:0）",
+    "vram_visible_gib": 31.16,
+    "ram_gib": 31.11,
+    "pagefile_layout": "E: 98304 单文件（InitialSize = MaximumSize = 98304）",
+    "pagefile_total_mb": 98304,
+    "commit_limit_gib": 127.11,
+    "engine": "ComfyUI 0.39.0 · torch 2.12.0+xpu · Python 3.13.12",
+    "driver": "9150",
+    "ecc": "off",
+    "safety": "Job Object ProcessMemoryLimit=JobMemoryLimit=100 GiB；外部看门狗 2 s 采样、88% 自动杀进程（未触发）"
+  },
+  "workload": {
+    "model": "MiniMax H3",
+    "steps": 6,
+    "duration_sec": 5.0,
+    "frames": 124,
+    "reserve_vram_gb": 4,
+    "command": "COMFY_PORT=8190 bench_f_h3.py --width W --height H --duration 5 --steps 6 --fresh 1 --cached 0 --reserve-vram 4"
+  },
+  "cases": [
+    {
+      "name": "864x480",
+      "role": "cold",
+      "ok": true,
+      "server_s": 301.35,
+      "sit": 11.02,
+      "sampling_s": 66.12,
+      "fixed_overhead_s": 235.23,
+      "sampling_share_pct": 21.9,
+      "loads": 4,
+      "vram_post_gib": 6.11,
+      "dit_load": "loaded completely; 24500.72 MB usable, 19996.14 MB loaded",
+      "offload_mb": 0,
+      "commit_peak_gib": 93.03,
+      "commit_limit_gib": 127.11,
+      "commit_peak_frac": 0.732,
+      "job_peak_gib": 78.03
+    },
+    {
+      "name": "864x480",
+      "role": "fresh（同服务第二块）",
+      "ok": true,
+      "server_s": 303.25,
+      "sit": 10.7,
+      "sampling_s": 64.2,
+      "fixed_overhead_s": 239.05,
+      "loads": 3,
+      "vram_post_gib": 6.11
+    },
+    {
+      "name": "1280x720",
+      "role": "cold",
+      "ok": true,
+      "server_s": 527.45,
+      "sit": 42.72,
+      "sampling_s": 256.32,
+      "fixed_overhead_s": 271.13,
+      "sampling_share_pct": 48.6,
+      "loads": 4,
+      "vram_post_gib": 6.11,
+      "dit_load": "loaded completely; 20491.93 MB usable, 19996.14 MB loaded",
+      "offload_mb": 0,
+      "commit_peak_gib": 91.75,
+      "commit_limit_gib": 127.11,
+      "commit_peak_frac": 0.722,
+      "job_peak_gib": 75.46
+    },
+    {
+      "name": "1280x720",
+      "role": "fresh（同服务第二块）",
+      "ok": true,
+      "server_s": 491.8,
+      "sit": 42.46,
+      "sampling_s": 254.76,
+      "fixed_overhead_s": 237.04,
+      "loads": 3,
+      "vram_post_gib": 6.11
+    }
+  ],
+  "compare_vs_2026_10_24": [
+    {
+      "name": "864x480",
+      "cold_then": 322.37,
+      "cold_now": 301.35,
+      "delta_pct": -6.5,
+      "sit_then": 11.03,
+      "sit_now": 11.02,
+      "sit_delta_pct": -0.1
+    },
+    {
+      "name": "1280x720",
+      "cold_then": 538.09,
+      "cold_now": 527.45,
+      "delta_pct": -2.0,
+      "sit_then": 42.69,
+      "sit_now": 42.72,
+      "sit_delta_pct": 0.1
+    }
+  ],
+  "conclusion": [
+    "✅ **主表三档现在全是 2026-10-25 同一批**：480p 301.35 / 303.25、720p 527.45 / 491.80、1080p 1,421.27 / 1,439.38。",
+    "🔴 **「冷启比热态贵」不成立**：本批 480p 冷比热快 1.9 s、720p 冷比热慢 35.7 s、1080p 冷比热快 18.1 s —— 三个方向都有。",
+    "🔴 **端到端隔日波动比冷热差还大**：480p 冷启 322.37 → 301.35（−6.5%）、720p 538.09 → 527.45（−2.0%），单步只动 0.1%。→ **端到端只同批横比，跨批只比单步。**",
+    "✅ 480p / 720p 两档都是 `loaded completely`、0 卸载，与 2026-10-24 逐项相同。"
+  ]
+}

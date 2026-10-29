@@ -1,0 +1,21 @@
+<svg viewBox="0 0 680 298" width="100%" role="img" xmlns="http://www.w3.org/2000/svg" font-family="'Microsoft YaHei','PingFang SC','Noto Sans SC',sans-serif">
+<title>Same 32 GB, very different price per gigabyte</title>
+<desc>Four 32 GB blower cards ranked by price per gigabyte of VRAM: B65 312, B70 594, RTX PRO 4500 969, RTX 5090 blower 1,656 yuan per GB. B65 is the floor of the four; the 5090 is 5.3x that.</desc>
+<text x="40" y="32" font-size="15" font-weight="600" fill="#2C2C2A">Same 32 GB, very different price per gigabyte</text>
+<text x="40" y="52" font-size="12" fill="#5F5E5A">Longer bar = more expensive per GB; figures are October 2026 e-commerce list prices</text>
+<line x1="218" y1="76" x2="218" y2="244" stroke="#B4B2A9" stroke-width="0.5"/>
+<text x="40" y="101" font-size="12.5" fill="#2C2C2A">Arc Pro B65 · 32 GB · ¥9,999</text>
+<rect x="218" y="86" width="59.9" height="22" fill="#185FA5"/>
+<text x="548" y="102" font-size="13" font-weight="600" fill="#185FA5">¥312/GB</text>
+<text x="40" y="145" font-size="12.5" fill="#2C2C2A">Arc Pro B70 · 32 GB · ¥18,999</text>
+<rect x="218" y="130" width="114.0" height="22" fill="#378ADD"/>
+<text x="548" y="146" font-size="13" font-weight="600" fill="#2A6CB0">¥594/GB</text>
+<text x="40" y="189" font-size="12.5" fill="#2C2C2A">RTX PRO 4500 · ¥30,999</text>
+<rect x="218" y="174" width="186.0" height="22" fill="#888780"/>
+<text x="548" y="190" font-size="13" font-weight="600" fill="#5F5E5A">¥969/GB</text>
+<text x="40" y="233" font-size="12.5" fill="#2C2C2A">RTX 5090 blower · ¥52,999</text>
+<rect x="218" y="218" width="318.0" height="22" fill="#D85A30"/>
+<text x="548" y="234" font-size="13" font-weight="600" fill="#D85A30">¥1,656/GB</text>
+<text x="40" y="266" font-size="12.5" fill="#444441">B65's ¥312 is the floor of the four; the 5090 is 5.3x that, and its 575 W is 2.88x the B65's 200 W.</text>
+<text x="40" y="286" font-size="11.5" fill="#5F5E5A">Prices are a single basis for cost-effectiveness comparison only; street prices move with platform discounts — check before ordering.</text>
+</svg>

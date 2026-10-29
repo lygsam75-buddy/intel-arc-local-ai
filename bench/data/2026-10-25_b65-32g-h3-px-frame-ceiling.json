@@ -1,0 +1,718 @@
+{
+  "schema": "arc-xpu-bench/1",
+  "tag": "b65-32g-h3-px-frame-ceiling",
+  "date": "2026-10-25",
+  "source": "local",
+  "batch": "B65 出视频「像素 × 帧数」天花板判决批。判据把一个分辨率 × 一个时长压成一个标量 px_frame_m = width × height × frames / 1e6，用来解释「为什么 720p 能跑 20 秒级、1440p 只能跑 3 秒级」。含 2026-10-21 早期基准批的两档长时长，其余为 2026-10-25 当日新测。",
+  "env": {
+    "gpu": "Intel Arc Pro B65 32G",
+    "chip": "E222",
+    "subsys": "27441EF7",
+    "device_id": "PCI\\VEN_8086&DEV_E222&SUBSYS_27441EF7&REV_00",
+    "board_vendor": "GUNNIR 蓝戟 (PCI vendor 1EF7)",
+    "board_code": "2744",
+    "vram_visible_gib": 31.16,
+    "ecc": "off",
+    "driver": "32.0.101.9150",
+    "cpu": "AMD Ryzen 5 9600X",
+    "ram_gb": 32,
+    "os": "Windows",
+    "pagefile_gib": 96,
+    "commit_limit_gib": 127.11,
+    "reserve_vram_gb": 4.0,
+    "attention_backend": "sdpa (CUTE 关闭；CUTE 开着跑 H3 音频封装必崩)",
+    "stack_variant": "int8fix",
+    "note": "两块 B65 在机，跑测只占 xpu:0（CPU 直连 x16），xpu:1 空闲；同一时刻只有一个 GPU 压测进程。"
+  },
+  "workload": {
+    "model": "MiniMax H3",
+    "task": "image-to-video",
+    "steps": 6,
+    "fps": 24,
+    "dit_file": "minimax_h3_fl2va_pruned_int8_convrot.safetensors",
+    "text_encoder_file": "qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors",
+    "sampler": "euler",
+    "scheduler": "simple",
+    "frames_rule": "base = max(5, round(duration × 24)); frames = base + (5 - base % 17) % 17 → 1s=39 / 2s=56 / 3s=73 / 3.7s=90 / 4s=107 / 5s=124 / 7s=175 / 8s=192 / 10s=243 / 15s=362 / 17s=413 / 17.5s=430 / 18s=447 / 20s=481。帧数恒 ≡5 (mod 17)，这一点决定了 381~394 M 的带子收不动。"
+  },
+  "ladder": [
+    {
+      "resolution": "864x480",
+      "pixels": 414720,
+      "frames": 124,
+      "duration": "5 秒",
+      "px_frame_m": 51.4,
+      "offload_mb": 0.0,
+      "ok": true,
+      "server_s": 301.35,
+      "batch": "2026-10-25",
+      "note": "本批"
+    },
+    {
+      "resolution": "1280x720",
+      "pixels": 921600,
+      "frames": 124,
+      "duration": "5 秒",
+      "px_frame_m": 114.3,
+      "offload_mb": 0.0,
+      "ok": true,
+      "server_s": 527.45,
+      "batch": "2026-10-25",
+      "note": "本批"
+    },
+    {
+      "resolution": "2560x1440",
+      "pixels": 3686400,
+      "frames": 39,
+      "duration": "1 秒",
+      "px_frame_m": 143.8,
+      "offload_mb": 1760.68,
+      "ok": true,
+      "server_s": 654.37,
+      "batch": "2026-10-25",
+      "note": "本批"
+    },
+    {
+      "resolution": "2560x1440",
+      "pixels": 3686400,
+      "frames": 56,
+      "duration": "2 秒",
+      "px_frame_m": 206.4,
+      "offload_mb": 5814.85,
+      "ok": true,
+      "server_s": 1042.79,
+      "batch": "2026-10-25",
+      "note": "本批"
+    },
+    {
+      "resolution": "1280x720",
+      "pixels": 921600,
+      "frames": 243,
+      "duration": "10 秒",
+      "px_frame_m": 223.9,
+      "offload_mb": 6721.83,
+      "ok": true,
+      "server_s": 1194.63,
+      "batch": "2026-10-25",
+      "note": "本批"
+    },
+    {
+      "resolution": "1920x1088",
+      "pixels": 2088960,
+      "frames": 124,
+      "duration": "5 秒",
+      "px_frame_m": 259.0,
+      "offload_mb": 7564.24,
+      "ok": true,
+      "server_s": 1421.27,
+      "batch": "2026-10-25",
+      "note": "本批"
+    },
+    {
+      "resolution": "2560x1440",
+      "pixels": 3686400,
+      "frames": 73,
+      "duration": "3 秒",
+      "px_frame_m": 269.1,
+      "offload_mb": 7564.24,
+      "ok": true,
+      "server_s": 1533.51,
+      "batch": "2026-10-25",
+      "note": "本批通过的最大值"
+    },
+    {
+      "resolution": "2560x1440",
+      "pixels": 3686400,
+      "frames": 90,
+      "duration": "3.7 秒",
+      "px_frame_m": 331.8,
+      "offload_mb": 7564.24,
+      "ok": true,
+      "server_s": 2016.43,
+      "batch": "2026-10-25",
+      "note": "判决用：往下推，排除「1440p 另有更低上限」"
+    },
+    {
+      "resolution": "1280x720",
+      "pixels": 921600,
+      "frames": 362,
+      "duration": "15 秒",
+      "px_frame_m": 333.6,
+      "offload_mb": 7564.24,
+      "ok": true,
+      "server_s": 2149.75,
+      "batch": "2026-10-21",
+      "note": "早期基准批"
+    },
+    {
+      "resolution": "1920x1088",
+      "pixels": 2088960,
+      "frames": 175,
+      "duration": "7 秒",
+      "px_frame_m": 365.6,
+      "offload_mb": 7564.24,
+      "ok": true,
+      "server_s": 2368.45,
+      "batch": "2026-10-25",
+      "note": "把 1080p 的对客上限从 5 秒抬到 7 秒"
+    },
+    {
+      "resolution": "1280x720",
+      "pixels": 921600,
+      "frames": 413,
+      "duration": "17 秒",
+      "px_frame_m": 380.6,
+      "offload_mb": 7564.24,
+      "ok": true,
+      "server_s": 2689.48,
+      "batch": "2026-10-21",
+      "note": "早期基准批；全库通过的最大值"
+    },
+    {
+      "resolution": "2560x1440",
+      "pixels": 3686400,
+      "frames": 107,
+      "duration": "4 秒",
+      "px_frame_m": 394.4,
+      "offload_mb": 7564.24,
+      "ok": true,
+      "server_s": 2726.51,
+      "batch": "2026-10-25",
+      "note": "2026-10-25 重测（BENCH_STALL_SEC=1800）通过；原判「挂」是跑测器 420 s 静默阈值误杀",
+      "s_it": 416.11,
+      "retested": true
+    },
+    {
+      "resolution": "1280x720",
+      "pixels": 921600,
+      "frames": 430,
+      "duration": "17.5 秒",
+      "px_frame_m": 396.3,
+      "offload_mb": 7564.24,
+      "ok": true,
+      "server_s": 2860.37,
+      "batch": "2026-10-25",
+      "note": "2026-10-25 重测（BENCH_STALL_SEC=3600 / WAIT=36000）通过：2,860.37 s / 435.67 s-it / 6 步，loads=4 / vram_post=25.73 GiB / Job 峰值提交 84.41 GiB。原「挂」是跑测器 420 s 静默阈值误杀",
+      "s_it": 435.67,
+      "retested": true
+    },
+    {
+      "resolution": "1920x1088",
+      "pixels": 2088960,
+      "frames": 192,
+      "duration": "8 秒",
+      "px_frame_m": 401.1,
+      "offload_mb": 7564.24,
+      "ok": true,
+      "server_s": 2788.78,
+      "batch": "2026-10-25",
+      "note": "2026-10-25 重测（BENCH_STALL_SEC=3600 / WAIT=36000）通过：2,788.78 s / 424.88 s-it / 6 步，loads=4 / vram_post=25.73 GiB / Job 峰值提交 83.89 GiB。原「挂」是跑测器 420 s 静默阈值误杀",
+      "s_it": 424.88,
+      "retested": true
+    },
+    {
+      "resolution": "1280x720",
+      "pixels": 921600,
+      "frames": 447,
+      "duration": "18 秒",
+      "px_frame_m": 412.0,
+      "offload_mb": 7564.24,
+      "ok": true,
+      "server_s": 3054.61,
+      "batch": "2026-10-25",
+      "note": "2026-10-25 重测（BENCH_STALL_SEC=3600 / WAIT=36000）通过：3,054.61 s / 467.26 s-it / 6 步，loads=4 / vram_post=25.73 GiB / Job 峰值提交 84.54 GiB。原「挂」是跑测器 420 s 静默阈值误杀",
+      "s_it": 467.26,
+      "retested": true
+    },
+    {
+      "resolution": "1280x720",
+      "pixels": 921600,
+      "frames": 481,
+      "duration": "20 秒",
+      "px_frame_m": 443.3,
+      "offload_mb": 7564.24,
+      "ok": true,
+      "server_s": 3489.65,
+      "batch": "2026-10-25",
+      "note": "2026-10-25 重测通过，原判 3/3「挂」全是误杀",
+      "s_it": 537.94,
+      "retested": true
+    },
+    {
+      "resolution": "2560x1440",
+      "pixels": 3686400,
+      "frames": 124,
+      "duration": "5 秒",
+      "px_frame_m": 457.1,
+      "offload_mb": 7564.24,
+      "ok": true,
+      "server_s": 3554.99,
+      "batch": "2026-10-25",
+      "note": "2026-10-25 重测（BENCH_STALL_SEC=3600 / WAIT=36000）通过：3,554.99 s / 550.71 s-it / 6 步，loads=4 / vram_post=25.73 GiB / 84.2 kJ。原「挂 3/3（含 steps 1 与 steps 6）」全是跑测器 420 s 静默阈值误杀",
+      "s_it": 550.71,
+      "retested": true
+    },
+    {
+      "resolution": "1280x720",
+      "pixels": 921600,
+      "frames": 532,
+      "duration": "22 秒",
+      "px_frame_m": 490.3,
+      "offload_mb": 7564.24,
+      "ok": true,
+      "server_s": 4204.48,
+      "batch": "2026-10-26",
+      "sampling_sec_per_step": 653.53,
+      "note": "**新对客上限**：720p 从 20 秒推到 22 秒。功耗均值 187.8 W / 95.5% ≥150 W = 全程真在采样；提交峰值 102.94 GiB。"
+    },
+    {
+      "resolution": "864x480",
+      "pixels": 414720,
+      "frames": 1212,
+      "duration": "50 秒",
+      "px_frame_m": 502.6,
+      "offload_mb": 0,
+      "ok": true,
+      "server_s": 4351.79,
+      "batch": "2026-10-26",
+      "sampling_sec_per_step": 672.15,
+      "note": "**480p 的时长上限一下从 5 秒跳到 50 秒**：之前只测过 5 秒（51.4 M），因为它是全表离墙最远的一档，一直没人往上试。50 秒 = 1,212 帧 = 502.6 M，仍低于当时的通过上限。功耗均值 188.7 W / 95.5% ≥150 W；DiT 完整驻留（offload 0）；提交峰值 103.46 GiB。"
+    },
+    {
+      "resolution": "1920x1088",
+      "pixels": 2088960,
+      "frames": 243,
+      "duration": "10 秒",
+      "px_frame_m": 507.6,
+      "offload_mb": 7564.24,
+      "ok": true,
+      "server_s": 4267.18,
+      "batch": "2026-10-25",
+      "note": "2026-10-25 重测通过；这是目前实测最高点（508 M）",
+      "s_it": 666.43,
+      "retested": true
+    },
+    {
+      "resolution": "1280x720",
+      "pixels": 921600,
+      "frames": 566,
+      "duration": "23 秒",
+      "px_frame_m": 521.6,
+      "offload_mb": 7564.24,
+      "ok": true,
+      "server_s": 4695.57,
+      "batch": "2026-10-26",
+      "sampling_sec_per_step": 735.22,
+      "note": "**当前最高「像素 × 帧数」通过点**：521.6 M，比 1080p·10 秒的 507.6 M 还高一档。功耗均值 188.6 W / 96.2% ≥150 W；提交峰值 104.18 GiB。→ 720p 的整数秒上限 = **23 秒**。"
+    },
+    {
+      "resolution": "1280x720",
+      "pixels": 921600,
+      "frames": 583,
+      "duration": "24 秒",
+      "px_frame_m": 537.3,
+      "offload_mb": 7564.24,
+      "ok": true,
+      "server_s": 4963.67,
+      "batch": "2026-10-26",
+      "sampling_sec_per_step": 778.17,
+      "note": "**新的最高「像素 × 帧数」通过点**：537.3 M，比 720p·23 秒（521.6 M）还高一档。耗时 4,963.67 s ≈ 82.7 分钟；功耗均值 188.6 W / 96.3% ≥150 W；提交峰值 106.11 GiB。→ 720p 的整数秒上限 = **24 秒**。"
+    },
+    {
+      "resolution": "1920x1088",
+      "pixels": 2088960,
+      "frames": 277,
+      "duration": "11 秒",
+      "px_frame_m": 578.6,
+      "offload_mb": 7564.24,
+      "ok": false,
+      "server_s": null,
+      "batch": "2026-10-26",
+      "cause": "vram_oom_attention",
+      "note": "**进了采样、死在第 2 步**：跑 1,022.2 s，被测卡（bus 3）1,027 个采样点、均值 **171.5 W**、**84.6% 过 150 W**、`first_hot@141 s` → 采样段约 881 s。系统提交峰值 109.33 GiB（86.0%）、job 峰值 101.39 GiB —— **又一次「提交量比死得更早的档还低」**。和 12 秒那档（171.0 W / 84.2% / 采样段 984 s）是同一形态。",
+      "attempts": [
+        {
+          "job_limit_gib": 116,
+          "job_peak_gib": 101.39,
+          "sys_commit_peak_gib": 109.33,
+          "elapsed_s": 1022.2,
+          "vram_post_gib": 31.1,
+          "power_bus3_mean_w": 171.5,
+          "power_bus3_frac_ge150": 0.846,
+          "sampling_first_hot_s": 141,
+          "outcome": "进了采样、第 2 步途中退出；看门狗 0 条 kill"
+        }
+      ]
+    },
+    {
+      "resolution": "2560x1440",
+      "pixels": 3686400,
+      "frames": 158,
+      "duration": "6 秒",
+      "px_frame_m": 582.5,
+      "offload_mb": 7564.24,
+      "ok": false,
+      "server_s": null,
+      "batch": "2026-10-26",
+      "cause": "vram_oom_attention",
+      "note": "**进了采样、死在第 2 步**：1,028.6 s，功耗均值 172.7 W / 85.3% ≥150 W。提交峰值 109.48 GiB、job 峰值 101.07 GiB。⚠️ 帧数是 **158**（不是按 23.8 帧/秒外推的 141）—— 按 158 算 = 582.5 M，所以**没有倒挂**：720p·23 秒的 521.6 M 过、这个 582.5 M 挂，单标量依然成立。→ **1440p 的整数秒上限就是 5 秒**（5 秒 457.1 M 过，6 秒 582.5 M 挂，中间没有更小的帧网格）。",
+      "attempts": [
+        {
+          "job_limit_gib": 116,
+          "job_peak_gib": 101.07,
+          "sys_commit_peak_gib": 109.48,
+          "elapsed_s": 1028.6,
+          "vram_post_gib": 31.16,
+          "power_bus3_mean_w": 172.7,
+          "power_bus3_frac_ge150": 0.853,
+          "outcome": "进了采样、第 2 步途中退出"
+        }
+      ]
+    },
+    {
+      "resolution": "1920x1088",
+      "pixels": 2088960,
+      "frames": 294,
+      "duration": "12 秒",
+      "px_frame_m": 614.2,
+      "offload_mb": 7564.24,
+      "ok": false,
+      "server_s": null,
+      "batch": "2026-10-25",
+      "cause": "vram_oom_attention",
+      "note": "🔴 **这一档是「不是提交内存到顶」的铁证**：它进了采样、跑够 984 s 才死。被测卡（bus 3）功耗 1,156 个采样点、84.2% 过 150 W、`first_hot@166 s`、均值 170.9 W → 真在算。166 s 进采样 → 1,150 s 退出，采样段 984 s，按 243 帧档 666 s/it 外推约等于**第 1 步跑完、第 2 步途中退出**。而它的系统提交峰值 111.58 GiB（87.8%）**比 13 秒档的 106.08 还高，却走得更远** → 提交量根本不是判据。",
+      "attempts": [
+        {
+          "job_limit_gib": 116,
+          "job_peak_gib": 102.85,
+          "sys_commit_peak_gib": 111.58,
+          "elapsed_s": 1150.3,
+          "vram_post_gib": 31.16,
+          "power_bus3_mean_w": 170.9,
+          "power_bus3_frac_ge150": 0.842,
+          "outcome": "进了采样、第 2 步途中进程自己退出；看门狗 0 条 kill"
+        },
+        {
+          "job_limit_gib": 116,
+          "job_peak_gib": 102.47,
+          "sys_commit_peak_gib": 110.08,
+          "elapsed_s": 1119.1,
+          "vram_post_gib": 31.16,
+          "power_bus3_mean_w": 174.2,
+          "power_bus3_frac_ge150": 0.861,
+          "sampling_first_hot_s": 136,
+          "note": "方差复测（第 2 次）：耗时 1,119.1 s 对第 1 次 1,150.3 s，差 2.7% → **不是偶发**；形态完全相同"
+        }
+      ]
+    },
+    {
+      "resolution": "1920x1088",
+      "pixels": 2088960,
+      "frames": 328,
+      "duration": "13 秒",
+      "px_frame_m": 685.2,
+      "offload_mb": 7564.24,
+      "ok": false,
+      "server_s": null,
+      "batch": "2026-10-25",
+      "cause": "vram_oom_int8",
+      "note": "**装载期就死**：被测卡均值 79.5 W、只有 14.3% 采样点过 150 W、174 s 结束。提交峰值 106.08 GiB（83.5%）、job 峰值 93.66 GiB —— 都比 12 秒档低，因为它死得更早，**低不等于没撞墙**（循环论证陷阱）。",
+      "attempts": [
+        {
+          "job_limit_gib": 116,
+          "job_peak_gib": 93.66,
+          "sys_commit_peak_gib": 106.08,
+          "elapsed_s": 168.2,
+          "vram_post_gib": 31.16,
+          "power_bus3_mean_w": 79.5,
+          "power_bus3_frac_ge150": 0.143,
+          "outcome": "没进采样就退出"
+        }
+      ]
+    },
+    {
+      "resolution": "1920x1088",
+      "pixels": 2088960,
+      "frames": 345,
+      "duration": "14 秒",
+      "px_frame_m": 720.7,
+      "offload_mb": 7564.24,
+      "ok": false,
+      "server_s": null,
+      "batch": "2026-10-25",
+      "cause": "vram_oom_int8",
+      "note": "**装载期就死**：被测卡均值 80.9 W、16.5% 采样点过 150 W、176 s 结束。提交峰值 107.94 GiB（84.9%）、job 峰值 94.11 GiB。与 13 秒档同一形态。",
+      "attempts": [
+        {
+          "job_limit_gib": 116,
+          "job_peak_gib": 94.11,
+          "sys_commit_peak_gib": 107.94,
+          "elapsed_s": 170.1,
+          "vram_post_gib": 31.16,
+          "power_bus3_mean_w": 80.9,
+          "power_bus3_frac_ge150": 0.165,
+          "outcome": "没进采样就退出"
+        }
+      ]
+    },
+    {
+      "resolution": "1920x1088",
+      "pixels": 2088960,
+      "frames": 362,
+      "duration": "15 秒",
+      "px_frame_m": 756.2,
+      "offload_mb": 7564.24,
+      "ok": false,
+      "server_s": null,
+      "batch": "2026-10-25",
+      "cause": "vram_oom_int8",
+      "note": "两次都**没进采样**（被测卡功耗全程均值 62.3 W、1.1% 采样点过 150 W，`first_hot=never`）。第一次 `--limit-gib 100` 被 Job 上限干净截断（100.09 GiB / 0xC0000005）；抬到 116 GiB 后 Job 上限根本没碰到（job 峰值 100.72），系统提交爬到 111.03 GiB（87.3%）、显存填满 31.16 GiB，进程自己退出，看门狗 0 条 kill。🔴 对外措辞：「这台机（32 GB 内存 + 96 GiB 页面文件）装不下 756 M」，**不是「卡跑不动」**。⚠️ 但**不能再叫「111 GiB 提交墙」**——1080p·12 秒（614.2 M）提交到 111.58 GiB 反而进了采样，见 614.2 那条。",
+      "pending_retest": true,
+      "attempts": [
+        {
+          "job_limit_gib": 100,
+          "job_peak_gib": 100.09,
+          "sys_commit_peak_gib": null,
+          "elapsed_s": 168.1,
+          "vram_post_gib": null,
+          "outcome": "被 Job 上限干净截断（returncode 3221225477 = 0xC0000005）"
+        },
+        {
+          "job_limit_gib": 116,
+          "job_peak_gib": 100.72,
+          "sys_commit_peak_gib": 111.03,
+          "elapsed_s": 173.8,
+          "vram_post_gib": 31.16,
+          "outcome": "116 GiB 的 Job 上限根本没碰到；系统提交爬到 111.03 GiB（87.3%）后进程自己退出，看门狗 0 条 kill 记录"
+        }
+      ],
+      "next": "已由 11 秒（578.6 M）与 12 秒方差复测定界，见 614.2 / 578.6 两条"
+    },
+    {
+      "resolution": "864x480",
+      "pixels": 414720,
+      "frames": 1382,
+      "duration": "57 秒",
+      "px_frame_m": 573.1,
+      "offload_mb": 7564.24,
+      "ok": false,
+      "server_s": null,
+      "batch": "2026-10-26",
+      "cause": "vram_oom_attention",
+      "note": "**全表最低的失败点**：573.1 M 挂。跑 1,024.6 s（服务端 `Prompt executed in 00:16:16`）、被测卡均值 **173.1 W / 85.4% ≥150 W** → 真跑了 16 分钟，进度条停在 `1/6`。OOM 位置：`scaled_dot_product_attention` 请求 **2.26 GiB**，当时空闲 1.76 GiB、已分配 23.21 GiB、**保留未分配 5.56 GiB**。提交峰值 108.81 GiB（85.6%）、job 峰值 100.92 GiB。",
+      "attempts": [
+        {
+          "job_limit_gib": 116,
+          "job_peak_gib": 100.92,
+          "sys_commit_peak_gib": 108.81,
+          "elapsed_s": 1024.6,
+          "vram_post_gib": 31.16,
+          "power_bus3_mean_w": 173.1,
+          "power_bus3_frac_ge150": 0.854,
+          "outcome": "进了采样、第 1 步跑完后在第 2 步 OOM；看门狗 0 条 kill",
+          "oom_request_gib": 2.26,
+          "oom_free_gib": 1.76,
+          "oom_allocated_gib": 23.21,
+          "oom_reserved_unalloc_gib": 5.56
+        }
+      ]
+    },
+    {
+      "resolution": "1280x720",
+      "pixels": 921600,
+      "frames": 634,
+      "duration": "26 秒",
+      "px_frame_m": 584.3,
+      "offload_mb": 7564.24,
+      "ok": false,
+      "server_s": null,
+      "batch": "2026-10-26",
+      "cause": "vram_oom_attention",
+      "note": "**处于 A 类尾部的高位失败点**：584.3 M 挂。跑 1,074.5 s（`Prompt executed in 00:17:04`）、**173.7 W / 85.9%**、进度条 `1/6`。OOM 位置：`scaled_dot_product_attention` 请求 **2.33 GiB**，空闲仅 **563.79 MiB**、已分配 23.50 GiB、保留未分配 6.34 GiB。提交峰值 111.39 GiB（87.6%）、job 峰值 102.55 GiB。实测帧数 634（之前按 720p 斜率估的是 617）。",
+      "attempts": [
+        {
+          "job_limit_gib": 116,
+          "job_peak_gib": 102.55,
+          "sys_commit_peak_gib": 111.39,
+          "elapsed_s": 1074.5,
+          "vram_post_gib": 31.16,
+          "power_bus3_mean_w": 173.7,
+          "power_bus3_frac_ge150": 0.859,
+          "outcome": "进了采样、第 2 步 OOM；看门狗 0 条 kill",
+          "oom_request_gib": 2.33,
+          "oom_free_gib": 0.55,
+          "oom_allocated_gib": 23.5,
+          "oom_reserved_unalloc_gib": 6.34
+        }
+      ]
+    }
+  ],
+  "reading": {
+    "status": "invalidated_then_remeasured",
+    "old_ceiling_invalid": true,
+    "old_bracket_m": [
+      380.6,
+      394.4
+    ],
+    "why_invalid": "判死阈值 420 s < 单步采样时长；重测把原「最小失败点」「3/3 失败档」「最高失败点」三档全跑通。",
+    "highest_pass_m": "537.3",
+    "highest_pass_detail": "1280×720 · 583 帧 · 24 秒 · 4,963.67 s（778.17 s/it ≈ 82.7 分钟）",
+    "no_known_ceiling": false,
+    "bottleneck_now": "**显存容量墙（31.16 GiB），不是主机、也不是算力**：30 档里 22 档跑完。最高「像素 × 帧数」通过点 = **720p·24 秒 = 537.3 M（82.7 分钟）**；按分辨率报的时长上限 = **480p 50 秒 / 720p 24 秒 / 1080p 10 秒 / 1440p 5 秒**。往上八档全部是 `XPU out of memory`：八档都跑了 16~18 分钟，都死在注意力申请（2.25~2.38 GiB）。",
+    "public_claim": "按时间报、全部实测：**480p 5 秒 5 分 / 50 秒 72.5 分** · 720p 5 秒 9 分 / 10 秒 20 分 / 17 秒 45 分 / 17.5 秒 48 分 / 18 秒 51 分 / 20 秒 58 分 / 22 秒 70 分 / 23 秒 78 分 / **24 秒 82.7 分** · 1080p 5 秒 24 分 / 7 秒 39 分 / 8 秒 46 分 / 10 秒 71 分 · 1440p 3 秒 26 分 / 3.7 秒 34 分 / 4 秒 45 分 / 5 秒 59 分**。时长上限：**480p 50 秒 / 720p 24 秒 / 1080p 10 秒 / 1440p 5 秒**，每一档都是实测，没有一档是推算。",
+    "pending_retest_m": [],
+    "retest_complete": {
+      "原 7 个「失败」档": "全部重测通过（394.4 / 396.3 / 401.1 / 412.0 / 443.3 / 457.1 / 507.6 M）",
+      "结论": "🔴 原「381~394 M 天花板」彻底作废：它量的是 `bench_f_h3.py` 的 420 s 静默阈值，不是卡。",
+      "全表": "30 档里通过 22 / 失败 8（573.1 / 578.6 / 582.5 / 584.3 / 614.2 / 685.2 / 720.7 / 756.2 M，**全部是 XPU 显存 OOM**，见 `reading.oom_signature`）"
+    },
+    "mem_wall_bracket_m": {
+      "pass": 537.3,
+      "fail": 573.1,
+      "note": "第九轮把失败端从 578.6 M 下压到 **573.1 M**（480p·57 秒）；这个带子里再没有实测档，T 的定位到此为止。"
+    },
+    "wall_now": "🔴 **判据是「有没有真进采样」，用被测卡（bus 3）功耗的均值 / ≥150 W 占比分**，不用 elapsed、不用提交量、更不能用 p90。\n通过档全部 ≥187 W / ≥93%（720p 22 秒 187.8 W·95.5%、23 秒 188.6 W·96.2%、24 秒 188.6 W·96.3%；480p 50 秒 188.7 W·95.5%）；失败档**八档全在 171~174 W / 84~86%** —— 它们都真跑了 16~18 分钟，然后在注意力申请上 OOM。\n🔴 **死因已定：八个失败档全是 `torch.OutOfMemoryError: XPU out of memory`**（服务端 traceback 为证）。⚠️ 功耗判据只能分「跑很久」和「立刻死」，**「为什么立刻死」必须去看 `_bench_f/server_<tag>.log`**。\n🔴 **「提交到 111 GiB 就是墙」已作废**：失败档提交峰值 108.81~111.58 GiB，对上限 127.11，离顶还有 15 GiB 以上。",
+    "frame_wall": "单标量（像素 × 帧数）成立、**无倒挂**：最高通过 **537.3 M**（720p·24 秒）、最低失败 **573.1 M**（480p·57 秒）→ **T ∈ (537.3, 573.1) M**。按分辨率翻译：**480p ≤ 50 秒 / 720p ≤ 24 秒 / 1080p ≤ 10 秒 / 1440p ≤ 5 秒**。⚠️ 帧数只能取实测值：480p·50 秒 是 1,212 帧（按 24.2 帧/秒推是 1,195）、720p·26 秒 是 634 帧（推是 617）、1440p·6 秒 是 158 帧（推是 141）。",
+    "power_discriminator_note": "⚠️ 判据只能用**均值 / ≥150 W 占比**，不能用 p90，更不能把两张卡混算：13 / 14 秒档的 p90 高达 185 / 184 W（装载期尖峰），而均值只有 79.5 / 80.9 W；bus 16 那张空载恒 45 W，混进去会把阈值稀释成 191.8 / 51.8 这种假干净的数。⚠️ 更要紧的一条：**功耗低 ≠ 装载失败**。685 M 起那三档装载是成功的（`loaded partially` 逐字节相同），功耗低是因为采样第 1 步的 int8 输出缓冲分配不下来、卡根本没机会满载。",
+    "oom_signature": {
+      "verdict": "六个失败档全部是 `torch.OutOfMemoryError: XPU out of memory`（显存），不是主机侧装载，也不是算力不足。",
+      "evidence": "`_bench_f/server_<tag>.log` 的 traceback；此前只看了跑测器视角的 `run_*.log`（只记 rc）与功耗 CSV（只记瓦数），没人翻服务端 traceback。",
+      "note": "bench/notes/h3-vram-oom-signature-2026-10-26.md",
+      "sites": {
+        "A_attention": {
+          "rungs_m": [
+            573.1,
+            578.6,
+            582.5,
+            584.3,
+            614.2
+          ],
+          "frame": "comfy/ldm/modules/attention.py:600 attention_pytorch → comfy/ops.py:63 scaled_dot_product_attention",
+          "request_gib": [
+            2.26,
+            2.25,
+            2.27,
+            2.33,
+            2.38
+          ],
+          "free_gib": [
+            1.76,
+            1.79,
+            1.54,
+            0.55,
+            0.2
+          ],
+          "allocated_gib": [
+            23.21,
+            23.14,
+            23.24,
+            23.5,
+            23.81
+          ],
+          "reserved_gib": [
+            5.56,
+            5.59,
+            5.64,
+            6.34,
+            6.49
+          ],
+          "when": "全部跑 16~18 分钟后才死（进度条停在 `1/6`）。可注意到的规律：**请求始终只有 2.25~2.38 GiB，而保留未分配始终有 5.56~6.49 GiB**。"
+        },
+        "B_int8_linear": {
+          "rungs_m": [
+            685.2,
+            720.7,
+            756.2
+          ],
+          "frame": "omni_xpu_kernel/int8/__init__.py:187 _tile_int8_linear → torch.empty((rows, output_features))",
+          "request_gib": [
+            10.63,
+            11.18,
+            2.93
+          ],
+          "free_gib": [
+            8.94,
+            8.91,
+            2.9
+          ],
+          "allocated_gib": [
+            18.95,
+            19.3,
+            26.24
+          ],
+          "reserved_gib": [
+            2.73,
+            2.84,
+            2.22
+          ],
+          "when": "采样第 1 步（进度条仍 `0/6`）、116~119 s 结束 —— 不是装载失败，装载是成功的"
+        }
+      },
+      "why_request_not_monotonic": "15 秒档只请求 2.93 GiB 却仍挂，是因为那时已分配 26.24 GiB、只剩 2.90 —— **先撞线的 op 换了一个**。所以「墙」不是某个固定 op 的固定上限，而是「31.16 GiB 装不下这一档的瞬时峰值」。",
+      "host_never_binding": "八个失败档提交峰值 108.81 / 109.33 / 109.48 / 111.39 / 111.58 GiB，上限 127.11 → 离顶还有 15 GiB 以上。**主机从来不是瓶颈**。",
+      "wording": "对外说「**这张卡（31.16 GiB 显存）装不下这一档的瞬时峰值**」，不说「这台机装不下」（主机没顶），更不说「卡跑不动 / 卡坏了」（算力与稳定性都没问题：537.3 M 那档连跑 83 分钟）。",
+      "opens": "瓶颈是瞬态缓冲而不是权重驻留 → 注意力换分块后端、int8 的 tile 按显存预算自适应，都可能把天花板往上挪；这两条未做。",
+      "fragmentation_hypothesis": "⚠️ **未验证的假设**（不当结论用）：A 类失败时卡上总是「已分配 23.2~23.8 GiB + **保留但未分配 5.6~6.5 GiB**」，而请求只有 2.3 GiB —— 那 5.6~6.5 GiB 是 PyTorch 缓存板块，理论上比请求大得多。请求却失败，**很可能是碎片化（拿不出一块连续 2.3 GiB），不是绝对容量不够**。若成立，天花板还能往上挪。**下一步实验**：在同一任务里每步后调 `torch.xpu.empty_cache()`（或调 allocator 分块策略），看 480p·57 秒能不能过。实验不改交付配置，不会动动现有数字。",
+      "cause_enum": {
+        "vram_oom_attention": "跑 16~18 分钟后死在 `scaled_dot_product_attention`（请求 2.25~2.38 GiB）",
+        "vram_oom_int8": "第 1 步死在 `_tile_int8_linear → torch.empty`（请求 10.63 / 11.18 / 2.93 GiB）"
+      }
+    }
+  },
+  "failure_signature": {
+    "status": "invalidated：本节记录的「失败」全部是**跑测器判死**，不是卡的能力。判死 = 连续 140 次取不到 history **且** 日志静默 ≥ BENCH_STALL_SEC（默认 420 s），而 tqdm 只在每步结束写日志、大尺寸单步采样本身就超过 420 s。保留原文仅供追溯。",
+    "point": "**当时判读（已作废）**：挂在「采样第 1 步」。真实情况：**第 1 步只是慢** —— 1440p·5 秒那档第 1 步约 560 s，超过 420 s 的静默阈值即被判死，卡当时功耗均值 188.6 W（墙 200 W）。日志尾部 `loaded partially; 12,762.74 / 12,431.90 / 7,564.24 / 330.83` + `0/6` 是**「第 1 步还在算」的形态**，5 秒档和 20 秒档的日志长得一模一样，区别只是算多久。",
+    "load_params_identical": [
+      "1440p：3 秒（73 帧，269 M）通过、3.7 秒（90 帧，332 M）通过、4 秒（107 帧，394 M）挂 —— **三档装载参数逐字节相同**（12,762.74 / 12,431.90 / 7,564.24 / 330.83）。",
+      "1080p：5 秒（124 帧，259 M）通过、8 秒（192 帧，401 M）挂、10 秒（243 帧，508 M）挂 —— 同样逐字节相同。",
+      "720p：10 秒（243 帧）通过档卸载 6,721.83 MB，17.5 秒（430 帧）挂掉档卸载 7,564.24 MB —— **卸载量变大了反而挂**；而 17 秒（413 帧）与 17.5 秒（430 帧）装载规划同档（7,564.24 / 330.83），一过一挂。",
+      "→ **装载决策不是变量，装载本身是成功的。** 再拿「装不下 / 卸载太多」解释这条线就是错的。"
+    ],
+    "discriminator": "日志尾部固定两行：`loaded partially; 12,762.74 … 7,564.24 MB offloaded` + `0%|  | 0/6`，之后 420 s 无新增；`oom=false`、`device_lost=false`、无 traceback、无 WATCHDOG dump、无 minidump、无 Kernel-Power 41。⚠️ `n_loaded_complete=1` 只是这条链的**结果**（第 1 步没走完，后面的 DiT 补装与两个 VAE 都没跑到），**不能当判据**。",
+    "commit_peak_gib": "100.55（1440p·5 秒）/ 102.72（1080p·10 秒）对上限 127.11 → 79~81%，没碰顶。⚠️ 失败档的提交/作业峰值偏低**是因为死得早**（没跑到 VAE 解码），**不能拿它当「不是内存撞墙」的反证**（那是循环论证）；真正排除内存的是「装载参数逐字节相同」。",
+    "job_peak_gib": "83.78 / 84.89，限额 100 → 没碰顶（同上，偏低是死得早的结果）",
+    "traceback": "无",
+    "dump": "无 WATCHDOG dump、无 minidump、无 Kernel-Power 41",
+    "repro": "1440p·124 帧 3/3（含 steps 1 与 steps 6）；720p·481 帧 2/2；1080p·243 帧 1/1；1080p·192 帧 1/1；720p·447 帧 1/1；1440p·107 帧 1/1；720p·430 帧 1/1。",
+    "load_params_identical_note": "这组「装载参数逐字节相同」**仍然成立且更有用**：它证明装载一直是成功的，「装不下 / 卸载太多 / 显存不够」永远解释不了这条线。"
+  },
+  "success_signature": {
+    "first_step": "第 1 步走得完：日志在 `loaded partially` 之后会再出现 `loaded completely; … full load: True`（把卸载的 7.5 GB 拉回显存），随后进度条推进到 1/6 并跑完 6 步。",
+    "tail": "收尾会再装载两个 VAE（audio 577.08 MB、video 4,966.19 MB）并打出 `Prompt executed in …`。",
+    "n_loaded_complete": "3~8 次 —— 它数的是「loaded completely 出现过几次」：通过档 3~4（含两个 VAE），8 次那批是 fresh + cached 两轮都跑满。",
+    "note": "🔴 别再拿 `n_loaded_complete=1` 判断「挂在装载」：它=1 只是「第 1 步没走完，后面的 DiT 补装与两个 VAE 都没跑到」的结果；第 1 步慢 10 倍时也会是 1。"
+  },
+  "exclusions": {
+    "status": "invalidated：下列「排除项」是为了支撑那条已被推翻的判据而写的，别再引用。",
+    "not_steps": "（作废前提）steps 1 与 steps 6「都挂」—— 两者都只是单步超阈值。",
+    "not_offload": "（部分仍成立）装载参数确实逐字节相同 → 装载不是变量；但「卸载更多反而挂」随判据一起作废。",
+    "not_duration": "（作废）原推理「两个方向都能踩线 → 看乘积」建立在假边界上。",
+    "not_resolution": "（作废）「无倒挂」是在被工具切掉的数据上得出的。",
+    "not_ram": "（仍成立）装载参数逐字节相同 + 提交峰值 79~81% 没碰顶 → 不是内存或页面文件撞墙。",
+    "not_reserve_vram": "（负结果仍成立）`--reserve-vram` 4→1：装载规划逐字节不变（12,762.74 / 12,431.90 / 7,564.24 / 330.83）→ 这个开关挪不动装载决策，**别指望调参多出时长**。"
+  },
+  "observation_not_cause": [
+    "1080p 与 1440p 在同一帧数（124）下，装载规划给出的卸载量逐字节相同（usable 12,762.74 / loaded 12,431.90 / offloaded 7,564.24 MB），而两者像素面积差 1.765 倍 —— 说明「卸载多少」由显存预算算，与输出尺寸无关。",
+    "🔴 **原先那条「第一步前向有一块按像素×帧数增长的工作区分配、SYCL/L0 失败只重试」的猜因，已随判据一并撤回** —— 它要解释的现象不存在。现在的真问题换成了：**为什么单步从 416 s 涨到 666 s（随帧数超线性）**，这一项没有模块级证据，不给因果。"
+  ],
+  "conclusion": [
+    "🔴🔴 **原来的「像素 × 帧数天花板」作废，它量的是跑测器的耐心，不是卡的能力。**",
+    "原 7 个「失败」档全部死在 `bench_f_h3.py` 的判死条件上：连续 140 次取不到 history **且** 日志静默 ≥420 s。而进度条只在每步结束才写日志、单步采样本身就可能超过 420 s → 合法长跑被掐。铁证：Q11 那 420 s 静默期里跑测卡功耗 188.6 W / P90 193.0 W / 峰值 200.6 W（贴 200 W 墙）。",
+    "重测（STALL=1800 s / WAIT=14400 s）三档全部通过：1440p·4 秒 394.4 M → 2,726.51 s（416.11 s/it）；720p·20 秒 443.3 M → 3,489.65 s（537.94 s/it）；1080p·10 秒 507.6 M → 4,267.18 s（666.43 s/it）。",
+    "**目前实测最高点 = 1080p · 10 秒 = 243 帧 = 507.6 M，71 分钟一条。没找到硬天花板，只找到时间成本。**",
+    "对客口径改成时间：720p 每秒输出约 26 s、1080p 每秒输出约 430 s（含装载摊薄）。别再报「最多能出几秒」，按「你要多长 → 要等多久」报。",
+    "⚠️ 已作废（2026-10-26 第三次归因）：🔴 **756.2 M 撞到的第一堵真墙不是显存，是主机提交内存**：1080p·15 秒在装载期提交到 100.09 GiB 时被 Job 上限截断（returncode 3221225477 = 0xC0000005），168 s 结束、一步都没采样。同机 1080p·10 秒装载峰值约 98 GiB → 756 M 需要 >100 GiB。正在用 `--limit-gib 116` 重测；**若仍被 0.88 看门狗（111.86 GiB）拦下，对外就说「这台机器装不下」，别说「卡跑不动」。** —— 那一轮的 0xC0000005 是 `--limit-gib 100` 的 Job 上限截断；放宽到 116 之后重测，六个失败档全部是 `XPU out of memory`，主机提交峰值 109~112 / 127.11 GiB，从来没顶到过。",
+    "⭐ **原 7 个「失败」档已全部重测通过**：394.4 M（2,726.51 s）、396.3 M（2,860.37 s）、401.1 M（2,788.78 s）、412.0 M（3,054.61 s）、443.3 M（3,489.65 s）、457.1 M（3,554.99 s）、507.6 M（4,267.18 s）。→ **19 档里通过 18 / 待重测 1**。「像素 × 帧数天花板」这条判据彻底作废，**没有已知硬天花板，只有时间成本**。",
+    "**对客整数秒上限（全部实测）**：**720p ≤ 20 秒（58 分）、1080p ≤ 10 秒（71 分）、1440p ≤ 5 秒（59 分）**。旧的「720p ≤17 / 1080p ≤7 / 1440p ≤3」已作废。",
+    "🔴 **第六轮把 T 又收窄一格：11 秒（277 帧 = 578.6 M）也挂，1080p 上是 243 帧过 / 277 帧挂 → T ∈ (507.6, 578.6) M。** 578.6 M 跑 1,022.2 s、功耗均值 171.5 W（84.6% ≥150 W）、采样段 881 s → **进了采样、死在第 2 步**；12 秒复测 1,119.1 s 对首测 1,150.3 s，只差 2.7% → **不是偶发**。提交峰值 109.33 / 111.58 / 110.08 GiB，都比 685.2 M 档的 106.08 还高，**再次证明提交量不是判据**。",
+    "⭐ **第七轮（2026-10-26）出对客数字：720p 的整数秒上限从 20 秒抬到 23 秒。** 720p·22 秒（532 帧 = 490.3 M）✅ 4,204.48 s / 70 分；720p·23 秒（566 帧 = **521.6 M**）✅ 4,695.57 s / 78 分 —— 后者比 1080p·10 秒的 507.6 M 还高一档，是**全表现有最高通过点**。两档功耗均值 187.8 / 188.6 W、≥150 W 占比 95.5% / 96.2% → 全程真在采样。",
+    "🔴 **单标量仍无倒挂**：1440p·6 秒实测是 **158 帧 = 582.5 M**（不是按秒外推的 141 帧 / 519.8 M），挂；而 720p·23 秒的 521.6 M 过 → T ∈ (521.6, 578.6) M。**1440p 的整数秒上限就是 5 秒**（5 秒 457.1 M 过、6 秒 582.5 M 挂，中间没有更小的帧网格）。",
+    "⚠️ **踩坑记录**：我一开始按「23.8 帧/秒」外推 1440p·6 秒 = 141 帧，算出 519.8 M < 521.6 M，差点得出「720p 能过、1440p 挂 → 分辨率是变量 → 倒挂」的错误结论。**实际帧数是 158。教训：帧数只能取实测值，不能按秒线性外推。**",
+    "⭐⭐ **第八轮（2026-10-26）两头都放开：480p 的上限从 5 秒直接跳到 50 秒，720p 从 20 → 24 秒。** 480p·50 秒（1,212 帧 = 502.6 M）✅ 4,351.79 s ≈ 72.5 分、188.7 W / 95.5%，DiT 完整驻留；720p·24 秒（583 帧 = **537.3 M**）✅ 4,963.67 s ≈ 82.7 分、188.6 W / 96.3%，**新的最高通过点**。→ T ∈ (537.3, 578.6) M；按时长报：**480p 50 秒 / 720p 24 秒 / 1080p 10 秒 / 1440p 5 秒**。",
+    "⚠️ **480p 被低估了整整 10 倍**：之前只测过 5 秒（51.4 M），因为它离墙最远 —— 跟 720p 报 20 秒是同一种错（拿「试到这儿就够了」当「到头了」）。**以后每个分辨率都要顶到 M≈550 附近再停。**",
+    "🔴🔴🔴 **第三次归因翻案（2026-10-26）：六个失败档全部是 `torch.OutOfMemoryError: XPU out of memory` —— 是显存，不是主机装载、也不是算力。** 两个撞线点：① 578.6 / 582.5 / 614.2 M 死在 `attention.py:600 attention_pytorch → ops.py:63 scaled_dot_product_attention`，单次请求只有 **2.25 / 2.27 / 2.38 GiB**，但当时空闲只剩 1.79 / 1.54 / **0.20** GiB，都是在跑够 16~18 分钟后死的；② 685.2 / 720.7 / 756.2 M 死在 `omni_xpu_kernel/int8/__init__.py:187 _tile_int8_linear` 的 `torch.empty((rows, output_features))`，单次请求 **10.63 / 11.18 / 2.93 GiB**，第 1 步（进度条 `0/6`）即死、116~119 s 结束。⚠️ 15 秒档只请求 2.93 GiB 仍挂，是因为那时已分配 26.24 GiB、只剩 2.90 —— **先撞线的 op 换了，请求大小并不单调**，所以「墙」不是某个固定 op 的固定上限，而是「31.16 GiB 装不下这一档的瞬时峰值」。→ **口径改两处**：不是「这台机装不下」（主机提交 109~112 / 127.11 GiB 从没顶到），也不是「卡跑不动 / 卡坏了」（537.3 M 那档连跑 83 分钟），而是「**这张卡 31.16 GiB 显存装不下这一档的瞬时峰值**」。取证：`bench/notes/h3-vram-oom-signature-2026-10-26.md`。⭐ 这条把天花板从「铁板」变成「可动的」：瓶颈是瞬态缓冲而非权重驻留，注意力换分块后端、int8 的 tile 按显存预算自适应都可能把上限往上挪（未做）。",
+    "⭐⭐ **第九轮（2026-10-26）把失败端压到 573.1 M：T 收窄为 (537.3, 573.1) M。** 720p·26 秒（634 帧 = **584.3 M**）❌ 1,074.5 s、173.7 W / 85.9%；480p·57 秒（1,382 帧 = **573.1 M**）❌ 1,024.6 s、173.1 W / 85.4%。两档都真跑了 16~18 分钟、都死在 `scaled_dot_product_attention`（请求 2.33 / 2.26 GiB），归在 A 类。**573.1 M 是全表最低失败点**，且仍无倒挂（537.3 过 / 573.1 挂）。实测帧数 634 对与估的 617、1,382 对与估的 1,382 —— 再次证明那句：帧数只能取实测。"
+  ],
+  "status": "active",
+  "harness_fix": "`bench_f_h3.py` 新增 `BENCH_WAIT_SEC`（总等待上限，原硬编码 3600 s）；`BENCH_STALL_SEC` 重测时设 1800。教训：**判死阈值必须大于最长单步时长**，否则量到的是跑测器的耐心。"
+}

@@ -1,0 +1,79 @@
+{
+  "schema": "arc-xpu-capacity/1",
+  "tag": "b65-32g-h3-video-pf32-fail",
+  "date": "2026-10-24",
+  "source": "local",
+  "env": {
+    "os": "Windows-11-10.0.26300-SP0",
+    "cpu": "AMD Ryzen 5 9600X 6-Core",
+    "gpu": "Intel Arc Pro B65 32G（卡 0，CPU 直连 x16）",
+    "vram_visible_gib": 31.16,
+    "driver": "9150",
+    "ecc": "off",
+    "backend": "SYCL",
+    "engine": "ComfyUI 0.39.0 + torch 2.12.0+xpu",
+    "cpu_threads": 6,
+    "pagefile_initial_mb": 32768,
+    "pagefile_maximum_mb": 32768,
+    "commit_limit_gib": 63.11,
+    "note": "页面文件 e://pagefile.sys 固定 32 GB（初始=最大=32768），2026-10-24 20:31:38 重启后生效"
+  },
+  "workload": {
+    "model": "MiniMax H3",
+    "dit": "minimax_h3_fl2va_pruned_int8_convrot.safetensors（19.53 GB）",
+    "text_encoder": "qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors（14 960.20 MB）",
+    "steps": 6,
+    "duration_sec": 5.0,
+    "reserve_vram_gb": 4,
+    "server_args": "--reserve-vram 4 --enable-dynamic-vram"
+  },
+  "method": "固定 32 GB 页面文件下，按产品页同口径（6 步 / 5 秒 / reserve-vram 4）跑三个分辨率，看能不能起；同时每 2 s 采一次整机提交量，取失败瞬间的峰值。",
+  "cases": [
+    {
+      "name": "2560x1440",
+      "ok": false,
+      "failed_in_s": 75.8,
+      "vram_post_gib": 16.54,
+      "error": "OSError: 页面文件太小，无法完成操作。 (os error 1455)",
+      "stage": "UNETLoader → safetensors.safe_open（读 19.53 GB DiT）"
+    },
+    {
+      "name": "1920x1088",
+      "ok": false,
+      "failed_in_s": 71.32,
+      "vram_post_gib": 16.54,
+      "error": "OSError: 页面文件太小，无法完成操作。 (os error 1455)",
+      "stage": "UNETLoader → safetensors.safe_open"
+    },
+    {
+      "name": "1280x720",
+      "ok": false,
+      "failed_in_s": 71.6,
+      "vram_post_gib": 16.54,
+      "error": "OSError: 页面文件太小，无法完成操作。 (os error 1455)",
+      "stage": "UNETLoader → safetensors.safe_open"
+    }
+  ],
+  "commit_evidence": {
+    "peak_gib": 57.21,
+    "limit_gib": 63.11,
+    "peak_frac": 0.906,
+    "samples": 166,
+    "interval_s": 2,
+    "note": "三档失败点完全一致：文本编码器 14 960.20 MB 已「loaded completely」上卡（显存 16.54 GiB），随后读 DiT 时 commit 不够。GPU 占空比 0%、整卡 45 W —— 失败前根本没开始算。"
+  },
+  "conclusion": [
+    "🔴 **32 GB 固定页面文件下，H3 出视频整条线起不来**：720p / 1080p / 1440p 三档全部在装载 DiT 时报 `os error 1455`，71~76 s 干净退出，机器无恙。",
+    "🔴 **与分辨率无关**：三档都在同一处失败、显存同为 16.54 GiB、commit 峰值同为 57.21 GiB。瓶颈是「读 19.53 GB DiT」需要的一次性 commit 保障，不是视频尺寸。",
+    "📐 **需求量估算**：失败时已用 57.21 GiB，DiT 19.53 GB 还要再要一份 → 实际需求约 **77 GiB**。32 GB 物理 + 32 GB 页面文件 = 63.11 GiB 不够。",
+    "✅ **页面文件固定值取 48 GB（49152 MB）**：commit limit = 80 GiB，容得下 H3（≈77）、仍低于 3M 档的 86.02 GiB → 两边都安全。",
+    "⚠️ **产品页 §6 的视频数字是在 64 GB 页面文件（e: 65536/131072）下测的**，在 32 GB 固定配置下不可复现 —— 产品页测试条件必须写页面文件值。"
+  ],
+  "log": [
+    "run_b65-h3-2560x1440.log",
+    "run_b65-h3-1920x1088-pf32.log",
+    "run_b65-h3-pf32b.log",
+    "run_b65-h3-720p-pf32.log",
+    "commit_peak_h3.log"
+  ]
+}

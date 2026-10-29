@@ -1,0 +1,118 @@
+{
+  "schema": "arc-xpu-bench/1",
+  "domain": "h3-video-ceiling",
+  "date": "2026-10-26",
+  "tag": "b70-32g-h3-ceiling-tiers",
+  "status": "active",
+  "source": "local",
+  "tool": "bench_f_h3.py（COMFY_PORT=8190）+ power_probe_multi.py + _run_in_job.py",
+  "batch": "B70 最小队列（d5 / d24 / d26 一次串行 + d50 单独干净复测），默认风扇曲线，无并发",
+  "env": {
+    "gpu": "Intel Arc Pro B70 32G",
+    "vram_gib": 31.16,
+    "ecc": "off",
+    "driver": "32.0.101.9150",
+    "stack": "ComfyUI 0.39.0 + torch 2.12 + torch212.bmg + omni_int8fix",
+    "reserve_vram": 4,
+    "steps": 6,
+    "pagefile_gb": 96,
+    "commit_limit_gib": 127.11,
+    "fan": "默认曲线（未改），满载 68~69 ℃"
+  },
+  "tiers": [
+    {
+      "res": "1280x720",
+      "dur_s": 5,
+      "frames": 124,
+      "px_frame_m": 114.3,
+      "server_total_s": 324.59,
+      "s_per_it": 25.38,
+      "e2e_min": 5.41,
+      "efficiency_m_per_min": 21.1,
+      "result": "pass",
+      "loads": null
+    },
+    {
+      "res": "1280x720",
+      "dur_s": 24,
+      "frames": 583,
+      "px_frame_m": 537.3,
+      "server_total_s": 3008.09,
+      "s_per_it": 460.57,
+      "e2e_min": 50.13,
+      "efficiency_m_per_min": 10.7,
+      "result": "pass",
+      "loads": null
+    },
+    {
+      "res": "1280x720",
+      "dur_s": 26,
+      "frames": 634,
+      "px_frame_m": 584.3,
+      "server_total_s": null,
+      "s_per_it": null,
+      "e2e_min": null,
+      "efficiency_m_per_min": null,
+      "result": "fail_vram",
+      "fail_signature": "XPU out of memory：Tried to allocate 2.33 GiB（23.50 GiB allocated, 6.34 GiB reserved）；栈 attention_pytorch → ops.py:63 scaled_dot_product_attention；与 B65 同一档逐字一致"
+    },
+    {
+      "res": "864x480",
+      "dur_s": 50,
+      "frames": 1212,
+      "px_frame_m": 502.6,
+      "server_total_s": 2693.94,
+      "s_per_it": 404.7,
+      "e2e_min": 44.9,
+      "efficiency_m_per_min": 11.2,
+      "result": "pass",
+      "loads": 4,
+      "power_w": {
+        "mean": 273.5,
+        "peak": 320.1
+      },
+      "energy_j": 736911.8,
+      "peak_job_mem_gib": 85.6,
+      "note": "2026-10-26 16:28 单独复测，此前 16:25 那次报 DEVICE_LOST 是并发错误（llama-bench 同时上卡），不是显存墙"
+    }
+  ],
+  "ceiling": {
+    "480p": "≤ 50 秒（44.9 分）",
+    "720p": "≤ 24 秒（50.1 分）",
+    "1080p": "≤ 10 秒 —— 沿用 B65 实测，B70 未重测",
+    "1440p": "≤ 5 秒 —— 沿用 B65 实测，B70 未重测",
+    "basis": "显存容量决定的档位不重测：B70 与 B65 可用显存同为 31.16 GiB，d26（584.3 M）在两张卡上的失败签名逐字一致 → 八个失败档整体沿用 B65"
+  },
+  "scalar_check": {
+    "highest_pass_px_frame_m": 537.3,
+    "lowest_fail_px_frame_m": 584.3,
+    "interval": "T ∈ (537.3, 584.3) M",
+    "no_inversion": true,
+    "note": "480p·50 秒的 502.6 M 通过，720p·24 秒的 537.3 M 通过，720p·26 秒的 584.3 M 挂 → 单标量单调，无倒挂"
+  },
+  "vs_b65": {
+    "d5": {
+      "b70_s": 324.59,
+      "b65_s": 527.45,
+      "ratio": 1.62
+    },
+    "d24": {
+      "b70_server_s": 3008.09,
+      "b65_server_s": 4963.67,
+      "ratio": 1.65
+    },
+    "d50": {
+      "b70_s": 2693.94,
+      "b65_s": 4351.79,
+      "ratio": 1.62
+    },
+    "per_step_ratio": 1.69,
+    "core_ratio": 1.6,
+    "reading": "端到端 1.62~1.65×、单步 1.69×，与核心数比 32/20=1.60 同量级 → H3 是算力受限（不是带宽受限，实测带宽只占 3.9%）"
+  },
+  "reading": {
+    "conclusion": "B70 的四档上限与 B65 完全一致，差别只在时间：同样一条片子，B70 快 1.62~1.65 倍",
+    "wall": "墙是显存容量，不是算力：四个通过档最长跑 50 分钟不崩，再往上一档立刻 OOM",
+    "unmeasured": "1080p 与 1440p 的上限在 B70 上未重测（按容量等价沿用 B65）；480p·5 秒未测"
+  }
+}

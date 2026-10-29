@@ -1,0 +1,146 @@
+{
+  "schema": "arc-xpu-bench/1",
+  "domain": "rig-utilization",
+  "date": "2026-10-26",
+  "tag": "b70-32g-h3-rig-utilization",
+  "status": "active",
+  "source": "local",
+  "tool": "typeperf(PDH) + bench/harness/gpu_thermal.py(Level Zero Sysman) + power_probe_multi.py",
+  "batch": "B70 最小队列期间的整机占用率取证（720p·24 秒档在跑）",
+  "env": {
+    "gpu": "Intel Arc Pro B70 32G",
+    "dev": "E223",
+    "subsys": "27421EF7",
+    "board": "GUNNIR 蓝戟",
+    "slot": "CPU 直连槽（PCI 总线 3）",
+    "pcie": "Gen5 x16 negotiated",
+    "vram_gib": 31.16,
+    "ecc": "off",
+    "cpu": "Ryzen 5 9600X 6C/12T",
+    "ram_gib": 31.11,
+    "pagefile_gb": 96,
+    "commit_limit_gib": 127.11,
+    "disk": "PhysicalDisk 1 = C: + D: + E: 同一块物理盘（模型库与页面文件同盘）"
+  },
+  "model_footprint_gib": {
+    "dit_int8_convrot": 19.53,
+    "text_encoder_nvfp4_awq": 14.61,
+    "video_vae_fp16": 4.85,
+    "audio_vae_fp32": 0.56,
+    "total": 39.55
+  },
+  "phases": {
+    "load": {
+      "window": "2026-10-26 16:07~16:09（d50 装载期，100 次 1 秒采样）",
+      "samples": 99,
+      "cpu_pct": {
+        "mean": 30.6,
+        "max": 45.0,
+        "median": 29.8
+      },
+      "cpu_utility_pct": {
+        "mean": 30.9,
+        "max": 42.9,
+        "median": 31.0
+      },
+      "disk_read_mb_s": {
+        "mean": 24.03,
+        "max": 233.39,
+        "median": 1.46
+      },
+      "disk_write_mb_s": {
+        "mean": 28.42,
+        "max": 741.42,
+        "median": 0.68
+      },
+      "avail_phys_mb": {
+        "mean": 659.7,
+        "max": 1016.0,
+        "median": 629.0
+      }
+    },
+    "steady_sampling": {
+      "window": "2026-10-26 16:10~16:11（d50 采样期，60 次 1 秒采样）",
+      "samples": 59,
+      "cpu_pct": {
+        "mean": 30.3,
+        "max": 43.5,
+        "median": 30.0
+      },
+      "disk_read_mb_s": {
+        "mean": 16.78,
+        "max": 119.47,
+        "median": 0.72
+      },
+      "disk_write_mb_s": {
+        "mean": 16.13,
+        "max": 322.62,
+        "median": 0.62
+      },
+      "avail_phys_mb": {
+        "mean": 482.0,
+        "max": 690.0,
+        "median": 477.0
+      },
+      "committed_gib": {
+        "mean": 103.15,
+        "max": 103.29
+      },
+      "commit_limit_gib": 127.11
+    }
+  },
+  "gpu_during_720p_d24": {
+    "power_w_sustained": "288~292（默认墙 290 W 的 99.7%）",
+    "power_w_mean_by_bus": 275.6,
+    "temp_c": {
+      "gpu": 71.0,
+      "memory": 64.0,
+      "flat_over_minutes": 50
+    },
+    "fan": {
+      "rpm": 4600,
+      "max_rpm_from_driver": 6000,
+      "pct": 76.7,
+      "can_control": true
+    },
+    "vram_gib": {
+      "total": 31.16,
+      "resident_after_load": 25.73,
+      "util_pct": 83
+    },
+    "timing_s": {
+      "sampling_6x": 2763.42,
+      "sit_s": 460.57,
+      "load_fixed": 244.67,
+      "server_total": 3008.09
+    }
+  },
+  "reading": {
+    "bottleneck_now": "显卡自身算力与显存容量；主机侧三个环节都不是瓶颈",
+    "pcie_util": "装载期等效 0.17 GB/s 对理论 63 GB/s = 0.27%，采样期接近 0 → 链路宽度无意义",
+    "cpu_util": "全程 30%，CPU 不参与矩阵计算，只做调度与 int8 分块编排",
+    "ssd_note": "模型库与页面文件同盘，装载期两者抢带宽；写 741 MB/s 峰来自换页",
+    "ram_note": "可用物理内存仅剩 0.48 GiB，39.55 GiB 权重靠 96 GB 页面文件兜底",
+    "unmeasured": "Sysman zesFanGetState 返回 -1（驱动未实现），风扇转速取 IGS 面板读数；SSD 盘的上限未测，故不给占用百分比"
+  },
+  "gpu_memory_bandwidth": {
+    "counter_source": "zesMemoryGetBandwidth 计数器差分。本机驱动只填前四个 uint64：0/8 = 读写累计字节、16 = 带宽上限、24 = 微秒时间戳（4 s 增 4,005,760 µs 验证）、32 起全 0。",
+    "max_bw_gb_s_driver": 637.5,
+    "max_bw_gb_s_spec": 608,
+    "spec_gap_note": "🔴 旧解释作废：曾写「驱动报 637.5 ≈ 256-bit × 19.9 Gbps，理论上限比规格高 4.8%」。2026-10-26 晚间查清 637.5 不是上限而是**单位错**：637.5 = 608 × 2^20/10^6。B60 也报 478,150,656,000 = 456 × 2^20/10^6，两卡逐字节吻合 → 字段按 MiB 编码，÷1.048576 正好回到规格值，没有额外余量。",
+    "field_caveat": "⚠️ 该字段还不能当分母：B70 跑 Vulkan 解码时 50 个样本全报 79.7，79.7÷1.048576 = 76.0 = 608/8，而同期实测流量 280 GB/s 是它的 3.5 倍。→ H3 这轮读数（字段报满值）本身可用，但**所有占用率一律按规格 608 算**，不再用 637.5。见 2026-10-26_b70-32g-decode-bandwidth.json。",
+    "h3_sampling_720p_d50": {
+      "window": "2026-10-26 16:14:48~16:15:02，15 次 1 秒差分",
+      "baseline_gb_s": 24.9,
+      "baseline_util_pct": 4.1,
+      "burst_gb_s": 124.2,
+      "burst_util_pct": 20.4,
+      "mean_util_pct": 7.3,
+      "median_util_pct": 4.1,
+      "max_util_pct": 20.4,
+      "pattern": "稳态 4 秒 3.9% → 突变 2 秒 11~19% → 循环，对应 int8 分块权重的按块补装",
+      "recomputed_note": "🔴 2026-10-26 晚间按规格 608 重算（原值 3.9 / 19.5 / 均 7.0 / 中位 3.9 / 峰 19.5 是用 637.5 当分母算的，差 4.85%）。流量绝对值未变。"
+    },
+    "reading": "H3 采样期显存带宽只用到 4.1~20.4%（均 7.3%），远离带宽受限；同一张卡的算力则是 71~95% 占空 → 这段是算力受限，不是带宽受限。"
+  }
+}

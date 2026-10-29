@@ -1,0 +1,108 @@
+{
+  "schema": "arc-xpu-bench/1",
+  "domain": "memory-bandwidth",
+  "date": "2026-10-26",
+  "tag": "b70-32g-decode-bandwidth",
+  "status": "active",
+  "source": "local",
+  "tool": "bench/harness/gpu_bandwidth.py（Level Zero Sysman zesMemoryGetBandwidth 计数器差分）+ llama-bench",
+  "batch": "B70 最小队列收尾后单独取证 · 无并发 · 卡空载起跑",
+  "env": {
+    "gpu": "Intel Arc Pro B70 32G",
+    "dev": "E223",
+    "subsys": "27421EF7",
+    "vram_gib": 31.16,
+    "ecc": "off",
+    "llamabench_build": "b11753-vulkan",
+    "backend": "Vulkan",
+    "device_pinned": "-dev Vulkan1（第 0 张是核显，不钉会跑错卡）",
+    "model": "Qwen3.6-35B-A3B Q4_0 · 19.40 GiB · 35.51 B 总参数 · 3 B 激活",
+    "ram_gib": 31.11,
+    "pagefile_gb": 96
+  },
+  "llamabench": {
+    "tg128": {
+      "tok_s": 114.45,
+      "sd": 7.18,
+      "note": "短线解码，首 token 摊薄少 → 偏低"
+    },
+    "tg1024": {
+      "tok_s": 121.72,
+      "sd": 0.1,
+      "note": "长线解码，取这一档做带宽换算"
+    }
+  },
+  "decode_sampling": {
+    "window": "2026-10-26 17:21:16~17:22:06，50 次 1 秒差分，全部样本 total>1 GB/s",
+    "samples": 50,
+    "total_gb_s": {
+      "mean": 267.9,
+      "median": 281.3,
+      "max": 288.8
+    },
+    "read_gb_s": {
+      "mean": 244.4,
+      "max": 263.4
+    },
+    "write_gb_s": {
+      "mean": 23.5,
+      "max": 25.4
+    },
+    "util_pct_vs_spec": {
+      "mean": 44.1,
+      "peak": 47.5
+    },
+    "spec_bw_gb_s": 608
+  },
+  "per_token": {
+    "bytes_gb_at_tg1024": 2.2,
+    "bytes_gb_at_tg128": 2.34,
+    "activation_weights_gb_estimate": 1.69,
+    "estimate_note": "3 B 激活参数 × 0.5625 B/权重（Q4_0 含块缩放）≈ 1.69 GB；实测 2.20 GB 高出的 0.51 GB 是 attention / KV / 中间张量，量级相符",
+    "formula": "267.9 GB/s ÷ 121.72 tok/s = 2.20 GB/token"
+  },
+  "contrast_h3_sampling": {
+    "h3_baseline_gb_s": 24.9,
+    "h3_baseline_util_pct": 4.1,
+    "decode_mean_gb_s": 267.9,
+    "decode_util_pct": 44.1,
+    "ratio": "解码的显存流量是 H3 采样期的 10.8 倍",
+    "reading": "同一条链上，H3 出视频不吃带宽（算力受限，占空 95%），LLM 解码吃带宽（44%）；所以「带宽够不够」要先说清是哪个负载",
+    "recomputed_note": "H3 基线的占用率按规格 608 重算为 4.1%（原 3.9% 用 637.5 当分母，见 maxbandwidth_field_note）；解码的 44.1% 一开头就是按 608 算的，不变。"
+  },
+  "cross_card_check": {
+    "b60_456_gbs_tg128": 86.98,
+    "b70_608_gbs_tg128": 114.45,
+    "decode_ratio": 1.316,
+    "reading": "🔴 归因更正（2026-10-26）：解码跟**核数与功耗**走，不跟带宽走。同 20 核 B60(456) → B65(608) 带宽 +33.3%，解码只 +2.6%（86.98 → 89.27）；同 608 GB/s B65(20 核) → B70(32 核) 带宽 +0%，解码 +29.4%（89.27 → 115.56）。旧写法「1.316 ≈ 带宽比 1.333 → 跟带宽走」作废：那两组数是同时变带宽和核数，比值贴近是巧合，同带宽的 B65→B70 也给 1.294。",
+    "measured_side_note": "B70 一侧的流量是实测（267.9 GB/s），B60 一侧目前只有 tok/s；B60 解码流量已排进队列补测，落地后填 b60_measured_* 字段。",
+    "b65_608_gbs_tg128": 89.27,
+    "same_args_note": "三条同 build 11753、同 Vulkan、同 `-ngl 999 -fa on -ctk/-ctv q8_0 -ncmoe 0 -p 512 -n 128 -r 3`、同 Q4_0 19.41 GiB 全驻，只换卡。",
+    "core_ratio_b65_to_b70": 1.294,
+    "decode_ratio_b65_to_b70": 1.294,
+    "bandwidth_ratio_b60_to_b65": 1.333,
+    "decode_ratio_b60_to_b65": 1.026,
+    "real_traffic_gb_s": {
+      "b60": 191,
+      "b65": 196,
+      "b70": 254,
+      "note": "×2.20 GB/token；B65 只吃到规格 608 的 32%，B60 吃到 456 的 42% → B65 的 608 是纸面值"
+    }
+  },
+  "maxbandwidth_field_note": {
+    "observed_values_gb_s": [
+      79.7,
+      637.5
+    ],
+    "unit_bug": "🔴 这个字段不是 bytes/s。B60 读 478,150,656,000、B70 读 637.5e9，而 456×2^20/10^6 = 478,150,656,000、608×2^20/10^6 = 637,534,208,000 —— 两块卡逐字节相同 → 驱动把「GB/s」当「MB/s」又按 MiB 乘了 2^20。读数 ÷1.048576 才是 bytes/s，反算回来正好是规格 456 / 608。",
+    "field_layout": "本机驱动只填前四个 uint64：0/8 = 读写累计字节、16 = 带宽上限、24 = 微秒时间戳（2 s 增 2,005,616 µs 验证）、32 起全 0。标准头文件把 16 写作 totalCounter、32 写作 maxBandwidth，与本机行为不符，以行为为准。",
+    "collapse_under_decode": "解码期 50 个样本全报 79.7；79.7÷1.048576 = 76.0 = 608/8，掉到 1/8，而同期实测流量 280 GB/s 是它的 3.4~3.6 倍 → 报出来的上限低于实测流量，物理上不可能。H3 出视频时同一字段报满值。",
+    "consequence": "按 79.7 当分母会算出 336% 占用率（首轮结果作废）",
+    "fix": "占用率一律拿规格 608 GB/s 当分母；字段只记录、不参与计算。bench/harness/gpu_bandwidth.py 已按此改：分母用 --spec-bw，并对「字段低于规格 50%」的样本记账告警。"
+  },
+  "reading": {
+    "conclusion": "LLM 解码是带宽型：每 token 要把激活权重走一遍（2.20 GB），实测吃掉 44.1% 的规格带宽",
+    "why_it_matters": "这解释了为什么 B65 与 B70 带宽相同（608 GB/s）时 35B 解码几乎一样，而 B60（456 GB/s）明显低一档 —— 解码速度跟带宽走，不跟 Xe2 核数走",
+    "unexplained": "解码期字段为什么报 1/8 未解（驱动内部行为）；不影响结论，结论用的是计数器差分的绝对值。"
+  }
+}

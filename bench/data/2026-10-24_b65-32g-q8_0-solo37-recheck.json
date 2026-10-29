@@ -1,0 +1,105 @@
+{
+  "schema": "arc-xpu-bench/1",
+  "tag": "2026-10-24_b65-32g-q8_0-solo37-recheck",
+  "date": "2026-10-24",
+  "source": "local",
+  "env": {
+    "os": "Windows-11-10.0.26300-SP0",
+    "cpu": "AMD Ryzen 5 9600X 6-Core",
+    "gpu": "2x Intel Arc Pro B65 32G",
+    "vram_visible_gib": 31.16,
+    "driver": "9150",
+    "ecc": "off",
+    "engine": "llama.cpp",
+    "engine_version": "0.6.0-dev (build 11431, commit c25030496)",
+    "backend": "SYCL",
+    "cpu_threads": 6,
+    "card0": "CPU 直连 x16",
+    "card1": "芯片组 x4"
+  },
+  "model": {
+    "name": "Qwen3.6-35B-A3B",
+    "quant": "Q8_0",
+    "size_gib": 34.37,
+    "file": "Qwen3.6-35B-A3B-Q8_0.gguf"
+  },
+  "measure": {
+    "harness": "llama-server /v1/chat/completions",
+    "prompt_tokens": 19,
+    "gen_tokens": 128,
+    "reps": 5,
+    "statistic": "median",
+    "ctx": 4096,
+    "ctk": "q8_0",
+    "ctv": "q8_0",
+    "fa": "on",
+    "note": "2026-10-24 17:37~17:47 同一时段连跑，是「双卡 vs 单卡」目前最紧的同场次对照。"
+  },
+  "samples": [
+    {
+      "tag": "solo37",
+      "cards": 1,
+      "device_selector": "level_zero:0",
+      "dev": "SYCL0",
+      "ngl": 37,
+      "ctx": 4096,
+      "ctk": "q8_0",
+      "ctv": "q8_0",
+      "fa": "on",
+      "model": "Qwen3.6-35B-A3B-Q8_0.gguf",
+      "pinned_mem": "auto",
+      "dev2dev_memcpy": "auto",
+      "loaded": true,
+      "free_before_gib": [
+        31.16,
+        31.16
+      ],
+      "free_after_gib": [
+        0.38,
+        31.16
+      ],
+      "log": "dsb_solo37.log",
+      "used_gib": [
+        30.78,
+        0.0
+      ],
+      "used_total_gib": 30.78,
+      "runs": [
+        {
+          "decode_tok_s": 22.17,
+          "decode_n": 128,
+          "prefill_tok_s": 12.06,
+          "prefill_n": 19
+        },
+        {
+          "decode_tok_s": 31.86,
+          "decode_n": 128,
+          "prefill_tok_s": 59.18,
+          "prefill_n": 19
+        },
+        {
+          "decode_tok_s": 31.91,
+          "decode_n": 128,
+          "prefill_tok_s": 59.95,
+          "prefill_n": 19
+        },
+        {
+          "decode_tok_s": 31.78,
+          "decode_n": 128,
+          "prefill_tok_s": 59.73,
+          "prefill_n": 19
+        },
+        {
+          "decode_tok_s": 31.88,
+          "decode_n": 128,
+          "prefill_tok_s": 60.07,
+          "prefill_n": 19
+        }
+      ],
+      "decode_tok_s": 31.86,
+      "decode_min": 22.17,
+      "decode_max": 31.91,
+      "prefill_tok_s": 59.73
+    }
+  ]
+}

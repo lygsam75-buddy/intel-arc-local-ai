@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 569" width="680" height="569" font-family="'Microsoft YaHei','PingFang SC','Noto Sans SC',sans-serif">
+<text x="28" y="30" font-size="15" font-weight="700" fill="#2C2C2A">One card, two SKUs: TF (200 W) vs BS (120 W)</text>
+<text x="28" y="52" font-size="11.5" fill="#5F5E5A">MiniMax H3 · 6 steps · same prompt &amp; seed · end-to-end incl. loading (s), plus energy per clip (Wh)</text>
+<rect x="28" y="63" width="9" height="9" rx="2" fill="#2F6FBA"/>
+<text x="42" y="71.5" font-size="11.5" fill="#5F5E5A">TF · dual-slot · 200 W cap</text>
+<rect x="210" y="63" width="9" height="9" rx="2" fill="#E8873B"/>
+<text x="224" y="71.5" font-size="11.5" fill="#5F5E5A">BS · single-slot · 120 W cap</text>
+<text x="28" y="90" font-size="11.5" font-weight="600" fill="#2C2C2A">End-to-end time (s)</text>
+<line x1="78" y1="250.0" x2="640" y2="250.0" stroke="#E5E4E0" stroke-width="1"/>
+<text x="68" y="254.0" font-size="10.5" fill="#5F5E5A" text-anchor="end">0</text>
+<line x1="78" y1="225.0" x2="640" y2="225.0" stroke="#E5E4E0" stroke-width="1"/>
+<text x="68" y="229.0" font-size="10.5" fill="#5F5E5A" text-anchor="end">500</text>
+<line x1="78" y1="200.0" x2="640" y2="200.0" stroke="#E5E4E0" stroke-width="1"/>
+<text x="68" y="204.0" font-size="10.5" fill="#5F5E5A" text-anchor="end">1,000</text>
+<line x1="78" y1="175.0" x2="640" y2="175.0" stroke="#E5E4E0" stroke-width="1"/>
+<text x="68" y="179.0" font-size="10.5" fill="#5F5E5A" text-anchor="end">1,500</text>
+<line x1="78" y1="150.0" x2="640" y2="150.0" stroke="#E5E4E0" stroke-width="1"/>
+<text x="68" y="154.0" font-size="10.5" fill="#5F5E5A" text-anchor="end">2,000</text>
+<line x1="78" y1="125.0" x2="640" y2="125.0" stroke="#E5E4E0" stroke-width="1"/>
+<text x="68" y="129.0" font-size="10.5" fill="#5F5E5A" text-anchor="end">2,500</text>
+<line x1="78" y1="100.0" x2="640" y2="100.0" stroke="#E5E4E0" stroke-width="1"/>
+<text x="68" y="104.0" font-size="10.5" fill="#5F5E5A" text-anchor="end">3,000</text>
+<rect x="97.3" y="239.8" width="26.0" height="10.2" rx="2" fill="#2F6FBA"/>
+<rect x="126.3" y="238.4" width="26.0" height="11.6" rx="2" fill="#E8873B"/>
+<text x="124.8" y="232.4" font-size="10.5" font-weight="700" fill="#C2410C" text-anchor="middle">+13.9%</text>
+<rect x="191.0" y="231.5" width="26.0" height="18.5" rx="2" fill="#2F6FBA"/>
+<rect x="220.0" y="230.1" width="26.0" height="19.9" rx="2" fill="#E8873B"/>
+<text x="218.5" y="224.1" font-size="10.5" font-weight="700" fill="#C2410C" text-anchor="middle">+7.4%</text>
+<rect x="284.7" y="228.6" width="26.0" height="21.4" rx="2" fill="#2F6FBA"/>
+<rect x="313.7" y="224.7" width="26.0" height="25.3" rx="2" fill="#E8873B"/>
+<text x="312.2" y="218.7" font-size="10.5" font-weight="700" fill="#C2410C" text-anchor="middle">+18.6%</text>
+<rect x="378.3" y="193.9" width="26.0" height="56.1" rx="2" fill="#2F6FBA"/>
+<rect x="407.3" y="180.8" width="26.0" height="69.2" rx="2" fill="#E8873B"/>
+<text x="405.8" y="174.8" font-size="10.5" font-weight="700" fill="#C2410C" text-anchor="middle">+23.5%</text>
+<rect x="472.0" y="144.5" width="26.0" height="105.5" rx="2" fill="#2F6FBA"/>
+<rect x="501.0" y="128.4" width="26.0" height="121.6" rx="2" fill="#E8873B"/>
+<text x="499.5" y="122.4" font-size="10.5" font-weight="700" fill="#C2410C" text-anchor="middle">+15.3%</text>
+<rect x="565.7" y="183.6" width="26.0" height="66.4" rx="2" fill="#2F6FBA"/>
+<rect x="594.7" y="175.4" width="26.0" height="74.6" rx="2" fill="#E8873B"/>
+<text x="593.2" y="169.4" font-size="10.5" font-weight="700" fill="#C2410C" text-anchor="middle">+12.4%</text>
+<text x="28" y="286" font-size="11.5" font-weight="600" fill="#2C2C2A">Energy per clip (Wh, whole run)</text>
+<line x1="78" y1="400.0" x2="640" y2="400.0" stroke="#E5E4E0" stroke-width="1"/>
+<text x="68" y="404.0" font-size="10.5" fill="#5F5E5A" text-anchor="end">0</text>
+<line x1="78" y1="379.2" x2="640" y2="379.2" stroke="#E5E4E0" stroke-width="1"/>
+<text x="68" y="383.2" font-size="10.5" fill="#5F5E5A" text-anchor="end">20</text>
+<line x1="78" y1="358.4" x2="640" y2="358.4" stroke="#E5E4E0" stroke-width="1"/>
+<text x="68" y="362.4" font-size="10.5" fill="#5F5E5A" text-anchor="end">40</text>
+<line x1="78" y1="337.6" x2="640" y2="337.6" stroke="#E5E4E0" stroke-width="1"/>
+<text x="68" y="341.6" font-size="10.5" fill="#5F5E5A" text-anchor="end">60</text>
+<line x1="78" y1="316.8" x2="640" y2="316.8" stroke="#E5E4E0" stroke-width="1"/>
+<text x="68" y="320.8" font-size="10.5" fill="#5F5E5A" text-anchor="end">80</text>
+<line x1="78" y1="296.0" x2="640" y2="296.0" stroke="#E5E4E0" stroke-width="1"/>
+<text x="68" y="300.0" font-size="10.5" fill="#5F5E5A" text-anchor="end">100</text>
+<rect x="97.3" y="394.6" width="26.0" height="5.4" rx="2" fill="#2F6FBA"/>
+<rect x="126.3" y="394.7" width="26.0" height="5.3" rx="2" fill="#E8873B"/>
+<text x="124.8" y="388.6" font-size="10.5" font-weight="700" fill="#0F766E" text-anchor="middle">-2.7%</text>
+<text x="204.0" y="396.0" font-size="9" fill="#8A8880" text-anchor="middle">n/a</text>
+<rect x="220.0" y="388.3" width="26.0" height="11.7" rx="2" fill="#E8873B"/>
+<rect x="284.7" y="385.5" width="26.0" height="14.5" rx="2" fill="#2F6FBA"/>
+<rect x="313.7" y="386.1" width="26.0" height="13.9" rx="2" fill="#E8873B"/>
+<text x="312.2" y="379.5" font-size="10.5" font-weight="700" fill="#0F766E" text-anchor="middle">-4.2%</text>
+<rect x="378.3" y="356.9" width="26.0" height="43.1" rx="2" fill="#2F6FBA"/>
+<rect x="407.3" y="359.0" width="26.0" height="41.0" rx="2" fill="#E8873B"/>
+<text x="405.8" y="350.9" font-size="10.5" font-weight="700" fill="#0F766E" text-anchor="middle">-4.9%</text>
+<text x="485.0" y="396.0" font-size="9" fill="#8A8880" text-anchor="middle">n/a</text>
+<rect x="501.0" y="318.4" width="26.0" height="81.6" rx="2" fill="#E8873B"/>
+<rect x="565.7" y="347.7" width="26.0" height="52.3" rx="2" fill="#2F6FBA"/>
+<rect x="594.7" y="349.4" width="26.0" height="50.6" rx="2" fill="#E8873B"/>
+<text x="593.2" y="341.7" font-size="10.5" font-weight="700" fill="#0F766E" text-anchor="middle">-3.2%</text>
+<text x="124.8" y="420" font-size="9.2" fill="#5F5E5A" text-anchor="middle">480p · 5 s</text>
+<text x="218.5" y="420" font-size="9.2" fill="#5F5E5A" text-anchor="middle">480p · 10 s</text>
+<text x="312.2" y="420" font-size="9.2" fill="#5F5E5A" text-anchor="middle">720p · 5 s</text>
+<text x="405.8" y="420" font-size="9.2" fill="#5F5E5A" text-anchor="middle">720p · 10 s</text>
+<text x="499.5" y="420" font-size="9.2" fill="#5F5E5A" text-anchor="middle">720p · 15 s</text>
+<text x="593.2" y="420" font-size="9.2" fill="#5F5E5A" text-anchor="middle">1080p · 5 s</text>
+<text x="28" y="454" font-size="11" fill="#5F5E5A">Per-step gap <tspan font-weight="700" fill="#2C2C2A">+11.8–+27.5%</tspan>, end-to-end <tspan font-weight="700" fill="#2C2C2A">+7.4–+23.5%</tspan>; not proportional</text>
+<text x="28" y="472" font-size="11" fill="#5F5E5A">across tiers — read each tier, do not scale one from another.</text>
+<text x="28" y="490" font-size="11" fill="#5F5E5A">Energy drops just 2.7–4.9%: 18% less power against 7.4–23.5% more</text>
+<text x="28" y="508" font-size="11" fill="#5F5E5A">time — a wash. <tspan font-weight="700" fill="#2C2C2A">What BS buys is the single slot and lower heat, not the power bill.</tspan></text>
+<text x="28" y="526" font-size="11" fill="#5F5E5A">TF energy was not captured for 480p·10 and 720p·15; those two groups show a BS bar only.</text>
+<text x="28" y="548" font-size="10.5" fill="#8A8880">End-to-end uses the fresh round, same basis as the product page</text>
+</svg>

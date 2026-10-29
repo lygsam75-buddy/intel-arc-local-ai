@@ -1,0 +1,393 @@
+{
+  "schema": "arc-xpu-bench/1",
+  "id": "2026-10-27_b60-tf-vs-bs",
+  "date": "2026-10-27",
+  "title": "B60 两个 SKU 同条件对照：TF（200 W 双槽）对 BS（120 W 单槽）",
+  "status": "active",
+  "domain": "h3-video-sku-comparison",
+  "tag": "b60-tf-vs-bs",
+  "source": "local",
+  "tool": "bench_f_h3.py（H3 端到端）+ 电源域计数器（1 s 窗口）",
+  "env": {
+    "gpu": "Intel Arc Pro B60 24G（同型号两个 SKU：TF 200 W 双槽 / BS 120 W 单槽）",
+    "chip": "BMG-G21",
+    "vram_gib": 23.33,
+    "cpu": "Ryzen 5 9600X",
+    "ram_gb": 32,
+    "pagefile_gb": 96,
+    "driver": "32.0.101.9150",
+    "backend": "SYCL / ComfyUI",
+    "display_on_igpu": true
+  },
+  "conditions": {
+    "workload": "MiniMax H3 · 6 步 · 同一提示词与 seed",
+    "harness": "bench_f_h3.py --expect-card B60 --fresh 1 --cached 1",
+    "comfy_args": "--reserve-vram 4 --enable-dynamic-vram",
+    "port": 8190,
+    "round_policy": "取 fresh 轮（与产品页现有表一致）；能量为整轮含装载的电源域计数器读数",
+    "power_basis": "整卡域（domain 1）1 秒窗口；peak_basis=1s",
+    "note_bs_share": "busy_share 不可跨 SKU 比：阈值 = 0.8 × 各自功耗墙（TF 160 W / BS 96 W）",
+    "rounds_per_tier": "cold + fresh + cached（720p·15 只跑了 cold+fresh，cached 未跑）"
+  },
+  "power_limit_range_measured": {
+    "read_at": "2026-10-27T14:20+08:00",
+    "source": "Level Zero Sysman zesPowerGetProperties（整卡域 domain 1）",
+    "bs": {
+      "can_control": true,
+      "default_w": 120,
+      "min_w": 60,
+      "max_w": 144,
+      "headroom_w": 24,
+      "headroom_pct": 20,
+      "note": "单 8pin 额定 150 W，Intel 把上限设在 144 W = 额定的 96%，没超线；接上 PCIe 插槽的 75 W 后供电余量更大，拉满也不会超连接器规格。"
+    },
+    "tf": "未读（TF 已卸下）",
+    "usage_rule": "🔴 拉墙后的数字不得进入出厂对照表，只能作附录并标明「非出厂状态、单卡实测」。"
+  },
+  "skus": {
+    "TF": {
+      "form": "双槽",
+      "wall_mw": 200000,
+      "clock_mhz": 2400,
+      "tops_int8": 197,
+      "power_connector": "双 8pin",
+      "price_cny": 6599
+    },
+    "BS": {
+      "form": "单槽",
+      "wall_mw": 120000,
+      "clock_mhz": 2000,
+      "tops_int8": 164,
+      "power_connector": "单 8pin",
+      "price_cny": 6499
+    },
+    "shared": {
+      "xe2_cores": 20,
+      "vram_gb": 24,
+      "vram_type": "GDDR6",
+      "bandwidth_gbs": 456
+    }
+  },
+  "tiers": [
+    {
+      "label_zh": "480p · 5 秒",
+      "label_en": "480p · 5 s",
+      "res": "864x480",
+      "duration": 5,
+      "frames": 124,
+      "TF": {
+        "server_s": 203.03,
+        "sit_s": 11.86,
+        "avg_w": 91.1,
+        "p90_w": 154.3,
+        "peak_w": 166.0,
+        "wh": 5.22,
+        "frames": 124,
+        "tag": "b60-h3-864x480",
+        "file": "bench_f_b60-h3-864x480.jsonl",
+        "mode": "fresh"
+      },
+      "BS": {
+        "server_s": 231.21,
+        "sit_s": 15.06,
+        "avg_w": 78.4,
+        "p90_w": 115.6,
+        "peak_w": 124.7,
+        "wh": 5.08,
+        "frames": 124,
+        "tag": "h3_864x480_bs60d5",
+        "file": "bench_f_h3_864x480_bs60d5.jsonl",
+        "mode": "fresh"
+      },
+      "delta_pct": 13.9,
+      "sit_delta_pct": 27.0,
+      "wh_delta_pct": -2.7
+    },
+    {
+      "label_zh": "480p · 10 秒",
+      "label_en": "480p · 10 s",
+      "res": "864x480",
+      "duration": 10,
+      "frames": 243,
+      "TF": {
+        "server_s": 370.74,
+        "sit_s": 36.15,
+        "avg_w": 0.0,
+        "p90_w": 0.0,
+        "peak_w": 0.0,
+        "wh": 0.0,
+        "frames": 243,
+        "tag": "h3_864x480_b60d10",
+        "file": "bench_f_h3_864x480_b60d10.jsonl",
+        "mode": "fresh"
+      },
+      "BS": {
+        "server_s": 398.22,
+        "sit_s": 40.42,
+        "avg_w": 100.9,
+        "p90_w": 122.0,
+        "peak_w": 159.8,
+        "wh": 11.22,
+        "frames": 243,
+        "tag": "h3_864x480_bs60d10",
+        "file": "bench_f_h3_864x480_bs60d10.jsonl",
+        "mode": "fresh"
+      },
+      "delta_pct": 7.4,
+      "sit_delta_pct": 11.8,
+      "wh_delta_pct": null
+    },
+    {
+      "label_zh": "720p · 5 秒",
+      "label_en": "720p · 5 s",
+      "res": "1280x720",
+      "duration": 5,
+      "frames": 124,
+      "TF": {
+        "server_s": 427.31,
+        "sit_s": 45.46,
+        "avg_w": 116.7,
+        "p90_w": 151.1,
+        "peak_w": 167.5,
+        "wh": 13.92,
+        "frames": 124,
+        "tag": "b60-h3-1280x720",
+        "file": "bench_f_b60-h3-1280x720.jsonl",
+        "mode": "fresh"
+      },
+      "BS": {
+        "server_s": 506.75,
+        "sit_s": 57.95,
+        "avg_w": 94.3,
+        "p90_w": 111.1,
+        "peak_w": 125.1,
+        "wh": 13.34,
+        "frames": 124,
+        "tag": "h3_1280x720_bs60d5",
+        "file": "bench_f_h3_1280x720_bs60d5.jsonl",
+        "mode": "fresh"
+      },
+      "delta_pct": 18.6,
+      "sit_delta_pct": 27.5,
+      "wh_delta_pct": -4.2
+    },
+    {
+      "label_zh": "720p · 10 秒",
+      "label_en": "720p · 10 s",
+      "res": "1280x720",
+      "duration": 10,
+      "frames": 243,
+      "TF": {
+        "server_s": 1121.55,
+        "sit_s": 155.77,
+        "avg_w": 132.7,
+        "p90_w": 148.3,
+        "peak_w": 168.6,
+        "wh": 41.4,
+        "frames": 243,
+        "tag": "h3_1280x720_b60d10pw",
+        "file": "bench_f_h3_1280x720_b60d10pw.jsonl",
+        "mode": "fresh"
+      },
+      "BS": {
+        "server_s": 1384.85,
+        "sit_s": 197.69,
+        "avg_w": 102.2,
+        "p90_w": 114.7,
+        "peak_w": 125.1,
+        "wh": 39.38,
+        "frames": 243,
+        "tag": "h3_1280x720_bs60d10",
+        "file": "bench_f_h3_1280x720_bs60d10.jsonl",
+        "mode": "fresh"
+      },
+      "delta_pct": 23.5,
+      "sit_delta_pct": 26.9,
+      "wh_delta_pct": -4.9
+    },
+    {
+      "label_zh": "720p · 15 秒",
+      "label_en": "720p · 15 s",
+      "res": "1280x720",
+      "duration": 15,
+      "frames": 362,
+      "TF": {
+        "server_s": 2109.98,
+        "sit_s": 317.11,
+        "avg_w": 0.0,
+        "p90_w": 0.0,
+        "peak_w": 0.0,
+        "wh": 0.0,
+        "frames": 362,
+        "tag": "h3_1280x720_b60d15",
+        "file": "bench_f_h3_1280x720_b60d15.jsonl",
+        "mode": "fresh"
+      },
+      "BS": {
+        "server_s": 2432.54,
+        "sit_s": 361.21,
+        "avg_w": 115.9,
+        "p90_w": 122.0,
+        "peak_w": 138.3,
+        "wh": 78.43,
+        "frames": 362,
+        "tag": "h3_1280x720_bs60d15",
+        "file": "bench_f_h3_1280x720_bs60d15.jsonl",
+        "mode": "fresh"
+      },
+      "delta_pct": 15.3,
+      "sit_delta_pct": 13.9,
+      "wh_delta_pct": null
+    },
+    {
+      "label_zh": "1080p · 5 秒",
+      "label_en": "1080p · 5 s",
+      "res": "1920x1088",
+      "duration": 5,
+      "frames": 124,
+      "TF": {
+        "server_s": 1327.67,
+        "sit_s": 191.89,
+        "avg_w": 136.1,
+        "p90_w": 151.6,
+        "peak_w": 168.9,
+        "wh": 50.26,
+        "frames": 124,
+        "tag": "b60-h3-1920x1088",
+        "file": "bench_f_b60-h3-1920x1088.jsonl",
+        "mode": "fresh"
+      },
+      "BS": {
+        "server_s": 1491.88,
+        "sit_s": 215.99,
+        "avg_w": 117.1,
+        "p90_w": 124.9,
+        "peak_w": 155.0,
+        "wh": 48.65,
+        "frames": 124,
+        "tag": "h3_1920x1088_bs60d5",
+        "file": "bench_f_h3_1920x1088_bs60d5.jsonl",
+        "mode": "fresh"
+      },
+      "delta_pct": 12.4,
+      "sit_delta_pct": 12.6,
+      "wh_delta_pct": -3.2
+    }
+  ],
+  "noise_and_heat": {
+    "status": "archive_only",
+    "read_at": "2026-10-27T13:40+08:00",
+    "load": "MiniMax H3 视频生成满载（队列运行中，720p·10 秒档）",
+    "bs": {
+      "gpu_c": "71~72",
+      "memory_c": "68~70",
+      "fan_rpm": 3600,
+      "fan_rpm_source": "IGS 面板 / GPU-Z（本机 Sysman 风扇字段返回 -1，读不到）",
+      "noise_db": 63,
+      "noise_position": "机箱内显卡位置",
+      "noise_readings": [
+        {
+          "db": 63,
+          "case": "open",
+          "position": "机箱内显卡位置",
+          "aim": "未记录",
+          "time": "13:4x"
+        },
+        {
+          "db": 59,
+          "case": "open",
+          "position": "正对涡轮风扇出风口",
+          "aim": "正对",
+          "time": "13:4x"
+        },
+        {
+          "db": 60,
+          "case": "open",
+          "position": "正对涡轮风扇出风口",
+          "aim": "正对",
+          "time": "13:4x"
+        },
+        {
+          "db": 52,
+          "case": "closed",
+          "position": "机箱外（正常使用姿态）",
+          "aim": "未记录",
+          "time": "13:44"
+        },
+        {
+          "db": 50,
+          "case": "closed",
+          "position": "机箱外（正常使用姿态）",
+          "aim": "未记录",
+          "time": "13:46"
+        },
+        {
+          "db": 50,
+          "case": "closed",
+          "position": "机箱外（正常使用姿态）",
+          "aim": "未记录",
+          "time": "13:46"
+        },
+        {
+          "db": 50,
+          "case": "closed",
+          "position": "机箱外（正常使用姿态）",
+          "aim": "未记录",
+          "time": "13:47"
+        }
+      ],
+      "noise_closed_summary": "4 次 52 / 50 / 50 / 50 → 中位 50 dB，极差 2 dB",
+      "noise_case_delta_db": "关盖 50~52 对开盖 59~63 → 机箱本身隔掉 7~11 dB",
+      "noise_spread_db": 2,
+      "noise_weighting": "未记录",
+      "noise_distance_m": null,
+      "noise_ambient_db": null,
+      "noise_meter": "未记录"
+    },
+    "igs_live": {
+      "read_at": "2026-10-27T13:58+08:00",
+      "source": "Windows 游戏栏性能面板（进程=chrome）",
+      "tier_running": "1080p·5 秒（队列第 4 档）",
+      "second_read_at": "2026-10-27T14:00+08:00",
+      "second_read": {
+        "gpu_clock_mhz": 2092,
+        "gpu_temp_c": 74.0,
+        "gpu_voltage_v": 0.8,
+        "fan_rpm": 4022,
+        "gpu_power_w": 85,
+        "vram_used_gb": 22.7
+      },
+      "counter_truth_2min": {
+        "window_sec": 120,
+        "mean_w": 120.0,
+        "p50_w": 120.0,
+        "p90_w": 123.2,
+        "peak_w": 125.0,
+        "min_w": 115.0,
+        "share_ge_119w_pct": 80,
+        "verdict": "1080p·5 采样期整卡均值正好 120.0 W = 功耗墙，80% 样本 ≥119 W → 全程限功耗",
+        "compare_tf": "TF 同档均值 134 W = 200 W 墙的 67%，没到墙"
+      },
+      "gpu_clock_mhz": 2096,
+      "gpu_temp_c": 73.9,
+      "gpu_voltage_v": 0.803,
+      "gpu_power_w": 85,
+      "vram_used_gb": 22.7,
+      "fan_rpm": 3988,
+      "vram_clock_mhz": 2375,
+      "fps_avg": 143.7,
+      "gpu_util_pct": 22,
+      "render_compute_pct": 0,
+      "checks": {
+        "vram_bandwidth": "2375 MHz × 8 = 19 Gbps → 19 × 192/8 = 456 GB/s = 规格值，显存跑满速未降频",
+        "clock_vs_spec": "2096 MHz 高于 BS 标称 2000 MHz，实际 boost 更高；按 2000/2400 推算降幅的基准要改",
+        "fan_vs_noise": "3988 RPM 与录 50 dB 时的 3600 RPM 不同档 → 噪音必须跟档位/转速绑定",
+        "util_unusable": "GPU 利用率 22% / Render-Compute 0% 是按呈现 FPS 的 chrome 进程统计，对 XPU 计算不敏感，本场景无参考价值",
+        "power_scope": "🔴 面板那格 85 W 不可信（长窗口含装载平均）：同期计数器实测最近 120 s 均值 120.0 W、P90 123.2、80% 样本 ≥119 W —— 正顶在 120 W 墙上。判功率一律用计数器 CSF，不用面板平均值。"
+      }
+    },
+    "tf": null,
+    "caveat": "TF 未在同位置测过 → 不给 SKU 间的噪音对比。BS 的 63 dB 缺距离、加权、本底三项，只能当现场记录；补齐前不写进对客正文，避免与厂商标称的 dB(A)@1m 混比。风扇转速本机 Sysman 拿不到（返回 -1 / -1.0%），只能引用面板读数，可复现性弱。开盖读数 63 / 59 / 60 极差 4 dB，正对涡轮口反而低于机箱卡位 —— 那一档混进了机箱风道声，不能当卡的噪音。关盖 4 次 52/50/50/50，中位 50 dB、极差 2 dB，重复性够，且在风扇稳定到 3600 转之后录。仍缺距离、加权、待机本底与仪器校准，只能当本机现场记录，不能与厂商标称的 dB(A)@1m 直接对比。🔴 2026-10-27 定：操作者判断「噪音不是重点，不补测」→ 本块仅作档案，不进对客正文；页面只写实测温度与风扇转速，噪音不列数字。"
+  },
+  "pending": []
+}

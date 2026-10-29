@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>dual-b65-dashboard.en</title>
+<style>
+  :root { --ink: #2C2C2A; --muted: #5F5E5A; --grid: #E5E4E0; }
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: 28px 24px 40px; background: #FAFAF8; color: var(--ink);
+         font-family: "Microsoft YaHei", "Segoe UI", "Noto Sans SC", sans-serif; }
+  .wrap { max-width: 1080px; margin: 0 auto; }
+  h1 { font-size: 21px; margin: 0 0 4px; }
+  .sub { color: var(--muted); font-size: 12.5px; margin: 0 0 16px; }
+  .legend { display: flex; flex-wrap: wrap; gap: 14px; font-size: 12px; margin: 0 0 14px; }
+  .chip { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; }
+  .chip.off { opacity: .3; }
+  .sw { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+  .panel { background: #fff; border: 1px solid var(--grid); border-radius: 10px;
+           padding: 16px 18px 10px; margin: 0 0 18px; }
+  .panel h2 { font-size: 14px; margin: 0 0 12px; }
+  .row { display: grid; grid-template-columns: 280px 1fr; gap: 10px; align-items: center;
+         padding: 6px 0; border-top: 1px dashed var(--grid); }
+  .row:first-of-type { border-top: 0; }
+  .lbl { font-size: 11.5px; line-height: 1.35; }
+  .bars { position: relative; height: 58px; }
+  .bar { position: absolute; height: 10px; border-radius: 2px; min-width: 1px; }
+  .val { position: absolute; font-size: 9.5px; color: var(--muted); white-space: nowrap; }
+  .foot { font-size: 11px; color: var(--muted); margin: 8px 2px 0; line-height: 1.6; }
+  #tip { position: fixed; pointer-events: none; background: #2C2C2A; color: #fff; font-size: 11px;
+         padding: 7px 10px; border-radius: 6px; max-width: 340px; line-height: 1.55; display: none; z-index: 9; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1></h1>
+  <p class="sub"></p>
+  <div class="legend" id="legend"></div>
+  <div id="panels"></div>
+  <p class="foot">Data shares source with the <code>dual-b65-report.md</code> summary table (straight from bench/data/*.json). Blank = not tested.</p>
+</div>
+<div id="tip"></div>
+<script>
+const DATA = {"title": "Dual B65 · All-Test Summary Dashboard", "sub": "2× GUNNIR B65 32G · ECC off · 32 GB RAM · B850M; bar length = relative within row, hover for one result", "tip": "One result: ", "cards": ["Single B65", "Dual 2×B65", "One B70"], "colors": {"Single B65": "#6E97C6", "Dual 2×B65": "#2F6FBA", "One B70": "#B9C6D8"}, "groups": [{"t": "H3 video · end-to-end (s, lower is better)", "rows": [{"lbl": "720p · 5 s · 6 steps (steady)", "v": [394.06, 417.78, 276.68], "u": "s", "n": "No speedup on a single job with dual; B70 is 1.42× faster"}, {"lbl": "1080p · 5 s · 6 steps (steady)", "v": [1326.17, null, 841.55], "u": "s", "n": "B70 is 1.58× faster; dual not tested"}]}, {"t": "H3 video · per-step (s/it, lower is better)", "rows": [{"lbl": "720p · 5 s · 6 steps (steady)", "v": [42.3, 42.41, 25.3], "u": "s/it", "n": "The second card contributes 0 to a single clip"}]}, {"t": "LLM decode (tok/s, higher is better)", "rows": [{"lbl": "Qwen Q4_0 · 19/128", "v": [50.56, 50.47, 77.11], "u": "tok/s", "n": "Dual concurrent −0.2%, no slowdown"}, {"lbl": "Q8_0 34.37 GiB · layer-split", "v": [31.86, 37.35, null], "u": "tok/s", "n": "Won't fit on one card; layer-split buys capacity without losing speed"}, {"lbl": "Q4_0 19.41 GiB · fully resident", "v": [53.63, 49.8, null], "u": "tok/s", "n": "If it fits on one card, don't split (7% slower)"}, {"lbl": "Q8_0 · tensor parallel", "v": [null, 28.65, null], "u": "tok/s", "n": "Slower than single-card full-resident; don't use tensor parallel"}]}, {"t": "Capacity", "rows": [{"lbl": "Resident VRAM", "v": [31.16, 62.32, 31.16], "u": "GiB", "n": "Dual buys 2× VRAM, not speed"}, {"lbl": "Context (actually fits)", "v": [1.0, 1.75, 1.0], "u": "M token", "n": "3M is only the allocation cap; quote 1.75M externally"}]}, {"t": "Image gen · steady (s/image, lower is better)", "rows": [{"lbl": "Qwen-Image int8 · 720p · 25 steps", "v": [16.46, 16.31, null], "u": "s/张", "n": "Dual-instance concurrent holds parity, zero loss"}]}, {"t": "Throughput & power", "rows": [{"lbl": "Two 5-second clips", "v": [null, 18.3, 13.0], "u": "条/时", "n": "At same cost dual wins 1.40× throughput"}, {"lbl": "Load power P90", "v": [205.5, 400.8, 290.4], "u": "W", "n": "Two cards don't throttle each other; size the PSU at 400 W class"}]}]};
+const tip = document.getElementById("tip");
+const off = {};
+function fmt(v, u) { return v == null ? "—" : (Math.round(v * 100) / 100) + " " + u; }
+function render() {
+  document.querySelector("h1").textContent = DATA.title;
+  document.querySelector(".sub").textContent = DATA.sub;
+  const lg = document.getElementById("legend");
+  lg.innerHTML = DATA.cards.map(c =>
+    `<span class="chip${off[c] ? " off" : ""}" data-c="${c}"><span class="sw" style="background:${DATA.colors[c]}"></span>${c}</span>`).join("");
+  lg.querySelectorAll(".chip").forEach(el => el.onclick = () => { off[el.dataset.c] = !off[el.dataset.c]; render(); });
+  const root = document.getElementById("panels");
+  root.innerHTML = DATA.groups.map(g => {
+    const rows = g.rows.map(r => {
+      const mx = Math.max(...r.v.map(v => v == null ? 0 : v), 1e-9);
+      const bars = DATA.cards.map((c, i) => {
+        const v = r.v[i];
+        if (v == null) return "";
+        const w = v / mx * 82;
+        const top = i * 17;
+        return `<div class="bar" style="width:${w}%;top:${top}px;background:${DATA.colors[c]}" data-t="${r.lbl}" data-c="${c}" data-v="${fmt(v, r.u)}" data-n="${r.n}"></div>` +
+               `<div class="val" style="top:${top - 1}px;left:calc(${w}% + 6px)">${fmt(v, r.u)}</div>`;
+      }).join("");
+      return `<div class="row"><div class="lbl">${r.lbl}</div><div class="bars">${bars}</div></div>`;
+    }).join("");
+    return `<div class="panel"><h2>${g.t}</h2>${rows}</div>`;
+  }).join("");
+  root.querySelectorAll(".bar").forEach(b => {
+    b.onmousemove = e => {
+      tip.style.display = "block";
+      tip.innerHTML = `<b>${b.dataset.t}</b><br>${b.dataset.c} = ${b.dataset.v}<br>${DATA.tip}${b.dataset.n}`;
+      tip.style.left = Math.min(e.clientX + 14, innerWidth - 360) + "px";
+      tip.style.top = (e.clientY + 14) + "px";
+    };
+    b.onmouseleave = () => { tip.style.display = "none"; };
+  });
+}
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,54 @@
+{
+  "schema": "arc-xpu-bench/1",
+  "tag": "b65-32g-q4_0-dual-c1",
+  "date": "2026-10-23",
+  "source": "local",
+  "env": {
+    "os": "Windows-11-10.0.26300-SP0",
+    "cpu": "AMD64 Family 26 Model 68 Stepping 0, AuthenticAMD",
+    "cpu_threads": 12,
+    "gpu": "Intel Arc Pro B65 32G",
+    "driver": "9150",
+    "ecc": "off",
+    "engine": "llama.cpp",
+    "engine_version": "build 11431 (commit c25030496)",
+    "backend": "SYCL",
+    "sycl_path": "",
+    "dual_card": "卡1 = 芯片组 x4 槽（llama.cpp / Qwen）；卡0 = CPU 直连 x16（ComfyUI / H3）"
+  },
+  "model": {
+    "name": "Qwen3.6-35B-A3B",
+    "quant": "Q4_0",
+    "file": "Qwen_Qwen3.6-35B-A3B-Q4_0.gguf",
+    "size_gib": 19.4
+  },
+  "args": [
+    "-ngl",
+    "99",
+    "-p",
+    "512",
+    "-n",
+    "128",
+    "-r",
+    "3"
+  ],
+  "raw": [
+    {
+      "build_commit": "c25030496",
+      "build_number": 11431,
+      "gpu_info": "Intel(R) Arc(TM) Pro B65 Graphics (selector level_zero:1)",
+      "model_filename": "<模型目录>/Qwen_Qwen3.6-35B-A3B-Q4_0.gguf"
+    }
+  ],
+  "samples": [
+    {
+      "prompt_tok_s": 992.67,
+      "decode_tok_s": 50.56
+    }
+  ],
+  "summary": {
+    "prompt_tok_s": 992.67,
+    "decode_tok_s": 50.56
+  },
+  "notes": "双 B65 在机，只跑 Qwen（llama-bench 独占卡 1）；卡 0 空载。"
+}

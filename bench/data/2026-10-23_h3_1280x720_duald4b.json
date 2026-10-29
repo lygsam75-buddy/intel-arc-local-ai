@@ -1,0 +1,104 @@
+{
+  "schema": "comfyui-xpu-bench/1",
+  "domain": "comfyui-video",
+  "date": "2026-10-23",
+  "tag": "dual_d4b",
+  "status": "active",
+  "source": "local",
+  "tool": "bench_f_h3.py + ComfyUI /prompt + /history",
+  "batch": "ComfyUI H3 分辨率扫描（tag=dual_d4b）",
+  "reserve_vram_gb": 4.0,
+  "samples": [
+    {
+      "mode": "cold",
+      "ok": true,
+      "server_sec": 452.18,
+      "last_sit": "42.58 s/it",
+      "sampling_sec": 255.48,
+      "sampling_sec_per_step": 42.58,
+      "n_load": 4,
+      "vram_post_gib": null,
+      "power": null
+    },
+    {
+      "mode": "fresh",
+      "ok": true,
+      "server_sec": 406.29,
+      "last_sit": "42.41 s/it",
+      "sampling_sec": 254.46,
+      "sampling_sec_per_step": 42.41,
+      "n_load": 3,
+      "vram_post_gib": null,
+      "power": null
+    }
+  ],
+  "summary": {
+    "n_total": 2,
+    "n_ok": 2,
+    "n_fail": 0,
+    "server_sec_mean": 429.24,
+    "power": null
+  },
+  "workload": {
+    "model": "MiniMax H3",
+    "task": "image-to-video",
+    "steps": 6,
+    "duration_sec": 5.0,
+    "frames": 124,
+    "fps": 24,
+    "duration_sec_exact": 5.167,
+    "selector_megapixels": null,
+    "width": 1280,
+    "height": 720,
+    "resolution": "1280x720",
+    "dit_file": "minimax_h3_fl2va_pruned_int8_convrot.safetensors",
+    "text_encoder_file": "qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors",
+    "sampler": "euler",
+    "scheduler": "simple"
+  },
+  "env": {
+    "gpu": "Intel Arc Pro B65 32G",
+    "chip": "E222",
+    "subsys": "27441EF7",
+    "device_id": "PCI\\VEN_8086&DEV_E222&SUBSYS_27441EF7&REV_00",
+    "board_vendor": "GUNNIR 蓝戟 (PCI vendor 1EF7)",
+    "board_code": "2744",
+    "vram_visible_gib": 31.16,
+    "ecc": "off",
+    "driver": "32.0.101.9150",
+    "cpu": "AMD Ryzen 5 9600X",
+    "ram_gb": 32,
+    "os": "Windows",
+    "attention_backend": "sdpa (CUTE 关闭；CUTE 开着跑 H3 音频封装必崩)",
+    "stack_variant": "int8fix",
+    "int8fix_env": {
+      "OMNIXPU_INT8_COMPUTE": "1",
+      "OMNIXPU_INT8_SIGFIX": "1"
+    },
+    "env_confidence": {
+      "gpu": "recorded",
+      "vram_visible_gib": "recorded",
+      "ecc": "recorded",
+      "cpu": "recorded",
+      "ram_gb": "recorded",
+      "os": "recorded",
+      "width": "recorded",
+      "height": "recorded",
+      "resolution": "recorded",
+      "steps": "recorded",
+      "attention_backend": "recorded",
+      "chip": "inferred",
+      "subsys": "inferred",
+      "device_id": "inferred",
+      "board_vendor": "inferred",
+      "board_code": "inferred",
+      "driver": "inferred",
+      "reserve_vram_gb": "recorded"
+    },
+    "dual_card": "2x B65：卡0 = CPU 直连 x16（ComfyUI / H3），卡1 = 芯片组 x4（llama.cpp / Qwen）"
+  },
+  "log_evidence": {
+    "status": "pending",
+    "note": "日志在 `_bench_f/server_<tag>.log`，取证回填待跑 annotate_comfy_evidence.py"
+  }
+}

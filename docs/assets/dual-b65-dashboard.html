@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>dual-b65-dashboard</title>
+<style>
+  :root { --ink: #2C2C2A; --muted: #5F5E5A; --grid: #E5E4E0; }
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: 28px 24px 40px; background: #FAFAF8; color: var(--ink);
+         font-family: "Microsoft YaHei", "Segoe UI", "Noto Sans SC", sans-serif; }
+  .wrap { max-width: 1080px; margin: 0 auto; }
+  h1 { font-size: 21px; margin: 0 0 4px; }
+  .sub { color: var(--muted); font-size: 12.5px; margin: 0 0 16px; }
+  .legend { display: flex; flex-wrap: wrap; gap: 14px; font-size: 12px; margin: 0 0 14px; }
+  .chip { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; }
+  .chip.off { opacity: .3; }
+  .sw { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+  .panel { background: #fff; border: 1px solid var(--grid); border-radius: 10px;
+           padding: 16px 18px 10px; margin: 0 0 18px; }
+  .panel h2 { font-size: 14px; margin: 0 0 12px; }
+  .row { display: grid; grid-template-columns: 280px 1fr; gap: 10px; align-items: center;
+         padding: 6px 0; border-top: 1px dashed var(--grid); }
+  .row:first-of-type { border-top: 0; }
+  .lbl { font-size: 11.5px; line-height: 1.35; }
+  .bars { position: relative; height: 58px; }
+  .bar { position: absolute; height: 10px; border-radius: 2px; min-width: 1px; }
+  .val { position: absolute; font-size: 9.5px; color: var(--muted); white-space: nowrap; }
+  .foot { font-size: 11px; color: var(--muted); margin: 8px 2px 0; line-height: 1.6; }
+  #tip { position: fixed; pointer-events: none; background: #2C2C2A; color: #fff; font-size: 11px;
+         padding: 7px 10px; border-radius: 6px; max-width: 340px; line-height: 1.55; display: none; z-index: 9; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1></h1>
+  <p class="sub"></p>
+  <div class="legend" id="legend"></div>
+  <div id="panels"></div>
+  <p class="foot">数据与 <code>dual-b65-report.md</code> 总表同源（bench/data/*.json 直出）。空白 = 未测。</p>
+</div>
+<div id="tip"></div>
+<script>
+const DATA = {"title": "双卡 B65 · 总测试项汇总动态图", "sub": "2× GUNNIR B65 32G · ECC 关 · 32 GB 内存 · B850M；柱长 = 同行内相对值，悬停看一个结果", "tip": "一个结果：", "cards": ["单卡 B65", "双卡 2×B65", "一片 B70"], "colors": {"单卡 B65": "#6E97C6", "双卡 2×B65": "#2F6FBA", "一片 B70": "#B9C6D8"}, "groups": [{"t": "H3 视频 · 端到端（s，越低越好）", "rows": [{"lbl": "720p · 5 s · 6 步（稳态）", "v": [394.06, 417.78, 276.68], "u": "s", "n": "双卡对单条零提速；B70 快 1.42×"}, {"lbl": "1080p · 5 s · 6 步（稳态）", "v": [1326.17, null, 841.55], "u": "s", "n": "B70 快 1.58×；双卡未测"}]}, {"t": "H3 视频 · 单步（s/it，越低越好）", "rows": [{"lbl": "720p · 5 s · 6 步（稳态）", "v": [42.3, 42.41, 25.3], "u": "s/it", "n": "第二张卡对单条片子贡献 0"}]}, {"t": "LLM 解码（tok/s，越高越好）", "rows": [{"lbl": "Qwen Q4_0 · 19/128", "v": [50.56, 50.47, 77.11], "u": "tok/s", "n": "双卡并发 −0.2%，不掉速"}, {"lbl": "Q8_0 34.37 GiB · 拆层", "v": [31.86, 37.35, null], "u": "tok/s", "n": "单卡装不下；拆层买容量不赔速度"}, {"lbl": "Q4_0 19.41 GiB · 全驻", "v": [53.63, 49.8, null], "u": "tok/s", "n": "单卡装得下就别拆（慢 7%）"}, {"lbl": "Q8_0 · 张量并行", "v": [null, 28.65, null], "u": "tok/s", "n": "比单卡全驻还慢，别走张量"}]}, {"t": "容量", "rows": [{"lbl": "可驻留显存", "v": [31.16, 62.32, 31.16], "u": "GiB", "n": "双卡买到的是 2× 显存，不是速度"}, {"lbl": "上下文（真装下）", "v": [1.0, 1.75, 1.0], "u": "M token", "n": "3M 只是分配上限，对外说 1.75M"}]}, {"t": "出图 · 稳态（s/张，越低越好）", "rows": [{"lbl": "Qwen-Image int8 · 720p · 25 步", "v": [16.46, 16.31, null], "u": "s/张", "n": "双实例并发持平，零损失"}]}, {"t": "产能与功耗", "rows": [{"lbl": "两条 5 秒片", "v": [null, 18.3, 13.0], "u": "条/时", "n": "同价产能双卡赢 1.40×"}, {"lbl": "满载功耗 P90", "v": [205.5, 400.8, 290.4], "u": "W", "n": "双卡叠加不互压，按 400 W 级配电源"}]}]};
+const tip = document.getElementById("tip");
+const off = {};
+function fmt(v, u) { return v == null ? "—" : (Math.round(v * 100) / 100) + " " + u; }
+function render() {
+  document.querySelector("h1").textContent = DATA.title;
+  document.querySelector(".sub").textContent = DATA.sub;
+  const lg = document.getElementById("legend");
+  lg.innerHTML = DATA.cards.map(c =>
+    `<span class="chip${off[c] ? " off" : ""}" data-c="${c}"><span class="sw" style="background:${DATA.colors[c]}"></span>${c}</span>`).join("");
+  lg.querySelectorAll(".chip").forEach(el => el.onclick = () => { off[el.dataset.c] = !off[el.dataset.c]; render(); });
+  const root = document.getElementById("panels");
+  root.innerHTML = DATA.groups.map(g => {
+    const rows = g.rows.map(r => {
+      const mx = Math.max(...r.v.map(v => v == null ? 0 : v), 1e-9);
+      const bars = DATA.cards.map((c, i) => {
+        const v = r.v[i];
+        if (v == null) return "";
+        const w = v / mx * 82;
+        const top = i * 17;
+        return `<div class="bar" style="width:${w}%;top:${top}px;background:${DATA.colors[c]}" data-t="${r.lbl}" data-c="${c}" data-v="${fmt(v, r.u)}" data-n="${r.n}"></div>` +
+               `<div class="val" style="top:${top - 1}px;left:calc(${w}% + 6px)">${fmt(v, r.u)}</div>`;
+      }).join("");
+      return `<div class="row"><div class="lbl">${r.lbl}</div><div class="bars">${bars}</div></div>`;
+    }).join("");
+    return `<div class="panel"><h2>${g.t}</h2>${rows}</div>`;
+  }).join("");
+  root.querySelectorAll(".bar").forEach(b => {
+    b.onmousemove = e => {
+      tip.style.display = "block";
+      tip.innerHTML = `<b>${b.dataset.t}</b><br>${b.dataset.c} = ${b.dataset.v}<br>${DATA.tip}${b.dataset.n}`;
+      tip.style.left = Math.min(e.clientX + 14, innerWidth - 360) + "px";
+      tip.style.top = (e.clientY + 14) + "px";
+    };
+    b.onmouseleave = () => { tip.style.display = "none"; };
+  });
+}
+render();
+</script>
+</body>
+</html>

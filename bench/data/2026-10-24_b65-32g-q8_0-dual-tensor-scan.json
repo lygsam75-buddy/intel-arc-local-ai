@@ -1,0 +1,260 @@
+{
+  "schema": "arc-xpu-bench/1",
+  "tag": "b65-32g-q8_0-dual-tensor-scan",
+  "date": "2026-10-24",
+  "source": "local",
+  "env": {
+    "os": "Windows-11-10.0.26300-SP0",
+    "cpu": "AMD Ryzen 5 9600X 6-Core",
+    "gpu": "2x Intel Arc Pro B65 32G",
+    "vram_visible_gib": 31.16,
+    "driver": "9150",
+    "ecc": "off",
+    "engine": "llama.cpp",
+    "engine_version": "0.6.0-dev (build 11431, commit c25030496)",
+    "backend": "SYCL",
+    "cpu_threads": 6
+  },
+  "model": {
+    "name": "Qwen3.6-35B-A3B-Q8_0",
+    "quant": "Q8_0",
+    "size_gib": 34.37,
+    "file": "Qwen3.6-35B-A3B-Q8_0.gguf",
+    "sha256": "d1a395809f65a43a13ad119eb4e7acdef1ac6d68120f39902c8ab96e72794a59"
+  },
+  "measure": {
+    "harness": "llama-server /v1/chat/completions",
+    "prompt_tokens": 19,
+    "gen_tokens": 128,
+    "reps": 3,
+    "statistic": "median",
+    "note": "双卡张量并行（-sm tensor）与 GGML_SYCL_ENABLE_HOST_PINNED_MEM=0 专项。与 2026-10-23 批（dual-split-scan）同脚本同口径，跨日期对比只当参考、不当单变量结论；本批内 tensor5050 与 tensor5050_pm0 是唯一单变量对照（只差 pinned mem）。"
+  },
+  "samples": [
+    {
+      "tag": "tensor5050",
+      "cards": 2,
+      "device_selector": "level_zero:0,1",
+      "dev": "SYCL0,SYCL1",
+      "ngl": 99,
+      "ctx": 4096,
+      "ctk": "q8_0",
+      "ctv": "q8_0",
+      "fa": "on",
+      "model": "Qwen3.6-35B-A3B-Q8_0.gguf",
+      "pinned_mem": "auto",
+      "loaded": true,
+      "free_before_gib": [
+        31.16,
+        31.16
+      ],
+      "free_after_gib": [
+        14.24,
+        14.43
+      ],
+      "log": "dsb_tensor5050.log",
+      "split_mode": "tensor",
+      "tensor_split": "50,50",
+      "used_gib": [
+        16.92,
+        16.73
+      ],
+      "used_total_gib": 33.65,
+      "runs": [
+        {
+          "decode_tok_s": 27.7,
+          "decode_n": 128,
+          "prefill_tok_s": 41.21,
+          "prefill_n": 19
+        },
+        {
+          "decode_tok_s": 29.46,
+          "decode_n": 128,
+          "prefill_tok_s": 48.3,
+          "prefill_n": 19
+        },
+        {
+          "decode_tok_s": 28.65,
+          "decode_n": 128,
+          "prefill_tok_s": 45.44,
+          "prefill_n": 19
+        }
+      ],
+      "decode_tok_s": 28.65,
+      "decode_min": 27.7,
+      "decode_max": 29.46,
+      "prefill_tok_s": 45.44
+    },
+    {
+      "tag": "tensor7030",
+      "cards": 2,
+      "device_selector": "level_zero:0,1",
+      "dev": "SYCL0,SYCL1",
+      "ngl": 99,
+      "ctx": 4096,
+      "ctk": "q8_0",
+      "ctv": "q8_0",
+      "fa": "on",
+      "model": "Qwen3.6-35B-A3B-Q8_0.gguf",
+      "pinned_mem": "auto",
+      "loaded": true,
+      "free_before_gib": [
+        31.16,
+        31.16
+      ],
+      "free_after_gib": [
+        9.8,
+        18.87
+      ],
+      "log": "dsb_tensor7030.log",
+      "split_mode": "tensor",
+      "tensor_split": "70,30",
+      "used_gib": [
+        21.36,
+        12.29
+      ],
+      "used_total_gib": 33.65,
+      "runs": [
+        {
+          "decode_tok_s": 28.77,
+          "decode_n": 128,
+          "prefill_tok_s": 37.02,
+          "prefill_n": 19
+        },
+        {
+          "decode_tok_s": 29.22,
+          "decode_n": 128,
+          "prefill_tok_s": 53.05,
+          "prefill_n": 19
+        },
+        {
+          "decode_tok_s": 30.79,
+          "decode_n": 128,
+          "prefill_tok_s": 54.3,
+          "prefill_n": 19
+        }
+      ],
+      "decode_tok_s": 29.22,
+      "decode_min": 28.77,
+      "decode_max": 30.79,
+      "prefill_tok_s": 53.05
+    },
+    {
+      "tag": "ts5050_pm0",
+      "cards": 2,
+      "device_selector": "level_zero:0,1",
+      "dev": "SYCL0,SYCL1",
+      "ngl": 99,
+      "ctx": 4096,
+      "ctk": "q8_0",
+      "ctv": "q8_0",
+      "fa": "on",
+      "model": "Qwen3.6-35B-A3B-Q8_0.gguf",
+      "pinned_mem": "0",
+      "loaded": true,
+      "free_before_gib": [
+        31.16,
+        31.16
+      ],
+      "free_after_gib": [
+        13.69,
+        15.1
+      ],
+      "log": "dsb_ts5050_pm0.log",
+      "split_mode": "layer",
+      "tensor_split": "50,50",
+      "used_gib": [
+        17.47,
+        16.06
+      ],
+      "used_total_gib": 33.53,
+      "runs": [
+        {
+          "decode_tok_s": 35.75,
+          "decode_n": 128,
+          "prefill_tok_s": 50.8,
+          "prefill_n": 19
+        },
+        {
+          "decode_tok_s": 36.67,
+          "decode_n": 128,
+          "prefill_tok_s": 61.97,
+          "prefill_n": 19
+        },
+        {
+          "decode_tok_s": 37.09,
+          "decode_n": 128,
+          "prefill_tok_s": 61.71,
+          "prefill_n": 19
+        }
+      ],
+      "decode_tok_s": 36.67,
+      "decode_min": 35.75,
+      "decode_max": 37.09,
+      "prefill_tok_s": 61.71
+    },
+    {
+      "tag": "tensor5050_pm0",
+      "cards": 2,
+      "device_selector": "level_zero:0,1",
+      "dev": "SYCL0,SYCL1",
+      "ngl": 99,
+      "ctx": 4096,
+      "ctk": "q8_0",
+      "ctv": "q8_0",
+      "fa": "on",
+      "model": "Qwen3.6-35B-A3B-Q8_0.gguf",
+      "pinned_mem": "0",
+      "loaded": true,
+      "free_before_gib": [
+        31.16,
+        31.16
+      ],
+      "free_after_gib": [
+        14.24,
+        14.43
+      ],
+      "log": "dsb_tensor5050_pm0.log",
+      "split_mode": "tensor",
+      "tensor_split": "50,50",
+      "used_gib": [
+        16.92,
+        16.73
+      ],
+      "used_total_gib": 33.65,
+      "runs": [
+        {
+          "decode_tok_s": 27.17,
+          "decode_n": 128,
+          "prefill_tok_s": 38.57,
+          "prefill_n": 19
+        },
+        {
+          "decode_tok_s": 28.91,
+          "decode_n": 128,
+          "prefill_tok_s": 47.66,
+          "prefill_n": 19
+        },
+        {
+          "decode_tok_s": 29.57,
+          "decode_n": 128,
+          "prefill_tok_s": 44.64,
+          "prefill_n": 19
+        }
+      ],
+      "decode_tok_s": 28.91,
+      "decode_min": 27.17,
+      "decode_max": 29.57,
+      "prefill_tok_s": 44.64
+    }
+  ],
+  "summary": {
+    "dual_tensor_5050": 28.65,
+    "dual_tensor_7030": 29.22,
+    "dual_tensor_5050_pinned0": 28.91,
+    "dual_layer_5050_pinned0": 36.67,
+    "dual_layer_5050_pinned_auto_20261023": 35.14,
+    "solo_ngl37_20261023": 31.46
+  },
+  "notes": "结论一：-sm tensor 在 2xB65 上能加载能跑（-fa on 是硬前提），但是全场最慢的多卡模式——decode 28.65~29.22 tok/s，低于同口径拆层 35.14~37.30，也低于单卡全驻 31.46；ts 比例几乎不影响（28.65->29.22，+2%）。结论二：GGML_SYCL_ENABLE_HOST_PINNED_MEM=0 救不了 tensor（同批单变量：28.65->28.91，+0.9% 在噪声内）。结论三：该开关在 layer 上本批 36.67，比 10-23 批的 35.14 高 4.3%，但跨日期、非单变量，不归因给开关本身。结论四（对 4 卡的意义）：张量并行在 2 卡已不划算，官方文档明说 >2 卡退化成通用 all-reduce，因此 4 卡更不该走 tensor；拆层（-sm layer）是唯一不赔速度的协同模式。"
+}

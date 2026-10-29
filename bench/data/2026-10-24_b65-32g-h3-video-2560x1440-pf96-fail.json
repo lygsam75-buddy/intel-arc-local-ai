@@ -1,0 +1,73 @@
+{
+  "schema": "arc-xpu-capacity/1",
+  "tag": "b65-32g-h3-video-2560x1440-pf96-fail",
+  "date": "2026-10-24",
+  "source": "local",
+  "env": {
+    "gpu": "Intel Arc Pro B65 32G（卡 0，CPU 直连 x16，level_zero:0）",
+    "vram_visible_gib": 31.16,
+    "ram_gib": 31.11,
+    "pagefile_layout": "E: 49152 + F: 16384 + D: 32768（合计 96 GB，均固定大小）",
+    "pagefile_total_mb": 98304,
+    "commit_limit_gib": 127.11,
+    "engine": "ComfyUI 0.39.0 · torch 2.12.0+xpu · omni_xpu_kernel 0.2.0b2+torch212.bmg · Python 3.13.12",
+    "driver": "9150",
+    "ecc": "off",
+    "safety": "Job Object ProcessMemoryLimit=JobMemoryLimit=120 GiB；外部看门狗 2 s 采样、88% 自动杀（未触发）"
+  },
+  "workload": {
+    "model": "MiniMax H3",
+    "resolution": "2560x1440",
+    "steps": 1,
+    "duration_sec": 5.0,
+    "reserve_vram_gb": 4,
+    "note": "只跑 1 步，目的是确认「装不装得下、算不算得动」，不取时间口径。"
+  },
+  "cases": [
+    {
+      "run": "a",
+      "ok": false,
+      "loads": 2,
+      "vram_post_gib": 13.95,
+      "energy_j": 9115.2,
+      "commit_peak_gib": 99.34,
+      "commit_limit_gib": 127.11,
+      "commit_peak_frac": 0.781,
+      "job_peak_gib": 83.76,
+      "job_limit_gib": 120
+    },
+    {
+      "run": "b",
+      "ok": false,
+      "loads": 2,
+      "vram_post_gib": 13.95,
+      "energy_j": 9527.8,
+      "commit_peak_gib": 99.38,
+      "commit_limit_gib": 127.11,
+      "commit_peak_frac": 0.782,
+      "job_peak_gib": null,
+      "job_limit_gib": 120
+    }
+  ],
+  "failure_signature": {
+    "point": "装载完成（TE + DiT 都 loaded partially）→ 进度条 0/1 → 服务进程静默消失",
+    "stderr": "无 traceback、无异常文本，日志最后一行停在 `0%|  | 0/1`",
+    "dump": "无 WATCHDOG dump、无 minidump、无 Kernel-Power 41（复核窗口 22:45~23:15）",
+    "commit_at_death": "98.1~98.3 GiB / 127.11（77%），回落后整机 15.5 GiB，机器无恙",
+    "job_peak": "83.76 GiB < 120 GiB 限额 → 不是 Job 限额杀的",
+    "repro": "2/2（22:47 与 23:01 两轮，装载与提交曲线一致）"
+  },
+  "controls": [
+    "同一晚上、同一卡 0、同一 --reserve-vram 4、同一 Job 限额 120 GiB，只有分辨率不同",
+    "1920×1088 同参数同晚**跑通**（1 步 215.49 s / 端到端 488.72 s，提交峰值 97.99 GiB）",
+    "480p / 720p 同晚各跑 2 轮全部通过（提交峰值 88.67 / 88.32 GiB）",
+    "装载阶段的 offload 判决与 1080p 完全相同（usable 12,762.74 MB / loaded 12,431.90 / offloaded 7,564.24）"
+  ],
+  "conclusion": [
+    "🔴 **2560×1440 在 B65 上跑不动**：2/2 在第一步采样静默死亡，无 traceback、无 GPU 超时 dump、无整机事件。",
+    "🔴 **不是主存不够**：提交峰值 99.34 / 99.38 GiB，上限 127.11（77%）；作业峰值 83.76 GiB < 120 GiB 限额。",
+    "🔴 **不是装载差异**：装载判决（usable / loaded / offloaded）与跑通的 1080p 逐项相同，失败点在采样。",
+    "⚠️ **未定位**：无 dump 就没有模块级证据。按现有排除链，怀疑仍在 `omni_xpu_kernel` 的 int8 内核或驱动 9150 这条路径（与 B70 长时解码挂 4/16 是同一嫌疑），**但本条不给因果**。",
+    "✅ 对外口径：B65 出视频上限报到 **1920×1088**；2560×1440 写「跑不动（2/2 静默退出）」，不写原因。"
+  ]
+}

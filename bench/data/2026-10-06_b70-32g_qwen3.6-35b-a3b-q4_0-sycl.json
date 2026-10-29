@@ -1,0 +1,72 @@
+{
+  "schema": "arc-xpu-bench/1",
+  "tag": "b70-32g_qwen3.6-35b-a3b-q4_0-sycl",
+  "date": "2026-10-06",
+  "source": "local",
+  "env": {
+    "gpu": "Intel Arc Pro B70 32G",
+    "driver": "32.0.101.8976",
+    "vram_visible_gib": 31.16,
+    "ecc": "off",
+    "cpu": "AMD Ryzen 5 9600X",
+    "ram_gb": 32,
+    "engine": "llama.cpp",
+    "engine_version": "0.6.0-dev (build 11431, commit c25030496)",
+    "backend": "SYCL",
+    "compiler": "IntelLLVM 2025.3.3 for Windows AMD64",
+    "oneapi": "oneMKL 2025.3",
+    "os": "Windows",
+    "tool": "llama-server",
+    "env_confidence": {
+      "tool": "inferred"
+    }
+  },
+  "model": {
+    "name": "Qwen3.6-35B-A3B",
+    "quant": "Q4_0",
+    "file": "Qwen_Qwen3.6-35B-A3B-Q4_0.gguf",
+    "size_gib": 19.4,
+    "arch": "MoE"
+  },
+  "args": [
+    "-ngl",
+    "999",
+    "-fa",
+    "on",
+    "-ctk",
+    "q8_0",
+    "-ctv",
+    "q8_0",
+    "--ctx-size",
+    "8192"
+  ],
+  "envvars": {
+    "SYCL_CACHE_PERSISTENT": "1",
+    "OMP_NUM_THREADS": "8"
+  },
+  "samples": [
+    {
+      "prompt_tok_s": 118.54,
+      "decode_tok_s": 39.82,
+      "prompt_n": 48,
+      "predicted_n": 512,
+      "stop_type": "limit",
+      "note": "撞到 n_predict=512 上限被截断"
+    },
+    {
+      "prompt_tok_s": 127.87,
+      "decode_tok_s": 45.07,
+      "prompt_n": 48,
+      "predicted_n": 326,
+      "stop_type": "eos",
+      "note": "自然结束，无截断"
+    }
+  ],
+  "summary": {
+    "prompt_tok_s": 123.2,
+    "decode_tok_s": 42.45,
+    "samples": 2
+  },
+  "notes": "通过 llama-server /completion 接口采集（非 llama-bench）。两次采样为同一配置下的独立请求，非冷启/稳态对照。原始响应件见 <工具目录>\\L1.json、L2.json。样本数少于口径要求的 4 次，列入时标注为「初测」。",
+  "env_backfill": "tool 字段为 2026-10-15 备案审计时补录，标 inferred（采集时未落盘，凭记录内证据重建）。证据：记录 notes 采集时即注明「通过 llama-server /completion 接口采集（非 llama-bench）」。"
+}

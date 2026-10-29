@@ -1,0 +1,142 @@
+{
+  "schema": "arc-xpu-bench/1",
+  "tag": "b65-32g-h3-power-bybus-pf96",
+  "date": "2026-10-25",
+  "source": "local",
+  "batch": "功耗按 PCI 总线归属重测（交付配置：单文件 96 GB 页面文件、--reserve-vram 4、--enable-dynamic-vram）",
+  "why": "`bench_f_h3.py` 内置的 `power_sampler.py` 只枚举 `zesDeviceGet` 的 `devs[0]`，而本机 Sysman 设备顺序 ≠ `level_zero:N`：dev0 = 总线 16 = `xpu:1` = **空闲卡**。所以双卡在机时内置探针报的 43~47 W 是空闲卡，不是 B65 只吃这么点。本批改用 `power_probe_multi.py`（枚举全部设备、CSV 带 PCI 总线号）重采。",
+  "env": {
+    "gpu": "Intel Arc Pro B65 32G（卡 0，CPU 直连 x16，level_zero:0）",
+    "vram_visible_gib": 31.16,
+    "ram_gib": 31.11,
+    "pagefile_layout": "E: 98304 单文件（InitialSize = MaximumSize = 98304）",
+    "pagefile_total_mb": 98304,
+    "commit_limit_gib": 127.11,
+    "engine": "ComfyUI 0.39.0 · torch 2.12.0+xpu · Python 3.13.12",
+    "driver": "9150",
+    "ecc": "off",
+    "power_probe": "bench/harness/power_probe_multi.py · 1.0 s · 整卡域 = defaultLimit 最大者（B65 = 200000 mW）",
+    "safety": "Job Object ProcessMemoryLimit=JobMemoryLimit=100 GiB；外部看门狗 --frac 0.88 --kill 'port 8190'；全程零触发"
+  },
+  "workload": {
+    "model": "MiniMax H3",
+    "dit": "minimax_h3_fl2va_pruned_int8_convrot.safetensors（19.53 GB）",
+    "text_encoder": "qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors（14,960.20 MB）",
+    "steps": 6,
+    "duration_sec": 5.0,
+    "frames": 124,
+    "fps": 24,
+    "reserve_vram_gb": 4
+  },
+  "cases": [
+    {
+      "resolution": "864x480",
+      "frames": 124,
+      "steps": 6,
+      "mode": "cold",
+      "server_s": 328.77,
+      "sit_s": 11.03,
+      "probe_span_s": 402.3,
+      "card": {
+        "pci_bus": 3,
+        "sysman_dev": 1,
+        "role": "跑测卡（level_zero:0 / xpu:0，CPU 直连 x16）",
+        "avg_w": 87.1,
+        "p50_w": 59.1,
+        "p90_w": 200.3,
+        "peak_w_1s": 222.4,
+        "busy_share_ge160w": 0.201,
+        "energy_kj": 35.095,
+        "energy_wh": 9.75,
+        "kwh": 0.00975,
+        "cost_yuan_at_0_7": 0.0068
+      },
+      "idle_card": {
+        "pci_bus": 16,
+        "sysman_dev": 0,
+        "role": "空闲卡（level_zero:1 / xpu:1，芯片组 x4）",
+        "avg_w": 44.9
+      },
+      "builtin_probe_read": {
+        "note": "同一轮 bench_f_h3 内置探针（只枚举 Sysman devs[0]）读到的是**空闲卡**，作废不用"
+      }
+    },
+    {
+      "resolution": "1280x720",
+      "frames": 124,
+      "steps": 6,
+      "mode": "cold",
+      "server_s": 438.78,
+      "sit_s": 42.53,
+      "probe_span_s": 501.5,
+      "card": {
+        "pci_bus": 3,
+        "sysman_dev": 1,
+        "role": "跑测卡（level_zero:0 / xpu:0，CPU 直连 x16）",
+        "avg_w": 140.8,
+        "p50_w": 197.5,
+        "p90_w": 201.8,
+        "peak_w_1s": 215.1,
+        "busy_share_ge160w": 0.578,
+        "energy_kj": 70.709,
+        "energy_wh": 19.64,
+        "kwh": 0.01964,
+        "cost_yuan_at_0_7": 0.0137
+      },
+      "idle_card": {
+        "pci_bus": 16,
+        "sysman_dev": 0,
+        "role": "空闲卡（level_zero:1 / xpu:1，芯片组 x4）",
+        "avg_w": 44.8
+      },
+      "builtin_probe_read": {
+        "note": "同一轮 bench_f_h3 内置探针（只枚举 Sysman devs[0]）读到的是**空闲卡**，作废不用"
+      }
+    },
+    {
+      "resolution": "1920x1088",
+      "frames": 124,
+      "steps": 6,
+      "mode": "cold",
+      "server_s": 1433.09,
+      "sit_s": 191.53,
+      "probe_span_s": 1502.9,
+      "card": {
+        "pci_bus": 3,
+        "sysman_dev": 1,
+        "role": "跑测卡（level_zero:0 / xpu:0，CPU 直连 x16）",
+        "avg_w": 166.3,
+        "p50_w": 191.3,
+        "p90_w": 204.3,
+        "peak_w_1s": 219.0,
+        "busy_share_ge160w": 0.774,
+        "energy_kj": 249.96,
+        "energy_wh": 69.43,
+        "kwh": 0.06943,
+        "cost_yuan_at_0_7": 0.0486
+      },
+      "idle_card": {
+        "pci_bus": 16,
+        "sysman_dev": 0,
+        "role": "空闲卡（level_zero:1 / xpu:1，芯片组 x4）",
+        "avg_w": 44.9
+      },
+      "builtin_probe_read": {
+        "note": "同一轮 bench_f_h3 内置探针（只枚举 Sysman devs[0]）读到的是**空闲卡**，作废不用"
+      }
+    }
+  ],
+  "reading": [
+    "🔴 **P90 逐档贴到 B65 的 200 W 墙**（200.3 / 201.8 / 204.3 W）—— 这既是「采对了卡」的自证，也说明卡在采样段基本全程压满。",
+    "🔴 **与 2026-10-21 那张单卡表逐项对上**：P90 200.8 / 202.0~202.8 / 203.3~203.7、1 秒峰值 221.6~222.7 / 216.8~222.2 / 221.1~223.5 —— 差 0.2~2%。→ 那张旧表当年采的就是在跑那张卡，**不受这次的归属坑影响**，不用改。",
+    "🔴 **单次能量随「装载有多长」漂，不随卡漂**：480p 35.1 kJ（旧 24.4~26.3）、720p 70.7（旧 64.0~67.6）、1080p 250.0（旧 239.4~240.4）。480p 涨幅最大（+34%）是因为这批固定开销 262.6 s 对旧批 164 s，而采样段 66 s 一点没动（单步 11.03 vs 11.02 s/it）。",
+    "⚠️ 本表的能量是**探针窗口**（含服务启停，比服务窗口长 63~74 s，约多 4 kJ）：480p 约 11%、720p / 1080p 约 5%。选探针窗口是因为客户实际跑一条就是要起一次服务。",
+    "✅ 电费按 0.7 元/度：480p ¥0.007、720p ¥0.014、1080p ¥0.049（旧口径 ¥0.005 / ¥0.013 / ¥0.047）。",
+    "✅ **占空比（≥160 W）**：480p 20.1%、720p 57.8%、1080p 77.4% —— 与产品页「采样占比 22% / 49% / 81%」同量级，说明低分辨率档大部分时间在装载而不是在算。"
+  ],
+  "conclusion": [
+    "🔴 **双卡在机时，`bench_f_h3.py` 的 `samples[].power` 一律不采信**，功耗只认 `power_probe_multi.py` 的 CSV。",
+    "自证法：看 P90 有没有贴到卡的 `defaultLimit`（B65 = 200 W、B70 = 290 W），贴不上的那行就是没在跑。",
+    "对客口径不变的部分：**P90 200~204 W、1 秒峰值 215~222 W**，散热按 200 W 持续 + 224 W 瞬态设计，电源 450 W 够。变的部分只有单次能量（因为装载时长变了）。"
+  ]
+}
