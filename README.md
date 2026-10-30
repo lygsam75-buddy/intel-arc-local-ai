@@ -150,6 +150,8 @@ memory bus width are **all worth nothing**.
 
 **Chart note: when it fits, the slot gap is smaller than noise; once weights cross the bus, link width becomes the multiplier — so the order is capacity → cores & power wall → bandwidth.**
 
+> 🔎 **16 GB deep dive**: the full `-ncmoe` sweep, the quantization-that-doesn't-speed-you-up result, and the context-depth curve are in [the B50 tuning write-up](docs/blog/b50-16gb-ncmoe-tuning.md).
+
 **Read the chart: while it fits the slot difference is smaller than noise; the moment weights cross PCIe, link width becomes multiplicative — so the order is capacity, then cores and power wall, then bandwidth.**
 
 5. **Once it fits, compute is still not on duty all the time.** At 480p most of the run is loading, and only
