@@ -1,11 +1,11 @@
 # Pika H3 Flex on Arc Pro B70: how much the six-step path actually buys
 
-> **Bottom line:** ① The launch claims that matter all hold, and Pika H3 Flex **runs on an Intel Arc Pro B70 (31 GB)** — first/last-frame-to-video (FL2VA) with synced audio, two resolutions out of the box. ② Against the non-distilled 20-step H3 default, the six-step path is **2.2× faster at 480p and 3.6× faster at 768p** (same card, same seed, same prompt). ③ "7 seconds per clip" is hosted DiT compute, not end-to-end wall clock — mixing the two books only scares buyers.
+> **Bottom line:** ① The launch claims that matter all hold, and Pika H3 Flex **runs on an Intel Arc Pro B70 (31 GB)** — first/last-frame-to-video (FL2VA) with synced audio, two resolutions out of the box. ② Against the non-distilled 20-step H3 default, the six-step path is **2.0× faster at 480p and 2.7× faster at 768p** (same card, same seed, same prompt; sycl9-paired runtime). ③ "7 seconds per clip" is hosted DiT compute, not end-to-end wall clock — mixing the two books only scares buyers.
 
 - Test rig: Intel Arc Pro B70 32G (GUNNIR, ECC off, 31.16 GiB visible) + Ryzen 5 9600X + **32 GB RAM** + Windows
 - Software: ComfyUI **0.43.2** + torch 2.13.0+xpu + OmniXPU runtime
 - Models: MiniMax H3 base (fl2va DiT int8_convrot + Qwen3VL 32B nvfp4 TE) + the two open Pika LoRA adapters
-- Data: [`bench/data/2026-11-02_b70-32g_pika-h3-flex-fl2va-6step-comfyui.json`](../bench/data/2026-11-02_b70-32g_pika-h3-flex-fl2va-6step-comfyui.json), [`…h3-fl2va-base-20step-comfyui.json`](../bench/data/2026-11-02_b70-32g_h3-fl2va-base-20step-comfyui.json)
+- Data: measured on the sycl9-paired runtime (full sycl8 / sycl9 / legacy-runtime comparison → [`xpu-runtime-pairing.en.md`](xpu-runtime-pairing.en.md))
 
 ## 1. Claims vs measurements
 
@@ -13,11 +13,11 @@ Pika H3 Flex shipped 2026-10-29 ([blog](https://pika.art/blog/pika-h3-flex) / [H
 
 | Claim | Verdict | Evidence |
 |---|---|---|
-| "7s DiT / under 10s" ≠ local end-to-end | ✅ holds, off by an order of magnitude | hosted 7 s vs B70 768p clip 18.8 分钟（二十步）/ 5.3 分钟（六步） (see §3) |
+| "7s DiT / under 10s" ≠ local end-to-end | ✅ holds, off by an order of magnitude | hosted 7 s vs B70 768p clip 15.3 min (20-step) / 5.6 min (six-step) (see §3) |
 | Gate = "can you run the H3 base" | ✅ holds | B70 31 GB + 32 GB RAM qualifies; template TE is the nvfp4 tier |
 | Local T2V / FL2VA / Ref2VA with synced stereo | ✅ FL2VA verified | both resolutions out with 32 kHz stereo from the same forward pass |
 | Six-step schedule = lcm + ManualSigmas + CFG 1.0, no turbo LoRA stacked | ✅ followed, clean output | 7 sigma values, adapter strength 1.0 |
-| Comfy docs: "≈1 min for 5 s of 1344×768 on a single card" | ⚠️ NVIDIA-class wording | B70 measures 316.7 s (~5.3 min) at 768p, ≈5× that line |
+| Comfy docs: "≈1 min for 5 s of 1344×768 on a single card" | ⚠️ NVIDIA-class wording | B70 measures 336 s (~5.6 min) at 768p, ≈5.6× that line |
 | 4K / five stems / prompt enhancement | ✅ hosted-only | not in the open weights |
 
 ## 2. Wiring: only two new files
@@ -32,16 +32,16 @@ Same card, seed 20261220, first/last frames, prompt and VAEs — only the sampli
 
 | Tier | Path | Steps | Wall clock | Speedup |
 |---|---|---|---|---|
-| 832×480 · 124 frames (≈5.2 s) | H3 base res_multistep + BasicScheduler | 20 | 250.3 s | — |
-| 832×480 · 124 frames | **Pika six-step** (lcm + ManualSigmas) | 6 | **111.8 s** (cold start) | **2.2×** |
-| 1344×768 · 124 frames | H3 base res_multistep + BasicScheduler | 20 | 1130.5 s | — |
-| 1344×768 · 124 frames | **Pika six-step** (lcm + ManualSigmas) | 6 | **316.7 s** | **3.6×** |
+| 832×480 · 124 frames (≈5.2 s) | H3 base res_multistep + BasicScheduler | 20 | 224 s | — |
+| 832×480 · 124 frames | **Pika six-step** (lcm + ManualSigmas) | 6 | **104~112 s** (warm~cold) | **2.0×** |
+| 1344×768 · 124 frames | H3 base res_multistep + BasicScheduler | 20 | 920 s | — |
+| 1344×768 · 124 frames | **Pika six-step** (lcm + ManualSigmas) | 6 | **336 s** | **2.7×** |
 
 Wall clock = queue submit → `/history` complete (TE encode, sampling, video+audio VAE decode, MP4 mux).
 
 ![Wall-clock comparison](assets/pika-h3-flex-wallclock.en.svg)
 
-Two caveats: the 480p six-step sample is **cold** (first load of the 21 GB DiT + 15.7 GB TE) while the 20-step sample is warm — so the six-step edge is *understated* there; the 768p pair is warm-vs-warm.
+Two caveats: the 480p six-step figure spans warm~cold (104~112 s); the headline speedup takes the conservative cold end (warm-vs-warm it is 2.2×). The 768p pair is warm-vs-warm (2.7×).
 
 ## 4. Setup (32 GB RAM rig)
 
@@ -73,7 +73,7 @@ CFG 1.0 via BasicGuider
 
 - ComfyUI **0.43.2+** (T2V template); FL2VA/Ref2VA templates need 0.30.0+.
 - Template Library → Video → **Pika H3 Flex** (T2V / Ref2VA / FL2VA, shipped with comfyui-workflow-templates 0.11.100).
-- Intel XPU users: **OmniXPU runtime providers are version-gated** (prebuilt wheels accept aimdo 0.4.15 / kitchen 0.2.31 vs the 0.6.0 / 0.2.40 that ComfyUI 0.43.x wants). Wait for updated Windows runtimes or apply the test-environment patch in Appendix A.
+- Intel XPU users: **the SYCL runtime your XPU runtime is linked against must match torch's bundled syclN** (mismatched linking costs 3.6× on identical code — see [`xpu-runtime-pairing.en.md`](xpu-runtime-pairing.en.md)). Grab the verified sycl9 package: [Release xpu-runtime-sycl9-20261102](https://github.com/lygsam75-buddy/intel-arc-local-ai/releases/tag/xpu-runtime-sycl9-20261102).
 
 ### 4.4 Capacity envelope (B70 31 GB)
 
@@ -105,4 +105,4 @@ Long-term: wait for Windows prebuilt runtimes from [xiangyuT/comfy-aimdo-xpu](ht
 
 - Pika blog (2026-10-29): <https://pika.art/blog/pika-h3-flex> · HF: <https://huggingface.co/Pika-Labs/Pika-H3-Flex>
 - ComfyUI docs: Pika H3 Flex Workflows · Comfy-Org/MiniMax-H3
-- Measured data: `bench/data/2026-11-02_b70-32g_pika-h3-flex-fl2va-6step-comfyui.json`, `bench/data/2026-11-02_b70-32g_h3-fl2va-base-20step-comfyui.json`
+- Measured data: `docs/xpu-runtime-pairing.en.md` (full sycl8 / sycl9 / legacy-runtime table); `bench/data/2026-11-02_b70-32g_*-comfyui.json` are the legacy-runtime comparison records

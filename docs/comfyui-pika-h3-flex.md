@@ -1,11 +1,11 @@
 # Pika H3 Flex 上 Arc Pro B70：六步蒸馏到底快多少（实测）
 
-> **结论先行**：①原文的三条核心判断全部成立，且 Pika H3 Flex 在 **Intel Arc Pro B70（31 GB）上跑通**——首尾帧生视频（FL2VA）、音画同步、两档分辨率都出了片；②六步蒸馏路径相对 H3 基座默认二十步路径，**480p 提速 2.2×、768p 提速 3.6×**（同机同 seed 同提示词实测）；③「7 秒出片」是托管侧 DiT 计算口径，本机墙钟是另一本账，混着看只会自己吓自己。
+> **结论先行**：①原文的三条核心判断全部成立，且 Pika H3 Flex 在 **Intel Arc Pro B70（31 GB）上跑通**——首尾帧生视频（FL2VA）、音画同步、两档分辨率都出了片；②六步蒸馏路径相对 H3 基座默认二十步路径，**480p 提速 2.0×、768p 提速 2.7×**（同机同 seed 同提示词实测，sycl9 配对运行时）；③「7 秒出片」是托管侧 DiT 计算口径，本机墙钟是另一本账，混着看只会自己吓自己。
 
 - 测试机：Intel Arc Pro B70 32G（GUNNIR，ECC 关，可见 31.16 GiB）+ Ryzen 5 9600X + **32 GB 内存** + Windows
 - 软件：ComfyUI **0.43.2** + torch 2.13.0+xpu + OmniXPU 运行时
 - 模型：MiniMax H3 基座（DiT fl2va int8_convrot + Qwen3VL 32B nvfp4 文本编码器）+ Pika 两枚开源 LoRA
-- 数据出处：[`bench/data/2026-11-02_b70-32g_pika-h3-flex-fl2va-6step-comfyui.json`](../bench/data/2026-11-02_b70-32g_pika-h3-flex-fl2va-6step-comfyui.json)、[`…h3-fl2va-base-20step-comfyui.json`](../bench/data/2026-11-02_b70-32g_h3-fl2va-base-20step-comfyui.json)
+- 数据出处：sycl9 配对运行时实测（完整对照含 sycl8 / sycl9 / 旧运行时三列 → [`docs/xpu-runtime-pairing.md`](xpu-runtime-pairing.md)）
 
 ## 1. 对照原文：哪些说法站得住
 
@@ -13,11 +13,11 @@ Pika H3 Flex 于 2026-10-29 发布（[Pika 博客](https://pika.art/blog/pika-h3
 
 | 原文论断 | 实测判定 | 证据 |
 |---|---|---|
-| 「7 秒 DiT / under 10s」≠ 本机端到端墙钟 | ✅ 成立，两者差一个数量级 | 托管 DiT 计算 7s vs B70 本机 768p 出片 18.8 分钟（二十步）/ 5.3 分钟（六步）（见第 3 节） |
+| 「7 秒 DiT / under 10s」≠ 本机端到端墙钟 | ✅ 成立，两者差一个数量级 | 托管 DiT 计算 7s vs B70 本机 768p 出片 15.3 分钟（二十步）/ 5.6 分钟（六步）（见第 3 节） |
 | 最低门槛 = 能跑 H3 基座，不是营销秒数 | ✅ 成立 | B70 31 GB + 32 GB 内存即满足；Comfy 模板用的 TE 就是 nvfp4 档 |
 | 本地开源覆盖 T2V / FL2VA / Ref2VA、480p/768p 同步立体声 | ✅ FL2VA 实测成立 | 两档分辨率出片均带 32 kHz 立体声，同一次前向生成 |
 | 六步日程 = lcm + ManualSigmas + CFG 1.0，禁止再叠 turbo LoRA | ✅ 按此执行，出片正常 | sigma 列 7 值、适配器强度 1.0；叠加 turbo 会弄坏输出（文档红线） |
-| Comfy 文档「单卡约 1 分钟出 5 秒 1344×768」 | ⚠️ 口径是 N 卡单卡 | B70 实测六步 768p 为 18.8 分钟（二十步）/ 5.3 分钟（六步） 中的 316.7s，约 5.3 分钟，是该口径的 ~5× |
+| Comfy 文档「单卡约 1 分钟出 5 秒 1344×768」 | ⚠️ 口径是 N 卡单卡 | B70 实测六步 768p 为 336 s（约 5.6 分钟），是该口径的 ~5.6× |
 | 4K / 五轨 stems / prompt enhancement 在托管侧 | ✅ 与本地无关 | 开源权重无此功能，别混说 |
 
 ## 2. 接线原理：新增的只有两枚 LoRA
@@ -32,10 +32,10 @@ Pika H3 Flex 于 2026-10-29 发布（[Pika 博客](https://pika.art/blog/pika-h3
 
 | 档位 | 路径 | 步数 | 出片墙钟 | 提速 |
 |---|---|---|---|---|
-| 832×480 · 124 帧（≈5.2 s） | H3 基座 res_multistep + BasicScheduler | 20 | 250.3 s | — |
-| 832×480 · 124 帧 | **Pika 六步**（lcm + ManualSigmas） | 6 | **111.8 s**（冷启动含加载） | **2.2×** |
-| 1344×768 · 124 帧 | H3 基座 res_multistep + BasicScheduler | 20 | 1130.5 s | — |
-| 1344×768 · 124 帧 | **Pika 六步**（lcm + ManualSigmas） | 6 | **316.7 s** | **3.6×** |
+| 832×480 · 124 帧（≈5.2 s） | H3 基座 res_multistep + BasicScheduler | 20 | 224 s | — |
+| 832×480 · 124 帧 | **Pika 六步**（lcm + ManualSigmas） | 6 | **104~112 s**（热~冷） | **2.0×** |
+| 1344×768 · 124 帧 | H3 基座 res_multistep + BasicScheduler | 20 | 920 s | — |
+| 1344×768 · 124 帧 | **Pika 六步**（lcm + ManualSigmas） | 6 | **336 s** | **2.7×** |
 
 墙钟口径：点 Queue → `/history` 完成（含文本编码、采样、视频+音频 VAE 解码、MP4 封装）。
 
@@ -43,8 +43,8 @@ Pika H3 Flex 于 2026-10-29 发布（[Pika 博客](https://pika.art/blog/pika-h3
 
 两个口径提示：
 
-- 480p 的六步样本是**冷启动**（含 21 GB DiT + 15.7 GB TE 首次加载），而二十步样本是热的——**六步优势被低估**，热启动比 2.2× 只多不少。
-- 768p 一对是热对热，比值干净。Comfy 文档的「约 1 分钟」按 N 卡口径理解，B70 大约为其 5 倍，但这不妨碍六步相对二十步的**内部加速比**在两档分辨率上都成立（3.6× / 2.2×）。
+- 480p 六步 104~112 s 对应热~冷区间，提速按冷态保守取 **2.0×**（热对热 2.2×，可按表内原始数自算）。
+- 768p 一对热对热，比值干净（2.7×）。Comfy 文档的「约 1 分钟」按 N 卡口径理解，B70 大约为其 5.6 倍，但不影响六步相对二十步的**内部加速比**在两档分辨率上都成立。
 
 ## 4. 设置方法（32 GB 内存机照抄）
 
@@ -77,7 +77,7 @@ BasicGuider: CFG 1.0（经 BasicGuider，不走 CFG 节点）
 
 - ComfyUI **0.43.2+**（T2V 模板要求）；FL2VA / Ref2VA 模板 0.30.0+ 即可。
 - 模板库 → Video → 搜 **Pika H3 Flex**（T2V / Ref2VA / FL2VA 三套，随 comfyui-workflow-templates 0.11.100 发布）。
-- Intel XPU 用户注意：**OmniXPU 的 runtime provider（comfy-aimdo-xpu / comfy-kitchen-xpu）有版本门**，目前预编译包只认 aimdo 0.4.15 / kitchen 0.2.31，与 ComfyUI 0.43.x 要求的 0.6.0 / 0.2.40 不匹配。等上游出新 Windows 运行时，或按本文附录打补丁（仅测试环境）。
+- Intel XPU 用户注意：**XPU 运行时编译时链接的 SYCL 版本必须与 torch 自带的 syclN 对上**（链错版本同一份代码差 3.6 倍，见 [`xpu-runtime-pairing.md`](xpu-runtime-pairing.md)）。直接装验证过的 sycl9 配套包：[Release xpu-runtime-sycl9-20261102](https://github.com/lygsam75-buddy/intel-arc-local-ai/releases/tag/xpu-runtime-sycl9-20261102)。
 
 ### 4.4 分辨率与时长边界（B70 31 GB 实测）
 
@@ -109,4 +109,4 @@ ComfyUI 0.43.x 需要 comfy-aimdo 0.6.0 / comfy-kitchen 0.2.40，而 OmniXPU 预
 
 - Pika 博客（2026-10-29）：<https://pika.art/blog/pika-h3-flex> · HF：<https://huggingface.co/Pika-Labs/Pika-H3-Flex>
 - ComfyUI 文档：Pika H3 Flex Workflows · Comfy-Org/MiniMax-H3（Comfy 格式权重与 LoRA）
-- 本仓库实测数据：`bench/data/2026-11-02_b70-32g_pika-h3-flex-fl2va-6step-comfyui.json`、`bench/data/2026-11-02_b70-32g_h3-fl2va-base-20step-comfyui.json`
+- 本仓库实测数据：`docs/xpu-runtime-pairing.md`（sycl8 / sycl9 / 旧运行时三列完整对照）；`bench/data/2026-11-02_b70-32g_*-comfyui.json` 为旧运行时对照记录

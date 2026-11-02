@@ -24,7 +24,7 @@ machine-readable data, and a test registry that states what was tested *and what
 >
 > 🧩 **Two B65s — how to install them, how to run them, what it buys: published separately → [`docs/dual-b65-report.en.md`](docs/dual-b65-report.en.md).**
 >
-> ⚡ **Pika H3 Flex (six-step distilled LoRA on H3) runs on B70 — 2.2–3.6× faster than the 20-step base path → [`docs/comfyui-pika-h3-flex.en.md`](docs/comfyui-pika-h3-flex.en.md).**
+> ⚡ **Pika H3 Flex (six-step distilled LoRA on H3) runs on B70 — 2.0–2.7× faster than the 20-step base path → [`docs/comfyui-pika-h3-flex.en.md`](docs/comfyui-pika-h3-flex.en.md).**
 > 🔧 **Same code, 3× apart: link the SYCL runtime torch ships (sycl9). Runtime pack + experiment → [`docs/xpu-runtime-pairing.en.md`](docs/xpu-runtime-pairing.en.md).**
 > Which two slots, how many watts to budget, how to pin each card and run two instances, and 1× B70 against
 > 2× B65 — all in that report. **This page compares the four single cards and does not repeat the dual-card numbers.**
