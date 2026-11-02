@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 360" font-family="Microsoft YaHei, SimHei, sans-serif">
+  <defs>
+    <marker id="arrow" markerWidth="9" markerHeight="9" refX="7" refY="3.2" orient="auto">
+      <path d="M0,0 L7,3.2 L0,6.4 Z" fill="#444"/>
+    </marker>
+    <marker id="arrowR" markerWidth="9" markerHeight="9" refX="7" refY="3.2" orient="auto">
+      <path d="M0,0 L7,3.2 L0,6.4 Z" fill="#c23b22"/>
+    </marker>
+  </defs>
+
+  <!-- title -->
+  <text x="490" y="30" text-anchor="middle" font-size="17" fill="#222">Pika H3 Flex 接线：两枚 LoRA 挂上 MiniMax H3 基座，六步出音画</text>
+
+  <!-- base model -->
+  <rect x="40" y="70" width="270" height="88" rx="10" fill="#eef2f7" stroke="#8aa0b8" stroke-width="1.5"/>
+  <text x="175" y="100" text-anchor="middle" font-size="14" fill="#222">MiniMax H3 基座（Comfy 格式）</text>
+  <text x="175" y="122" text-anchor="middle" font-size="11.5" fill="#555">DiT fl2va/ref2va int8_convrot · 20.97 GB</text>
+  <text x="175" y="140" text-anchor="middle" font-size="11.5" fill="#555">TE qwen3vl_32b nvfp4_awq · 15.69 GB</text>
+
+  <!-- lora -->
+  <rect x="40" y="192" width="270" height="72" rx="10" fill="#fdecea" stroke="#c23b22" stroke-width="1.5"/>
+  <text x="175" y="220" text-anchor="middle" font-size="14" fill="#c23b22">Pika H3 Flex 适配器（仅新增）</text>
+  <text x="175" y="242" text-anchor="middle" font-size="11.5" fill="#8a3a2c">pika_h3_flex_{fl2va,ref2va}_v1_bf16 · 各 1.96 GB</text>
+
+  <!-- merge arrow -->
+  <line x1="175" y1="158" x2="175" y2="190" stroke="#c23b22" stroke-width="2" marker-end="url(#arrowR)"/>
+  <text x="190" y="178" font-size="11" fill="#c23b22">LoraLoaderModelOnly 挂载 · 强度 1.0</text>
+
+  <!-- sampler -->
+  <rect x="380" y="106" width="250" height="110" rx="10" fill="#eef7ee" stroke="#2e7d32" stroke-width="1.5"/>
+  <text x="505" y="134" text-anchor="middle" font-size="14" fill="#2e7d32">六步采样日程（Pika 蒸馏）</text>
+  <text x="505" y="156" text-anchor="middle" font-size="11.5" fill="#33694a">sampler = lcm · ManualSigmas</text>
+  <text x="505" y="174" text-anchor="middle" font-size="11.5" fill="#33694a">sigma = 1.0…0.0（7 值 6 步）· CFG 1.0</text>
+  <text x="505" y="194" text-anchor="middle" font-size="11.5" fill="#c23b22">× 禁止再叠 turbo / Lightning LoRA</text>
+
+  <line x1="310" y1="114" x2="376" y2="140" stroke="#444" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="310" y1="230" x2="376" y2="190" stroke="#444" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- decoders -->
+  <rect x="700" y="66" width="240" height="64" rx="10" fill="#fff8e6" stroke="#c7942c" stroke-width="1.5"/>
+  <text x="820" y="93" text-anchor="middle" font-size="13" fill="#7a5a14">Video VAE（int8/fp16）→ 图像帧</text>
+  <text x="820" y="114" text-anchor="middle" font-size="11" fill="#7a5a14">124 帧 @24fps ≈ 5.2 s</text>
+
+  <rect x="700" y="152" width="240" height="64" rx="10" fill="#fff8e6" stroke="#c7942c" stroke-width="1.5"/>
+  <text x="820" y="179" text-anchor="middle" font-size="13" fill="#7a5a14">Audio VAE（fp32）→ 32 kHz 立体声</text>
+  <text x="820" y="200" text-anchor="middle" font-size="11" fill="#7a5a14">与画面同一次前向生成</text>
+
+  <rect x="700" y="238" width="240" height="52" rx="10" fill="#e8eef8" stroke="#4a6fa5" stroke-width="1.5"/>
+  <text x="820" y="270" text-anchor="middle" font-size="13" fill="#2c4a72">CreateVideo + SaveVideo → MP4</text>
+
+  <line x1="630" y1="140" x2="696" y2="100" stroke="#444" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="630" y1="180" x2="696" y2="184" stroke="#444" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="820" y1="216" x2="820" y2="236" stroke="#444" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="820" y1="130" x2="820" y2="150" stroke="#444" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- footnote -->
+  <text x="40" y="320" font-size="11.5" fill="#666">注：基座与 TE 为既有 H3 文件，模板共用；本次新增的只有两枚 Pika LoRA。六步是训练日程，加步数不加细节。</text>
+  <text x="40" y="340" font-size="11.5" fill="#666">许可：适配器随 MiniMax H3 Community License，商用与地域限制以原文为准。</text>
+</svg>

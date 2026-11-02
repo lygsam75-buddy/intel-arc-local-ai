@@ -1,0 +1,104 @@
+{
+  "schema": "comfyui-xpu-bench/1",
+  "tag": "h3-fl2va-base-20step",
+  "date": "2026-11-02",
+  "source": "local",
+  "domain": "comfyui-video",
+  "tool": "ComfyUI 0.43.2 /prompt + /history (same FL2VA API graph minus Pika LoRA, seed 20261220)",
+  "status": "active",
+  "env": {
+    "gpu": "Intel Arc Pro B70 32G",
+    "driver": "32.0.101.8976",
+    "vram_visible_gib": 31.16,
+    "ecc": "off",
+    "cpu": "AMD Ryzen 5 9600X",
+    "ram_gb": 32,
+    "os": "Windows",
+    "chip": "E223",
+    "subsys": "27421EF7",
+    "device_id": "PCI\\VEN_8086&DEV_E223&SUBSYS_27421EF7&REV_00",
+    "board_vendor": "GUNNIR 蓝戟 (PCI vendor 1EF7)",
+    "comfyui_version": "0.43.2",
+    "torch": "2.13.0+xpu",
+    "test_rig": "F:\\ComfyUI-Intel\\ComfyUI-intel-aki-v1.1 (test bed; OmniXPU runtime providers patched for aimdo 0.6.0 / kitchen 0.2.40)",
+    "env_confidence": {
+      "gpu": "recorded",
+      "driver": "recorded",
+      "vram_visible_gib": "recorded",
+      "ecc": "recorded",
+      "cpu": "recorded",
+      "ram_gb": "recorded",
+      "envvars": "recorded",
+      "steps": "recorded",
+      "duration_sec": "recorded",
+      "width": "recorded",
+      "height": "recorded",
+      "frames": "recorded",
+      "fps": "recorded"
+    }
+  },
+  "envvars": {
+    "OMNIXPU_ENABLE": "1",
+    "OMNIXPU_PROVIDER_BOOTSTRAP": "required",
+    "OMNI_IMAGE_XPU_TARGET": "bmg",
+    "OMNI_ATTN_BACKEND": "cute",
+    "SOL_ATTN_XPU_EXPERIMENTAL": "1",
+    "OMNI_COMFYUI_RESERVE_VRAM_GB": "4",
+    "OMNIXPU_PIN_MEMORY": "0"
+  },
+  "workload": {
+    "model": "MiniMax H3 fl2va int8_convrot (no Pika adapter, no turbo LoRA)",
+    "task": "first-last-frame-to-video (FL2VA) with synced stereo audio",
+    "sampler": "res_multistep + BasicScheduler (simple, 20 steps, denoise 1.0) + BasicGuider CFG 1.0",
+    "steps": [
+      20
+    ],
+    "duration_sec": 5.167,
+    "text_encoder_quant": "qwen3vl_32b_minimax_h3_nvfp4_awq",
+    "video_vae": "minimax_h3_video_vae_fp16",
+    "audio_vae": "minimax_h3_audio_vae_fp32",
+    "width": "832+1344",
+    "height": "480+768",
+    "frames": 124,
+    "fps": 24
+  },
+  "mode": "warm (loaders cached from prior runs); baseline counterpart for the 6-step Pika record",
+  "reserve_vram_gb": 4,
+  "samples": [
+    {
+      "steps": 20,
+      "round": 0,
+      "seed": 20261220,
+      "ok": true,
+      "width": 832,
+      "height": 480,
+      "resolution": "832x480",
+      "selector_megapixels": 0.4,
+      "wall_sec": 250.3,
+      "cold": false,
+      "output": "Base20_FL2VA_480p_00001_.mp4"
+    },
+    {
+      "steps": 20,
+      "round": 0,
+      "seed": 20261220,
+      "ok": true,
+      "width": 1344,
+      "height": 768,
+      "resolution": "1344x768",
+      "selector_megapixels": 1.03,
+      "wall_sec": 1130.5,
+      "cold": false,
+      "output": "Base20_FL2VA_768p_00001_.mp4"
+    }
+  ],
+  "summary": {
+    "n_total": 2,
+    "n_ok": 2,
+    "n_fail": 0,
+    "wall_sec_832x480": 250.3,
+    "wall_sec_1344x768": 1130.5
+  },
+  "notes": "The non-distilled H3 default path (res_multistep / 20 steps) run as the speedup baseline for Pika H3 Flex six-step distillation. Same prompt, same seed, same first/last frames, same VAEs as the 6-step record. 832x480 sample is warm while the matching 6-step sample was cold — the 6-step advantage is therefore understated at 480p; the 1344x768 pair is warm-vs-warm.",
+  "log_evidence": "F:\\ComfyUI-Intel\\_smoke_043g.log (server), prompt_ids 1170e2c9-f66a-4c59-a96a-b77f1ac98cec (480p) and f2cf1b91-1efa-4da9-8eb4-0f1dc1ed4926 (768p)."
+}

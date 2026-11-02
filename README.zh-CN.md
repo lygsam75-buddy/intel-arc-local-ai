@@ -23,6 +23,8 @@
 > 🃏 **只想看一张卡 → [B50 16G](docs/cards/B50-README.md) · [B60 24G](docs/cards/B60-README.md) · [B65 32G](docs/cards/B65-README.md) · [B70 32G](docs/cards/B70-README.md)**——四份单卡实测页。本页只做**多卡并排与选购**，一张卡自己的分辨率矩阵、容量边界、功耗全在它自己那页。
 >
 > 🧩 **双卡（2× B65）怎么装、怎么跑、买到什么 —— 另文刊出 → [`docs/dual-b65-report.md`](docs/dual-b65-report.md)。**  
+>
+> ⚡ **Pika H3 Flex（H3 六步蒸馏 LoRA）在 B70 上跑通，比二十步基座快 2.2～3.6 倍 → [`docs/comfyui-pika-h3-flex.md`](docs/comfyui-pika-h3-flex.md)。**  
 > 两张卡插哪两个槽、电源按多少瓦算、钉卡与双实例怎么起、一片 B70 对两片 B65 怎么选，  
 > 全在那篇；**本页只做四张卡的并排比较，不再重复双卡**。
 >

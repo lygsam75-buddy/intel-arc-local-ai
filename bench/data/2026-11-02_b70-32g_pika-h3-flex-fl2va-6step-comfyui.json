@@ -1,0 +1,78 @@
+{
+  "schema": "comfyui-xpu-bench/1",
+  "tag": "pika-h3-flex-fl2va-6step",
+  "date": "2026-11-02",
+  "source": "local",
+  "domain": "comfyui-video",
+  "tool": "ComfyUI 0.43.2 /prompt + /history (Pika FL2VA API graph, seed 20261220)",
+  "status": "active",
+  "env": {
+    "gpu": "Intel Arc Pro B70 32G",
+    "driver": "32.0.101.8976",
+    "vram_visible_gib": 31.16,
+    "ecc": "off",
+    "cpu": "AMD Ryzen 5 9600X",
+    "ram_gb": 32,
+    "os": "Windows",
+    "chip": "E223",
+    "subsys": "27421EF7",
+    "device_id": "PCI\\VEN_8086&DEV_E223&SUBSYS_27421EF7&REV_00",
+    "board_vendor": "GUNNIR 蓝戟 (PCI vendor 1EF7)",
+    "comfyui_version": "0.43.2",
+    "torch": "2.13.0+xpu",
+    "test_rig": "F:\\ComfyUI-Intel\\ComfyUI-intel-aki-v1.1 (test bed; OmniXPU runtime providers patched for aimdo 0.6.0 / kitchen 0.2.40)",
+    "env_confidence": {
+      "gpu": "recorded",
+      "driver": "recorded",
+      "vram_visible_gib": "recorded",
+      "ecc": "recorded",
+      "cpu": "recorded",
+      "ram_gb": "recorded",
+      "envvars": "recorded",
+      "steps": "recorded",
+      "duration_sec": "recorded",
+      "width": "recorded",
+      "height": "recorded",
+      "frames": "recorded",
+      "fps": "recorded"
+    }
+  },
+  "envvars": {
+    "OMNIXPU_ENABLE": "1",
+    "OMNIXPU_PROVIDER_BOOTSTRAP": "required",
+    "OMNI_IMAGE_XPU_TARGET": "bmg",
+    "OMNI_ATTN_BACKEND": "cute",
+    "SOL_ATTN_XPU_EXPERIMENTAL": "1",
+    "OMNI_COMFYUI_RESERVE_VRAM_GB": "4",
+    "OMNIXPU_PIN_MEMORY": "0"
+  },
+  "workload": {
+    "model": "MiniMax H3 fl2va int8_convrot + Pika H3 Flex FL2VA LoRA bf16 (strength 1.0)",
+    "task": "first-last-frame-to-video (FL2VA) with synced stereo audio",
+    "sampler": "lcm + ManualSigmas (7 sigma values = 6 steps) + BasicGuider CFG 1.0",
+    "steps": [6],
+    "duration_sec": 5.167,
+    "text_encoder_quant": "qwen3vl_32b_minimax_h3_nvfp4_awq",
+    "video_vae": "minimax_h3_video_vae_fp16",
+    "audio_vae": "minimax_h3_audio_vae_fp32",
+    "width": "832+1344",
+    "height": "480+768",
+    "frames": 124,
+    "fps": 24
+  },
+  "mode": "warm/cold mixed — sample 1 cold (all loaders), sample 2 warm (loaders cached)",
+  "reserve_vram_gb": 4,
+  "samples": [
+    {"steps": 6, "round": 0, "seed": 20261220, "ok": true, "width": 832, "height": 480, "resolution": "832x480", "selector_megapixels": 0.4, "wall_sec": 111.8, "cold": true, "output": "Pika_H3_Flex_FL2VA_test_00001_.mp4"},
+    {"steps": 6, "round": 0, "seed": 20261220, "ok": true, "width": 1344, "height": 768, "resolution": "1344x768", "selector_megapixels": 1.03, "wall_sec": 316.7, "cold": false, "output": "Pika_H3_Flex_FL2VA_768p_00001_.mp4"}
+  ],
+  "summary": {
+    "n_total": 2,
+    "n_ok": 2,
+    "n_fail": 0,
+    "wall_sec_832x480": 111.8,
+    "wall_sec_1344x768": 316.7
+  },
+  "notes": "Wall clock = queue submit → /history completed (includes TE encode, 6-step sampling, video+audio VAE decode, MP4 encode). Pika H3 Flex released 2026-10-29 (Pika-Labs/Pika-H3-Flex, two LoRA adapters on MiniMax H3). Templates video_pika_h3_flex_* ship in comfyui-workflow-templates 0.11.100 (ComfyUI 0.43.2); runs here use an equivalent hand-built API graph (templates are subgraph-wrapped). No turbo/Lightning LoRA stacked — Pika adapter is already distilled to six steps.",
+  "log_evidence": "F:\\ComfyUI-Intel\\_smoke_043g.log (server), prompt_ids a02ff267-4c62-4374-8a36-e39ef0c4e550 (480p) and 69457d2c-6591-4ee7-a2cd-f3aac4588de6 (768p); API graph archived at F:\\ComfyUI-Intel\\_pika_graph.json."
+}
