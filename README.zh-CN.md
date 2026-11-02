@@ -24,7 +24,8 @@
 >
 > 🧩 **双卡（2× B65）怎么装、怎么跑、买到什么 —— 另文刊出 → [`docs/dual-b65-report.md`](docs/dual-b65-report.md)。**  
 >
-> ⚡ **Pika H3 Flex（H3 六步蒸馏 LoRA）在 B70 上跑通，比二十步基座快 2.2～3.6 倍 → [`docs/comfyui-pika-h3-flex.md`](docs/comfyui-pika-h3-flex.md)。**  
+> ⚡ **Pika H3 Flex（H3 六步蒸馏 LoRA）在 B70 上跑通，比二十步基座快 2.2～3.6 倍 → [`docs/comfyui-pika-h3-flex.md`](docs/comfyui-pika-h3-flex.md)。**
+> 🔧 **Same code, 3× apart: link the SYCL runtime torch ships (sycl9). Runtime pack + experiment → [`docs/xpu-runtime-pairing.en.md`](docs/xpu-runtime-pairing.en.md).**  
 > 两张卡插哪两个槽、电源按多少瓦算、钉卡与双实例怎么起、一片 B70 对两片 B65 怎么选，  
 > 全在那篇；**本页只做四张卡的并排比较，不再重复双卡**。
 >

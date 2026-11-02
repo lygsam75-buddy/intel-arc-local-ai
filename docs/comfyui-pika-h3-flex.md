@@ -103,7 +103,7 @@ ComfyUI 0.43.x 需要 comfy-aimdo 0.6.0 / comfy-kitchen 0.2.40，而 OmniXPU 预
 3. vendored `comfy_kitchen` 整树替换为 [xiangyuT/comfy-kitchen-xpu](https://github.com/xiangyuT/comfy-kitchen-xpu) HEAD（纯 Python，含 0.2.40 新 API），并重算 provider.json 哈希；
 4. vendored `model_vbar.ModelVBAR.__init__` 增加 `pageout_callback=None` 参数（0.6.0 的 VBAR writeback 在 XPU 上失效，只影响 comfy_writable 模型的 eviction writeback）。
 
-长期解：等 [xiangyuT/comfy-aimdo-xpu](https://github.com/xiangyuT/comfy-aimdo-xpu)（已 merge AIMDO 0.6.0）出 Windows 预编译 runtime，或装 Intel oneAPI DPC++/C++ 自行编译（`scripts\build-windows-xpu.cmd`）。
+长期解：等 [xiangyuT/comfy-aimdo-xpu](https://github.com/xiangyuT/comfy-aimdo-xpu)（已 merge AIMDO 0.6.0）出 Windows 预编译 runtime，或装 Intel oneAPI DPC++/C++ 自行编译（`scripts\build-windows-xpu.cmd`）。 **2026-11-02 更新：正式运行时已构建并打包发布 → [`docs/xpu-runtime-pairing.md`](xpu-runtime-pairing.md) / [Release](https://github.com/lygsam75-buddy/intel-arc-local-ai/releases/tag/xpu-runtime-sycl9-20261102)。**
 
 ## 出处
 

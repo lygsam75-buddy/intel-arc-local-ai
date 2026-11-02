@@ -99,7 +99,7 @@ ComfyUI 0.43.x wants comfy-aimdo 0.6.0 / comfy-kitchen 0.2.40; prebuilt OmniXPU 
 3. replace the vendored `comfy_kitchen` tree with [xiangyuT/comfy-kitchen-xpu](https://github.com/xiangyuT/comfy-kitchen-xpu) HEAD and re-hash provider.json;
 4. add `pageout_callback=None` to vendored `ModelVBAR.__init__` (0.6.0 VBAR writeback is inert on XPU).
 
-Long-term: wait for Windows prebuilt runtimes from [xiangyuT/comfy-aimdo-xpu](https://github.com/xiangyuT/comfy-aimdo-xpu) (AIMDO 0.6.0 already merged) or build with Intel oneAPI DPC++/C++ (`scripts\build-windows-xpu.cmd`).
+Long-term: wait for Windows prebuilt runtimes from [xiangyuT/comfy-aimdo-xpu](https://github.com/xiangyuT/comfy-aimdo-xpu) (AIMDO 0.6.0 already merged) or build with Intel oneAPI DPC++/C++ (`scripts\build-windows-xpu.cmd`). **2026-11-02 update: the runtime is now built and packaged → [`docs/xpu-runtime-pairing.en.md`](xpu-runtime-pairing.en.md) / [Release](https://github.com/lygsam75-buddy/intel-arc-local-ai/releases/tag/xpu-runtime-sycl9-20261102).**
 
 ## Sources
 
