@@ -1,6 +1,6 @@
 # Pika H3 Flex on Arc Pro B70: how much the six-step path actually buys
 
-> **Bottom line:** ① The launch claims that matter all hold, and Pika H3 Flex **runs on an Intel Arc Pro B70 (31 GB)** — first/last-frame-to-video (FL2VA) with synced audio, two resolutions out of the box. ② Against the non-distilled 20-step H3 default, the six-step path is **2.0× faster at 480p and 2.7× faster at 768p** (same card, same seed, same prompt; sycl9-paired runtime). ③ "7 seconds per clip" is hosted DiT compute, not end-to-end wall clock — mixing the two books only scares buyers.
+> **Bottom line:** ① The launch claims that matter all hold, and Pika H3 Flex **runs on an Intel Arc Pro B70 (31 GB)** — first/last-frame-to-video (FL2VA) with synced audio, two resolutions out of the box. ② Against the non-distilled 20-step H3 default, the six-step path is **2.0× faster at 480p and 2.7× faster at 768p** (same card, same seed, same prompt; sycl9-paired runtime). ③ "7 seconds per clip" is hosted DiT compute (measured on 8× B300), not end-to-end wall clock — mixing the two books only scares buyers.
 
 - Test rig: Intel Arc Pro B70 32G (GUNNIR, ECC off, 31.16 GiB visible) + Ryzen 5 9600X + **32 GB RAM** + Windows
 - Software: ComfyUI **0.43.2** + torch 2.13.0+xpu + OmniXPU runtime
@@ -13,11 +13,11 @@ Pika H3 Flex shipped 2026-10-29 ([blog](https://pika.art/blog/pika-h3-flex) / [H
 
 | Claim | Verdict | Evidence |
 |---|---|---|
-| "7s DiT / under 10s" ≠ local end-to-end | ✅ holds, off by an order of magnitude | hosted 7 s vs B70 768p clip 15.3 min (20-step) / 5.6 min (six-step) (see §3) |
+| "7s DiT / under 10s" ≠ local end-to-end | ✅ holds, off by an order of magnitude | hosted 7 s (8×B300, Pika tech post) vs B70 768p clip 15.3 min (20-step) / 5.6 min (six-step) (see §3) |
 | Gate = "can you run the H3 base" | ✅ holds | B70 31 GB + 32 GB RAM qualifies; template TE is the nvfp4 tier |
 | Local T2V / FL2VA / Ref2VA with synced stereo | ✅ FL2VA verified | both resolutions out with 32 kHz stereo from the same forward pass |
 | Six-step schedule = lcm + ManualSigmas + CFG 1.0, no turbo LoRA stacked | ✅ followed, clean output | 7 sigma values, adapter strength 1.0 |
-| Comfy docs: "≈1 min for 5 s of 1344×768 on a single card" | ⚠️ NVIDIA-class wording | B70 measures 336 s (~5.6 min) at 768p, ≈5.6× that line |
+| Comfy docs: "≈1 min for 5 s of 1344×768 on a single card" | ⚠️ that card is an H100 80GB (Pika-tested setup) | B70 measures 336 s (~5.6 min) at 768p, ≈5.6× the H100 line |
 | 4K / five stems / prompt enhancement | ✅ hosted-only | not in the open weights |
 
 ## 2. Wiring: only two new files
