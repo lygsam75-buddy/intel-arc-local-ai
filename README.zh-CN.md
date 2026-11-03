@@ -571,6 +571,12 @@ ls bench/harness/                             # 采集器、比对器、迁移�
 
 测量原则一句话：**数字必须是在你自己机器上测出来的，负结果也照记。**
 
+## 提问 / Questions
+
+使用中的问题、复现不一致、想看的测试 → 开 [Issues](https://github.com/lygsam75-buddy/intel-arc-local-ai/issues/new)。数据口径与贡献方式见 [CONTRIBUTING](CONTRIBUTING.md)。
+
+Questions, repro mismatches, or tests you'd like to see → open an [issue](https://github.com/lygsam75-buddy/intel-arc-local-ai/issues/new). Data conventions: [CONTRIBUTING](CONTRIBUTING.md).
+
 ## 许可
 
 MIT · 见 [LICENSE](LICENSE)。

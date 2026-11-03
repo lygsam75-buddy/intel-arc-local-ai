@@ -643,6 +643,10 @@ was captured on a **pre-kernel-swap** stack — **do not compare it side by side
 Measurement philosophy, in one line: **the number has to be measured on your own machine, and negative
 results get recorded too.**
 
+## Questions
+
+Questions, repro mismatches, or tests you'd like to see → open an [issue](https://github.com/lygsam75-buddy/intel-arc-local-ai/issues/new). Data conventions: [CONTRIBUTING](CONTRIBUTING.md).
+
 ## License
 
 MIT — see [LICENSE](LICENSE). Text may be reproduced freely with attribution.
