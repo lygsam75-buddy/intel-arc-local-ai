@@ -1,0 +1,84 @@
+{
+  "schema": "comfyui-xpu-bench/1",
+  "tag": "comfyui-krea2-int8-4070tis",
+  "date": "2026-11-03",
+  "source": "local",
+  "domain": "comfyui-image",
+  "tool": "bench_f_krea2.py + ComfyUI /prompt + /history",
+  "status": "active",
+  "env": {
+    "cpu": "AMD Ryzen 5 9600X",
+    "ram_gb": 32,
+    "os": "Windows",
+    "gpu": "NVIDIA GeForce RTX 4070 Ti SUPER",
+    "chip": "AD103",
+    "compute_cap": "8.9",
+    "vram_visible_gib": 15.99,
+    "nvidia_smi_total_mib": 16376,
+    "ecc": "n/a",
+    "driver": "617.42 (32.0.16.1742)",
+    "stack": {
+      "torch": "2.14.1+cu130",
+      "comfyui": "0.43.0 portable nvidia"
+    },
+    "torch": "2.14.1+cu130",
+    "app": "ComfyUI",
+    "app_version": "0.43.0",
+    "backend": "CUDA",
+    "display": "AMD iGPU",
+    "pcie": "gen4",
+    "stack_note": "2026-11-03 采集，ComfyUI-CUDA（v0.43.0 nvidia portable），模型目录经 extra_model_paths 复用"
+  },
+  "workload": {
+    "model": "Krea-2 Turbo",
+    "task": "text-to-image",
+    "resolution": "1024x1024",
+    "steps": 8,
+    "cfg": 4.0,
+    "sampler": "euler",
+    "scheduler": "simple",
+    "dit_file": "krea2_turbo_int8_convrot.safetensors",
+    "dit_size_gib": 12.87,
+    "clip_file": "qwen3vl_4b_bf16.safetensors",
+    "vae_file": "qwen_image_vae.safetensors"
+  },
+  "reserve_vram_gb": 4,
+  "samples": [
+    {
+      "role": "first",
+      "ok": true,
+      "server_sec": 24.72,
+      "loads": 3,
+      "seed": 20261014
+    },
+    {
+      "role": "newprompt",
+      "ok": true,
+      "server_sec": 18.34,
+      "loads": 0,
+      "seed": 20261093
+    },
+    {
+      "role": "newprompt",
+      "ok": true,
+      "server_sec": 18.29,
+      "loads": 0,
+      "seed": 20261172
+    },
+    {
+      "role": "newprompt",
+      "ok": true,
+      "server_sec": 18.2,
+      "loads": 0,
+      "seed": 20261251
+    }
+  ],
+  "summary": {
+    "first_s": 24.72,
+    "newprompt_mean_s": 18.28,
+    "sit": "1.45 s/it",
+    "b50_resident_s": 57.89,
+    "ratio_vs_b50": 3.17
+  },
+  "notes": "同 B50 README §4 Krea-2 口径（1024x1024 · 8 步 · int8）。B50 57.89 s 含 42 s 固定开销；N 卡固定开销 ~6.7 s。"
+}

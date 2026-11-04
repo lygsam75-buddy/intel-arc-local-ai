@@ -1,0 +1,109 @@
+{
+  "schema": "comfyui-xpu-bench/1",
+  "tag": "comfyui-qwen-image-2.1-int8_convrot",
+  "date": "2026-11-03",
+  "source": "local",
+  "domain": "comfyui-image",
+  "tool": "bench_f_qwen.py/bench_f_h3.py + ComfyUI /prompt + /history",
+  "status": "active",
+  "env": {
+    "cpu": "AMD Ryzen 5 9600X",
+    "ram_gb": 32,
+    "os": "Windows",
+    "gpu": "NVIDIA GeForce RTX 4070 Ti SUPER",
+    "chip": "AD103",
+    "compute_cap": "8.9",
+    "vram_visible_gib": 15.99,
+    "nvidia_smi_total_mib": 16376,
+    "ecc": "n/a",
+    "driver": "617.42 (32.0.16.1742)",
+    "stack": {
+      "torch": "2.14.1+cu130",
+      "comfyui": "0.43.0 portable nvidia"
+    },
+    "torch": "2.14.1+cu130",
+    "app": "ComfyUI",
+    "app_version": "0.43.0",
+    "backend": "CUDA",
+    "display": "AMD iGPU",
+    "pcie": "gen4",
+    "stack_note": "2026-11-03 采集，ComfyUI-CUDA（v0.43.0 nvidia portable），模型目录经 extra_model_paths 复用"
+  },
+  "workload": {
+    "model": "Qwen-Image 2.1",
+    "task": "text-to-image",
+    "resolution": "1280x720",
+    "steps": 25,
+    "cfg": 4.0,
+    "sampler": "euler",
+    "scheduler": "simple",
+    "clip_file": "qwen3vl_8b_int8_convrot.safetensors",
+    "vae_file": "qwen_image_2.1_vae_bf16.safetensors",
+    "workflow": "UNETLoader→CLIPLoader→VAELoader→KSampler",
+    "dit_file": "qwen_image_2.1_int8_convrot.safetensors",
+    "dit_size_gib": 7.26
+  },
+  "reserve_vram_gb": 4,
+  "samples": [
+    {
+      "role": "first",
+      "ok": true,
+      "server_sec": 26.12,
+      "loads": 4,
+      "seed": 20261014
+    },
+    {
+      "role": "newprompt",
+      "ok": true,
+      "server_sec": 17.64,
+      "loads": 1,
+      "seed": 20261093
+    },
+    {
+      "role": "newprompt",
+      "ok": true,
+      "server_sec": 17.22,
+      "loads": 1,
+      "seed": 20261172
+    },
+    {
+      "role": "newprompt",
+      "ok": true,
+      "server_sec": 17.37,
+      "loads": 1,
+      "seed": 20261251
+    },
+    {
+      "role": "resident",
+      "ok": true,
+      "server_sec": 16.53,
+      "loads": 1,
+      "seed": 20261014
+    },
+    {
+      "role": "resident",
+      "ok": true,
+      "server_sec": 16.78,
+      "loads": 1,
+      "seed": 20262731
+    },
+    {
+      "role": "resident",
+      "ok": true,
+      "server_sec": 16.57,
+      "loads": 1,
+      "seed": 20264522
+    }
+  ],
+  "summary": {
+    "first_s": 26.12,
+    "newprompt_mean_s": 17.41,
+    "sit": "1.60 it/s (=0.625 s/step)",
+    "sampling_s_est": 15.63,
+    "note_roles": "每条换提示词（fresh）；B50 对照换提示词 47.11 s / 稳态 51.75 s",
+    "resident_mean_s": 16.63,
+    "b50_resident_mean_s": 51.75,
+    "resident_ratio_vs_b50": 3.11
+  },
+  "notes": "TE=qwen3vl_8b_int8_convrot（与 B50/B60/B65/B70 全部记录同口径；qwen_2.5_vl_7b 是老 Qwen-Image 的 TE，配 2.1 会维度报错）。服务端 execution_start→execution_success。ComfyUI 0.43.0 与 B50 的 0.39.0 有版本差，跨版本对比有漂移风险。"
+}

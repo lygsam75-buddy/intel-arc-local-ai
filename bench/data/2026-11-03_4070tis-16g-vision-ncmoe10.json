@@ -1,0 +1,113 @@
+{
+  "schema": "arc-xpu-bench/1",
+  "tag": "4070tis-16g-vision-x5",
+  "date": "2026-11-03",
+  "source": "local",
+  "model": {
+    "name": "Qwen3.6-35B-A3B-Q4_0",
+    "quant": "Q4_0",
+    "size_gib": 18.35
+  },
+  "mmproj": {
+    "file": "mmproj-Qwen3.6-35B-A3B-Q8_0.gguf"
+  },
+  "ncmoe": 10,
+  "ctx": 16384,
+  "image_min_tokens": 1024,
+  "test_image": {
+    "path": "bench/data/assets/vision_test.png",
+    "w": 640,
+    "h": 360,
+    "expected": [
+      "red",
+      "green",
+      "blue"
+    ]
+  },
+  "prompt": "List the shapes in this image. For each one give its color. Answer in one short line, left to right.",
+  "load_s": 27.15,
+  "runs": [
+    {
+      "rep": 0,
+      "wall_s": 15.27,
+      "answer": "Red square, green circle, blue square",
+      "decode_tok_s": 31.82,
+      "prompt_tok_s": 74.3,
+      "prompt_n": 1113,
+      "predicted_n": 9
+    },
+    {
+      "rep": 1,
+      "wall_s": 0.27,
+      "answer": "Red square, green circle, blue square",
+      "decode_tok_s": 42.71,
+      "prompt_tok_s": 61.62,
+      "prompt_n": 4,
+      "predicted_n": 9
+    },
+    {
+      "rep": 2,
+      "wall_s": 0.27,
+      "answer": "Red square, green circle, blue square",
+      "decode_tok_s": 43.67,
+      "prompt_tok_s": 64.14,
+      "prompt_n": 4,
+      "predicted_n": 9
+    },
+    {
+      "rep": 3,
+      "wall_s": 0.31,
+      "answer": "Red square, green circle, blue square",
+      "decode_tok_s": 36.11,
+      "prompt_tok_s": 60.12,
+      "prompt_n": 4,
+      "predicted_n": 9
+    },
+    {
+      "rep": 4,
+      "wall_s": 0.27,
+      "answer": "Red square, green circle, blue square",
+      "decode_tok_s": 43.59,
+      "prompt_tok_s": 60.73,
+      "prompt_n": 4,
+      "predicted_n": 9
+    }
+  ],
+  "content_check": {
+    "expected_colors": [
+      "red",
+      "green",
+      "blue"
+    ],
+    "found": [
+      "red",
+      "green",
+      "blue"
+    ],
+    "pass": true
+  },
+  "env": {
+    "cpu": "AMD Ryzen 5 9600X",
+    "ram_gb": 32,
+    "os": "Windows",
+    "gpu": "NVIDIA GeForce RTX 4070 Ti SUPER",
+    "chip": "AD103",
+    "compute_cap": "8.9",
+    "vram_visible_gib": 15.99,
+    "nvidia_smi_total_mib": 16376,
+    "ecc": "n/a",
+    "driver": "617.42 (32.0.16.1742)",
+    "stack": {
+      "torch": "2.14.1+cu130",
+      "comfyui": "0.43.0 portable nvidia"
+    },
+    "torch": "2.14.1+cu130",
+    "app": "ComfyUI",
+    "app_version": "0.43.0",
+    "backend": "CUDA",
+    "display": "AMD iGPU",
+    "pcie": "gen4",
+    "stack_note": "2026-11-03 采集，ComfyUI-CUDA（v0.43.0 nvidia portable），模型目录经 extra_model_paths 复用"
+  },
+  "notes": "多模态首图，口径对齐 2026-10-22_b50vk-vision-x5.json（同图同题同 mmproj）。**配置偏差**：B50 用 -ncmoe 8 + --fit off 能跑（溢出换页）；4070 Ti S 同配置 Vulkan 直接拒（mmproj 586 MiB 分配 ErrorOutOfDeviceMemory，--fit 也救不了因 -ngl 用户锁死），被迫 -ncmoe 10 腾 ~820 MB 才装载 —— 这是 #730「溢出 B50 退 N 拒」的又一现场。因此冷图 15.27 s vs B50 8.92 s 的差距含 ncmoe 10 多卸两层专家的代价（图像预填充 74.3 vs 128.2 tok/s），不全是卡差。暖图 0.27~0.31 s 与 B50 的 0.28~0.29 s 持平（缓存命中）。另：Qwen3.6 思考模式需 chat_template_kwargs.enable_thinking=false，否则 64 token 烧在 reasoning 上正文为空。build 11753 vs B50 批次 11431，跨 build 有漂移。"
+}

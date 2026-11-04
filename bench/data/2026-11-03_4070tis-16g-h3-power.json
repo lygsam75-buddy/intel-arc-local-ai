@@ -1,0 +1,44 @@
+{
+  "schema": "arc-xpu-bench/1",
+  "tag": "4070tis-16g-h3-power",
+  "date": "2026-11-03",
+  "source": "local",
+  "env": {
+    "cpu": "AMD Ryzen 5 9600X",
+    "ram_gb": 32,
+    "os": "Windows",
+    "gpu": "NVIDIA GeForce RTX 4070 Ti SUPER",
+    "chip": "AD103",
+    "compute_cap": "8.9",
+    "vram_visible_gib": 15.99,
+    "nvidia_smi_total_mib": 16376,
+    "ecc": "n/a",
+    "driver": "617.42 (32.0.16.1742)",
+    "stack": {
+      "torch": "2.14.1+cu130",
+      "comfyui": "0.43.0 portable nvidia"
+    },
+    "torch": "2.14.1+cu130",
+    "app": "ComfyUI",
+    "app_version": "0.43.0",
+    "backend": "CUDA",
+    "display": "AMD iGPU",
+    "pcie": "gen4",
+    "stack_note": "2026-11-03 采集，ComfyUI-CUDA（v0.43.0 nvidia portable），模型目录经 extra_model_paths 复用"
+  },
+  "workload": {
+    "model": "MiniMax H3 864x480 6步 5秒 fresh",
+    "tool": "bench_f_h3.py + nvidia-smi 1s 采样",
+    "note": "采样窗口覆盖服务启动+冷跑+fresh 跑"
+  },
+  "samples": {
+    "n": 155,
+    "power_peak_w": 286.5,
+    "power_busy_avg_w": 248.2,
+    "busy_n": 97,
+    "busy_def": "utilization.gpu>50%",
+    "util_peak_pct": 100.0
+  },
+  "spec_tbp_w": 285,
+  "notes": "nvidia-smi power.draw 实测。峰值 286.5 W 贴 285 W TBP 规格；干活段（>50% util，97/155 样本）均值 248.2 W。B50 只有 70 W 规格值无实测（Sysman 读不到），此列是 4070 Ti S 独有。采样本身有 ~5% 跑测开销（H3 cold 77.0 vs 73.46 s）。"
+}

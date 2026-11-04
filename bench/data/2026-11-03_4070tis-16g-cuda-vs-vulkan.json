@@ -1,0 +1,115 @@
+{
+  "arc-xpu-bench": {
+    "schema": "arc-xpu-bench/1",
+    "date": "2026-11-03",
+    "card": "NVIDIA GeForce RTX 4070 Ti SUPER",
+    "card_code": "4070tis-16g",
+    "driver": "617.42 (32.0.16.1742)",
+    "llama_cpp_build": "b11753",
+    "llama_cpp_commit": "d8d92973c",
+    "usable_vram_mib": 16375,
+    "note": "同 build 双后端对照（Vulkan/CUDA），与 B50/B60/B65/B70 的 Vulkan 数同源可比。"
+  },
+  "runs": [
+    {
+      "model": "Qwen3.6-35B-A3B-UD-IQ2_M",
+      "quant": "IQ2_M",
+      "size_gib": 10.72,
+      "resident": true,
+      "dense": false,
+      "backend": "vulkan",
+      "tg": 155.82,
+      "tg_sd": 2.47,
+      "pp": 5266.38,
+      "pp_sd": 171.3
+    },
+    {
+      "model": "Qwen3.6-35B-A3B-UD-IQ2_M",
+      "quant": "IQ2_M",
+      "size_gib": 10.72,
+      "resident": true,
+      "dense": false,
+      "backend": "cuda",
+      "tg": 160.65,
+      "tg_sd": 0.52,
+      "pp": 5105.47,
+      "pp_sd": 1379.71
+    },
+    {
+      "model": "Qwen3-VL-4B-Instruct-Q4_0",
+      "quant": "Q4_0",
+      "size_gib": 2.21,
+      "resident": true,
+      "dense": true,
+      "backend": "vulkan",
+      "tg": 184.73,
+      "tg_sd": 0.75,
+      "pp": 8452.47,
+      "pp_sd": 144.94
+    },
+    {
+      "model": "Qwen3-VL-4B-Instruct-Q4_0",
+      "quant": "Q4_0",
+      "size_gib": 2.21,
+      "resident": true,
+      "dense": true,
+      "backend": "cuda",
+      "tg": 190.69,
+      "tg_sd": 1.61,
+      "pp": 10763.77,
+      "pp_sd": 851.44
+    },
+    {
+      "model": "Qwen3.6-35B-A3B-Q4_0",
+      "quant": "Q4_0",
+      "size_gib": 18.35,
+      "resident": false,
+      "dense": false,
+      "ncmoe": 8,
+      "backend": "vulkan",
+      "tg": 63.81,
+      "tg_sd": 3.97,
+      "pp": 1220.98,
+      "pp_sd": 74.66
+    },
+    {
+      "model": "Qwen3.6-35B-A3B-Q4_0",
+      "quant": "Q4_0",
+      "size_gib": 18.35,
+      "resident": false,
+      "dense": false,
+      "ncmoe": 8,
+      "backend": "cuda",
+      "tg": 114.54,
+      "tg_sd": 2.13,
+      "pp": 1530.17,
+      "pp_sd": 410.63
+    },
+    {
+      "model": "Qwen3.6-35B-A3B-Q4_0",
+      "quant": "Q4_0",
+      "size_gib": 18.35,
+      "ncmoe": 0,
+      "backend": "cuda",
+      "resident": false,
+      "pp512": 232.07,
+      "pp512_sd": 0.0,
+      "tg128": 23.81,
+      "tg128_sd": 0.0,
+      "reps": 1,
+      "note": "装不下 + -ncmoe 0：CUDA 接受超额承诺并降速跑完（23.81，比 ncmoe8 的 63.81 更慢=整层卸载兜底），Vulkan 同文件直接拒载 → 退vs拒跟后端分配路径走，跟品牌无关。"
+    },
+    {
+      "model": "Qwen3.6-35B-A3B-Q3_K_S",
+      "quant": "Q3_K_S",
+      "size_gib": 14.13,
+      "ncmoe": 0,
+      "backend": "vulkan",
+      "resident": true,
+      "pp512": 4892.2,
+      "tg128": 160.64,
+      "reps": 1,
+      "note": "贴近 16GB 边界档，全驻留。 复测 r=3（带 nvidia-smi 采样开销）：tg 144.00±1.40 / pp 4803.20±117.49，比 r=1 低 ~10%，疑采样开销或跨批漂移；对外用 r=1 值并注波动区间。"
+    }
+  ]
+}

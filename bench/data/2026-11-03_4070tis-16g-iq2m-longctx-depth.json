@@ -1,0 +1,120 @@
+{
+  "schema": "arc-xpu-bench/1",
+  "tag": "4070tis-16g-iq2_m-longctx-depth",
+  "date": "2026-11-03",
+  "source": "local",
+  "env": {
+    "cpu": "AMD Ryzen 5 9600X",
+    "ram_gb": 32,
+    "os": "Windows",
+    "gpu": "NVIDIA GeForce RTX 4070 Ti SUPER",
+    "chip": "AD103",
+    "compute_cap": "8.9",
+    "vram_visible_gib": 15.99,
+    "nvidia_smi_total_mib": 16376,
+    "ecc": "n/a",
+    "driver": "617.42 (32.0.16.1742)",
+    "stack": {
+      "torch": "2.14.1+cu130",
+      "comfyui": "0.43.0 portable nvidia"
+    },
+    "torch": "2.14.1+cu130",
+    "app": "ComfyUI",
+    "app_version": "0.43.0",
+    "backend": "CUDA",
+    "display": "AMD iGPU",
+    "pcie": "gen4",
+    "stack_note": "2026-11-03 采集，ComfyUI-CUDA（v0.43.0 nvidia portable），模型目录经 extra_model_paths 复用"
+  },
+  "workload": {
+    "model": "Qwen3.6-35B-A3B-UD-IQ2_M.gguf",
+    "quant": "IQ2_M",
+    "size_gib": 10.72,
+    "kv": "q8_0",
+    "fa": true,
+    "harness": "_bench_longctx.py + _bench_longctx_deep.py",
+    "note": "cache_prompt:false 逼真 prefill；浅档 -c 135168、深档 -c 262144"
+  },
+  "rows": {
+    "shallow": [
+      {
+        "depth_target": 512,
+        "prompt_tokens": 257,
+        "decode_tok_s": 122.77933749429609,
+        "prefill_tok_s": 21.254421043630114,
+        "wall_s": 13.14
+      },
+      {
+        "depth_target": 2048,
+        "prompt_tokens": 1025,
+        "decode_tok_s": 141.59126281568163,
+        "prefill_tok_s": 234.19412430932726,
+        "wall_s": 5.28
+      },
+      {
+        "depth_target": 8192,
+        "prompt_tokens": 4097,
+        "decode_tok_s": 139.6655724363944,
+        "prefill_tok_s": 5824.152391783353,
+        "wall_s": 1.62
+      },
+      {
+        "depth_target": 16384,
+        "prompt_tokens": 8193,
+        "decode_tok_s": 139.5981770896308,
+        "prefill_tok_s": 6030.698929519657,
+        "wall_s": 2.27
+      },
+      {
+        "depth_target": 32768,
+        "prompt_tokens": 16385,
+        "decode_tok_s": 135.162892571043,
+        "prefill_tok_s": 5885.526597479551,
+        "wall_s": 3.73
+      },
+      {
+        "depth_target": 65536,
+        "prompt_tokens": 32769,
+        "decode_tok_s": 122.32934334186427,
+        "prefill_tok_s": 5127.358586514494,
+        "wall_s": 7.44
+      },
+      {
+        "depth_target": 131072,
+        "prompt_tokens": 65537,
+        "decode_tok_s": 109.39128487385548,
+        "prefill_tok_s": 4359.025044855983,
+        "wall_s": 16.22
+      }
+    ],
+    "deep": [
+      {
+        "depth_target": 262144,
+        "prompt_tokens": 131073,
+        "decode_tok_s": 88.62990037859623,
+        "prefill_tok_s": 3282.633373557006,
+        "wall_s": 41.43
+      },
+      {
+        "depth_target": 362908,
+        "prompt_tokens": 181455,
+        "decode_tok_s": 79.60151606415006,
+        "prefill_tok_s": 2772.202630527042,
+        "wall_s": 67.13
+      },
+      {
+        "depth_target": 488192,
+        "prompt_tokens": 244097,
+        "decode_tok_s": 70.9342260992152,
+        "prefill_tok_s": 2300.411715615933,
+        "wall_s": 108.0
+      }
+    ]
+  },
+  "fit": {
+    "formula": "decode_ms = 7.03 + 0.000029 * depth_tokens",
+    "b50_fit": "decode_ms = 22.95 + 0.000298 * depth_tokens (B50 SYCL)",
+    "note": "截距 3.27x、注意力斜率 10.3x；深度越深差距越大（浅 3.2x -> 24.4 万 6.8x）"
+  },
+  "b50_ref": "docs/cards/B50-README.md §3.3 深度表"
+}

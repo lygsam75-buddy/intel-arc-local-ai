@@ -1,0 +1,93 @@
+{
+  "arc-xpu-bench": {
+    "schema": "arc-xpu-bench/1",
+    "date": "2026-11-03",
+    "card": "NVIDIA GeForce RTX 4070 Ti SUPER",
+    "card_vendor": "nvidia",
+    "card_code": "4070tis-16g",
+    "driver": "617.42 (32.0.16.1742)",
+    "backend": "vulkan",
+    "llama_cpp_build": "b11753",
+    "llama_cpp_commit": "d8d92973c",
+    "device_pin": "Vulkan1",
+    "usable_vram_mib_vulkan": 16061,
+    "usable_vram_mib_free": 15293,
+    "nvidia_smi_total_mib": 16376,
+    "pcie": "gen4",
+    "compute_cap": "8.9",
+    "harness_cmd": "llama-bench -ngl 999 -fa 1 -ctk q8_0 -ctv q8_0 -p 512 -n 128 -r 3 -dev Vulkan1",
+    "note": "同 build b11753 与 B50/B60/B65/B70 对照。显示器接 AMD 核显。"
+  },
+  "runs": [
+    {
+      "model": "Qwen3.6-35B-A3B-UD-IQ2_M.gguf",
+      "model_id": "qwen3.6-35b-a3b-iq2_m",
+      "size_gib": 10.72,
+      "params_b": 34.66,
+      "quant": "IQ2_M",
+      "ncmoe": 0,
+      "resident": true,
+      "pp512": 5266.38,
+      "pp512_sd": 171.3,
+      "tg128": 155.82,
+      "tg128_sd": 2.47,
+      "reps": 3
+    },
+    {
+      "model": "Qwen3.6-35B-A3B-Q3_K_S.gguf",
+      "model_id": "qwen3.6-35b-a3b-q3_k_s",
+      "size_gib": 14.13,
+      "params_b": 34.66,
+      "quant": "Q3_K_S",
+      "ncmoe": 0,
+      "resident": true,
+      "pp512": 4892.2,
+      "pp512_sd": 0.0,
+      "tg128": 160.64,
+      "tg128_sd": 0.0,
+      "reps": 1,
+      "note": "贴近 16GB 边界档（Q8_0 --allow-requantize 转 Q3_K_S，733 张量）。全驻留，r=1 快测。 复测 r=3（带 nvidia-smi 采样开销）：tg 144.00±1.40 / pp 4803.20±117.49，比 r=1 低 ~10%，疑采样开销或跨批漂移；对外用 r=1 值并注波动区间。"
+    },
+    {
+      "model": "Qwen3.6-35B-A3B-Q4_0.gguf",
+      "model_id": "qwen3.6-35b-a3b-q4_0",
+      "size_gib": 18.35,
+      "params_b": 34.66,
+      "quant": "Q4_0",
+      "ncmoe": 8,
+      "resident": false,
+      "pp512": 1220.98,
+      "pp512_sd": 74.66,
+      "tg128": 63.81,
+      "tg128_sd": 3.97,
+      "reps": 3
+    },
+    {
+      "model": "Qwen3.6-35B-A3B-Q4_0.gguf",
+      "model_id": "qwen3.6-35b-a3b-q4_0",
+      "size_gib": 18.35,
+      "params_b": 34.66,
+      "quant": "Q4_0",
+      "ncmoe": 0,
+      "resident": false,
+      "result": "load_failed",
+      "error": "unable to allocate Vulkan1 buffer",
+      "note": "装不下且不卸载时直接拒绝加载 —— 与 B50 的优雅降级(4.14 tok/s)行为不同"
+    },
+    {
+      "model": "Qwen3-VL-4B-Instruct-Q4_0.gguf",
+      "model_id": "qwen3-vl-4b-q4_0",
+      "size_gib": 2.21,
+      "params_b": 4.02,
+      "quant": "Q4_0",
+      "ncmoe": null,
+      "resident": true,
+      "dense": true,
+      "pp512": 8452.47,
+      "pp512_sd": 144.94,
+      "tg128": 184.73,
+      "tg128_sd": 0.75,
+      "reps": 3
+    }
+  ]
+}

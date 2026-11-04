@@ -1,0 +1,74 @@
+{
+  "schema": "comfyui-xpu-bench/1",
+  "tag": "comfyui-h3-1024x576-4070tis",
+  "date": "2026-11-03",
+  "source": "local",
+  "domain": "comfyui-video",
+  "tool": "bench_f_h3.py + ComfyUI /prompt + /history",
+  "status": "active",
+  "env": {
+    "cpu": "AMD Ryzen 5 9600X",
+    "ram_gb": 32,
+    "os": "Windows",
+    "gpu": "NVIDIA GeForce RTX 4070 Ti SUPER",
+    "chip": "AD103",
+    "compute_cap": "8.9",
+    "vram_visible_gib": 15.99,
+    "nvidia_smi_total_mib": 16376,
+    "ecc": "n/a",
+    "driver": "617.42 (32.0.16.1742)",
+    "stack": {
+      "torch": "2.14.1+cu130",
+      "comfyui": "0.43.0 portable nvidia"
+    },
+    "torch": "2.14.1+cu130",
+    "app": "ComfyUI",
+    "app_version": "0.43.0",
+    "backend": "CUDA",
+    "display": "AMD iGPU",
+    "pcie": "gen4",
+    "stack_note": "2026-11-03 采集，ComfyUI-CUDA（v0.43.0 nvidia portable），模型目录经 extra_model_paths 复用"
+  },
+  "workload": {
+    "model": "MiniMax H3",
+    "task": "text-to-video",
+    "steps": 6,
+    "duration_s": 5.0,
+    "frames": 124,
+    "fps": 24,
+    "dit_file": "MiniMax/minimax_h3_fl2va_pruned_int8_convrot.safetensors",
+    "clip_file": "qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors",
+    "vae_video": "MiniMax/minimax_h3_video_vae_fp16.safetensors",
+    "vae_audio": "MiniMax/minimax_h3_audio_vae_fp32.safetensors",
+    "resolution": "1024x576"
+  },
+  "reserve_vram_gb": 4,
+  "samples": [
+    {
+      "role": "first",
+      "ok": true,
+      "server_sec": 104.07,
+      "loads": 4,
+      "sit": "11.70 s/it",
+      "seed": 20261014
+    },
+    {
+      "role": "newprompt",
+      "ok": true,
+      "server_sec": 98.4,
+      "loads": 0,
+      "sit": "11.74 s/it",
+      "seed": 20261093
+    }
+  ],
+  "summary": {
+    "first_s": 104.07,
+    "newprompt_s": 98.4,
+    "sit_s_per_it": 11.74,
+    "b50_e2e_s": 375.18,
+    "b50_sit_s": 39.68,
+    "e2e_ratio_vs_b50": 3.61,
+    "sit_ratio_vs_b50": 3.38
+  },
+  "notes": "同 B50 b50scan 口径：6 步 · 5 秒 · fresh 提示词 · reserve 4。B50 值取 bench/data 对应 h3_*_b50scan.json。"
+}
