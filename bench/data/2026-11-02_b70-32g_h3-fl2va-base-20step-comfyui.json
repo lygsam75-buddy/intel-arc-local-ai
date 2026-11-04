@@ -20,7 +20,7 @@
     "board_vendor": "GUNNIR 蓝戟 (PCI vendor 1EF7)",
     "comfyui_version": "0.43.2",
     "torch": "2.13.0+xpu",
-    "test_rig": "F:\\ComfyUI-Intel\\ComfyUI-intel-aki-v1.1 (test bed; OmniXPU runtime providers patched for aimdo 0.6.0 / kitchen 0.2.40)",
+    "test_rig": "ComfyUI-intel-aki-v1.1 (test bed; OmniXPU runtime providers patched for aimdo 0.6.0 / kitchen 0.2.40)",
     "env_confidence": {
       "gpu": "recorded",
       "driver": "recorded",
@@ -100,5 +100,5 @@
     "wall_sec_1344x768": 1130.5
   },
   "notes": "The non-distilled H3 default path (res_multistep / 20 steps) run as the speedup baseline for Pika H3 Flex six-step distillation. Same prompt, same seed, same first/last frames, same VAEs as the 6-step record. 832x480 sample is warm while the matching 6-step sample was cold — the 6-step advantage is therefore understated at 480p; the 1344x768 pair is warm-vs-warm.",
-  "log_evidence": "F:\\ComfyUI-Intel\\_smoke_043g.log (server), prompt_ids 1170e2c9-f66a-4c59-a96a-b77f1ac98cec (480p) and f2cf1b91-1efa-4da9-8eb4-0f1dc1ed4926 (768p)."
+  "log_evidence": "_smoke_043g.log (server), prompt_ids 1170e2c9-f66a-4c59-a96a-b77f1ac98cec (480p) and f2cf1b91-1efa-4da9-8eb4-0f1dc1ed4926 (768p)."
 }

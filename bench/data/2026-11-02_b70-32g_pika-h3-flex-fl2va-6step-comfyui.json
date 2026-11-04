@@ -20,7 +20,7 @@
     "board_vendor": "GUNNIR 蓝戟 (PCI vendor 1EF7)",
     "comfyui_version": "0.43.2",
     "torch": "2.13.0+xpu",
-    "test_rig": "F:\\ComfyUI-Intel\\ComfyUI-intel-aki-v1.1 (test bed; OmniXPU runtime providers patched for aimdo 0.6.0 / kitchen 0.2.40)",
+    "test_rig": "ComfyUI-intel-aki-v1.1 (test bed; OmniXPU runtime providers patched for aimdo 0.6.0 / kitchen 0.2.40)",
     "env_confidence": {
       "gpu": "recorded",
       "driver": "recorded",
@@ -74,5 +74,5 @@
     "wall_sec_1344x768": 316.7
   },
   "notes": "Wall clock = queue submit → /history completed (includes TE encode, 6-step sampling, video+audio VAE decode, MP4 encode). Pika H3 Flex released 2026-10-29 (Pika-Labs/Pika-H3-Flex, two LoRA adapters on MiniMax H3). Templates video_pika_h3_flex_* ship in comfyui-workflow-templates 0.11.100 (ComfyUI 0.43.2); runs here use an equivalent hand-built API graph (templates are subgraph-wrapped). No turbo/Lightning LoRA stacked — Pika adapter is already distilled to six steps.",
-  "log_evidence": "F:\\ComfyUI-Intel\\_smoke_043g.log (server), prompt_ids a02ff267-4c62-4374-8a36-e39ef0c4e550 (480p) and 69457d2c-6591-4ee7-a2cd-f3aac4588de6 (768p); API graph archived at F:\\ComfyUI-Intel\\_pika_graph.json."
+  "log_evidence": "_smoke_043g.log (server), prompt_ids a02ff267-4c62-4374-8a36-e39ef0c4e550 (480p) and 69457d2c-6591-4ee7-a2cd-f3aac4588de6 (768p); API graph archived at _pika_graph.json."
 }
