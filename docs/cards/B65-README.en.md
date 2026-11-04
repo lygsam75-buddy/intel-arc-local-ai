@@ -96,19 +96,56 @@ Core ratio **20 / 32 = 0.625**; measured prefill **0.663**, decode **0.699**.
 
 ### 3.3 Long context
 
-**How cost scales with length** (`-c 262144` · `-fa on` · KV q8_0 · all weights resident, feeding progressively longer prompts):
+**Depth curve (2026-11-04 · Q4_0 fully resident · `-fa on` · KV q8_0 · `-ncmoe 0` · `cache_prompt: false` full prefill)**:
 
-| Prompt tokens | Prefill tok/s | Decode tok/s | End-to-end per round |
+| Measured depth | Vulkan prefill | **Vulkan decode** | SYCL decode (10-23) |
 | ---: | ---: | ---: | ---: |
-| 512 | 366.97 | **51.29** | 3.9 s |
-| 32,768 | 569.88 | **37.20** | 58.4 s |
-| 65,536 | 547.19 | **30.02** | 118.8 s |
-| 131,072 | 507.60 | **21.73** | 253.0 s |
-| 196,608 | 472.47 | **17.81** | 405.5 s |
-| 262,144 | 440.77 | **14.24** | 578.5 s |
+| 508 | 259.64 | **91.68** | 51.29 |
+| 7,835 | 1,215.88 | **70.33** | — |
+| 15,653 | 881.07 | **55.63** | — |
+| 31,323 | 569.08 | **39.09** | 37.20 |
+| 62,673 | 331.64 | **24.59** | 30.02 |
+| 125,375 | 180.74 | **14.22** | 21.73 |
+| 250,948 | 94.34 | **7.70** | 14.24 |
 
-**Prefill gets faster as the prompt grows**: a long prompt is batched matrix multiply, and bigger batches saturate the compute.
-**Decode falls monotonically with context (−72%)**: every token re-reads the KV, and KV grows linearly in VRAM with length. That is a bandwidth bill, not a compute bill.
+**Fit `decode_ms = a + b × depth` (2026-11-04 measured, R² = 1.0000)**:
+
+| | Intercept a (weight path) | Slope b (attention per token) | Shape |
+|---|---:|---:|---|
+| **B65 Vulkan** | **10.65 ms** (48% faster) | 0.000475 ms (2.4× slower) | Wins big at shallow depth, loses big at deep context |
+| B65 SYCL (OpenCL) | 20.32 ms | **0.000198 ms** | Slow at shallow depth, steady at deep context |
+| B50 SYCL (IQ2_M reference) | 22.95 ms | 0.000298 ms | — |
+
+**The two lines cross near ~35K. Selection rule: Vulkan for short context / chat (<32K); SYCL for long context (>64K).**
+Mechanism: Vulkan's weight path is fast (efficient GEMM), but the q8_0 KV attention kernel only gets ~53 GB/s effective bandwidth (SYCL ~122 GB/s).
+Switching to f16 KV pulls Vulkan back up (see KV precision below).
+
+**Long prefill halves with every doubling of depth**: 569 (32K) → 332 (64K) → 181 (128K) → 94 (256K) — the normal shape of attention O(n²).
+Versus `intel/llm-scaler#773`'s 4×B70 TP4 @32K at 2,902 tok/s, **TP4 amplifies about 5.1×** (different model, different stack — orders of magnitude only).
+
+**Dual-card concurrency (independent lanes) is loss-free** (2026-11-04, `bench/data/2026-11-04_b65x2-longctx-concurrent-vk.json`):
+
+| Depth | Single card alone | Dual-card concurrent (C0 / C1) | Regression |
+| ---: | ---: | ---: | ---: |
+| 32K | 39.09 | 37.71 / 38.23 | −3.5% / −2.2% |
+| 128K | 14.22 | **14.15 / 14.30** | **−0.5% / +0.6%** |
+
+Versus #773's TP4: c=1→2 single-stream 72.91→3.56 (**collapses 95%**).
+**Same long-context concurrency: independent lanes ±0.5% vs TP4 −95%** — the architecture choice decides concurrency behavior more than the card count does.
+
+**KV precision: f16 is actually a long-context accelerator** (2026-11-04):
+
+| KV precision | `-c` | 128K decode | 256K decode | 256K prefill | Overflow |
+|---|---: | ---: | ---: | ---: | --- |
+| q8_0 | 262144 | 14.22 | 7.70 | 94.34 | none |
+| **f16** | 262144 | — | **31.21** (4.0× faster) | 91.63 | **none** |
+| f16 | 131072 | **46.44** (3.3× faster) | — | 176.89 | **none** (fits in 31.16 GiB) |
+
+The 256K row is a **same-`-c 262144` comparison**, confound eliminated: f16's 4.0× advantage is real, and larger than the 3.3× at 128K.
+Two-point approximate slope: f16 ≈ 0.000084 ms/token, **5.7× lower** than q8_0 Vulkan's 0.000475 (f16 skips the attention kernel's q8_0 dequantization; effective bandwidth ~290 vs ~53 GB/s).
+
+The −26% f16 regression at full context on the B50 (16 GB) is **overflow throttling**, not f16 being slow. The B65 has enough VRAM → f16 KV is a large speedup.
+**Long-context recommendation: if f16 KV fits, use f16** (256K measured with no overflow — it fits).
 
 **Capacity ceiling** (criterion: VRAM must grow proportionally with `-c` for the context to really fit):
 
