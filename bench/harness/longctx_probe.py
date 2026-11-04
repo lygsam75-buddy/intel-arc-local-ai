@@ -180,6 +180,9 @@ def main():
     ap.add_argument("--ecc", default="off")
     ap.add_argument("--device-selector", default="opencl:0")
     ap.add_argument("--sycl-path", default="")
+    ap.add_argument("--backend", default="auto",
+                    help="记录用口径：auto=从 --server-args 里有没有 -dev Vulkan* 推断；"
+                         "也可显式写 Vulkan / SYCL")
     ap.add_argument("--port", type=int, default=8099)
     ap.add_argument("--ctx", type=int, required=True)
     ap.add_argument("--ncmoe", type=int, default=0)
@@ -227,7 +230,11 @@ def main():
             "schema": SCHEMA, "tag": a.tag,
             "date": dt.date.today().isoformat(), "source": "local",
             "env": {"gpu": a.gpu, "driver": a.driver, "ecc": a.ecc,
-                    "backend": "SYCL", "tool": "llama-server",
+                    "backend": (a.backend if a.backend != "auto"
+                                else ("Vulkan" if "-dev" in a.server_args
+                                      and "vulkan" in a.server_args.lower()
+                                      else "SYCL")),
+                    "tool": "llama-server",
                     "device_selector": a.device_selector,
                     "sycl_path": a.sycl_path,
                     "ram_gb": _RAM[0], "commit_limit_gb": _RAM[1]},

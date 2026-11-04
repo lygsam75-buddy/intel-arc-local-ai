@@ -35,7 +35,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.dirname(os.path.dirname(HERE))
 SRC = os.path.join(REPO, 'bench', 'data',
                    '2026-10-25_b65-32g-h3-px-frame-ceiling.json')
-OUT = r'D:/WorkBuddy/2026-10-15-09-22-59/_pxframe_preview.png'
+OUT = '_pxframe_preview.png'  # written to current working directory
 
 INK = '#1F2937'
 MUTED = '#6B7280'
