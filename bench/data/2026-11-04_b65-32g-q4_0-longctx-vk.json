@@ -1,0 +1,116 @@
+{
+ "schema": "arc-xpu-longctx/1",
+ "tag": "b65-32g-q4_0-longctx-vk",
+ "date": "2026-11-04",
+ "source": "local",
+ "env": {
+  "gpu": "Intel Arc Pro B65 32G",
+  "driver": "32.0.101.9150",
+  "ecc": "off",
+  "backend": "Vulkan",
+  "tool": "llama-server",
+  "device_selector": "opencl:0",
+  "sycl_path": "",
+  "ram_gb": 31.1,
+  "commit_limit_gb": 127.1
+ },
+ "model": {
+  "name": "Qwen3.6-35B-A3B-Q4_0",
+  "quant": "Q4_0",
+  "size_gib": 18.36
+ },
+ "ctx_size": 262144,
+ "ncmoe": 0,
+ "server_args": "-fa on -ctk q8_0 -ctv q8_0 -dev Vulkan1",
+ "log": "bench\\logs\\2026-11-04_b65-32g-q4_0-longctx-vk.log",
+ "points": [
+  {
+   "target_tokens": 512,
+   "prompt_chars": 852,
+   "wall_s": 3.35,
+   "prompt_n": 508,
+   "prompt_tok_s": 259.64,
+   "predicted_n": 128,
+   "decode_tok_s": 91.68,
+   "prefill_s": 2.0
+  },
+  {
+   "target_tokens": 8192,
+   "prompt_chars": 13140,
+   "wall_s": 8.29,
+   "prompt_n": 7835,
+   "prompt_tok_s": 1215.88,
+   "predicted_n": 128,
+   "decode_tok_s": 70.33,
+   "prefill_s": 6.4
+  },
+  {
+   "target_tokens": 16384,
+   "prompt_chars": 26247,
+   "wall_s": 20.07,
+   "prompt_n": 15653,
+   "prompt_tok_s": 881.07,
+   "predicted_n": 128,
+   "decode_tok_s": 55.63,
+   "prefill_s": 17.8
+  },
+  {
+   "target_tokens": 32768,
+   "prompt_chars": 52461,
+   "wall_s": 58.34,
+   "prompt_n": 31323,
+   "prompt_tok_s": 569.08,
+   "predicted_n": 128,
+   "decode_tok_s": 39.09,
+   "prefill_s": 55.0
+  },
+  {
+   "target_tokens": 65536,
+   "prompt_chars": 104890,
+   "wall_s": 194.23,
+   "prompt_n": 62673,
+   "prompt_tok_s": 331.64,
+   "predicted_n": 128,
+   "decode_tok_s": 24.59,
+   "prefill_s": 189.0
+  },
+  {
+   "target_tokens": 131072,
+   "prompt_chars": 209748,
+   "wall_s": 702.71,
+   "prompt_n": 125375,
+   "prompt_tok_s": 180.74,
+   "predicted_n": 128,
+   "decode_tok_s": 14.22,
+   "prefill_s": 693.7
+  },
+  {
+   "target_tokens": 262144,
+   "prompt_chars": 419463,
+   "wall_s": 2676.66,
+   "prompt_n": 250948,
+   "prompt_tok_s": 94.34,
+   "predicted_n": 128,
+   "decode_tok_s": 7.7,
+   "prefill_s": 2659.9
+  }
+ ],
+ "load_s": 14.6,
+ "status": "complete",
+ "log_scan": {
+  "lines": 275,
+  "key_lines": [
+   "0.13.773.177 I srv    load_model: initializing, n_slots = 4, n_ctx_slot = 262144, kv_unified = 'true'"
+  ]
+ },
+ "notes": "11-04 B65 单卡 Vulkan 长上下文深度曲线（Q4_0 18.36 GiB 全驻 -ncmoe 0，-fa on -ctk/v q8_0，cache_prompt:false）。256K 点单独补跑（tag longctx-vk-256k，超时放宽至 5400s；首次跑客户端 1800s 超时失败 —— Vulkan prefill@256K 耗时 2660s 本身即斜率问题实证）。模型与 10-23 基线 19.41 GiB 版计算图相同（旧文件多 blk.40 MTP 被 llama.cpp 忽略），速度可比。",
+ "fit": {
+  "formula": "decode_ms = 10.65 + 0.000475 * depth_tokens",
+  "a_ms": 10.65,
+  "b_ms_per_token": 0.000475,
+  "r2": 1.0,
+  "sycl_1023_fit": "decode_ms = 20.32 + 0.000198 * depth_tokens (B65 SYCL/OpenCL, 2026-10-23)",
+  "b50_fit": "decode_ms = 22.95 + 0.000298 * depth_tokens (B50 SYCL, IQ2_M, 2026-10-15)",
+  "note": "截距 a=权重路径开销，斜率 b=注意力成本/token。Vulkan vs SYCL：截距低 48%%（浅深度赢），斜率高 2.4x（35K 交叉，深上下文输）。"
+ }
+}

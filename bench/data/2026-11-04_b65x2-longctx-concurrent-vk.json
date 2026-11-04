@@ -1,0 +1,97 @@
+{
+  "schema": "arc-xpu-dual-longctx/1",
+  "tag": "b65x2-longctx-concurrent-vk",
+  "date": "2026-11-04",
+  "source": "local",
+  "env": {
+    "gpu": "2x Intel Arc Pro B65 32G",
+    "driver": "32.0.101.9150",
+    "ecc": "off",
+    "backend": "Vulkan",
+    "tool": "llama-server",
+    "ram_gb": 31.1,
+    "commit_limit_gb": 127.1,
+    "slots": "bus3=CPU直连x16 / bus16=芯片组x4"
+  },
+  "model": {
+    "name": "Qwen3.6-35B-A3B-Q4_0",
+    "quant": "Q4_0",
+    "size_gib": 18.36
+  },
+  "ctx_size": 131072,
+  "ncmoe": 0,
+  "server_args": "-fa on -ctk q8_0 -ctv q8_0 -dev Vulkan1/Vulkan2",
+  "concurrency": "independent pipelines (one process per card)",
+  "points": [
+    {
+      "target_tokens": 32768,
+      "card": 0,
+      "dev": "Vulkan1",
+      "prompt_chars": 52461,
+      "wall_s": 61.2,
+      "prompt_n": 31323,
+      "prompt_tok_s": 542.12,
+      "predicted_n": 128,
+      "decode_tok_s": 37.71,
+      "prefill_s": 57.8,
+      "concurrent_wall_s": 61.27
+    },
+    {
+      "target_tokens": 32768,
+      "card": 1,
+      "dev": "Vulkan2",
+      "prompt_chars": 52461,
+      "wall_s": 58.65,
+      "prompt_n": 31323,
+      "prompt_tok_s": 566.74,
+      "predicted_n": 128,
+      "decode_tok_s": 38.23,
+      "prefill_s": 55.3,
+      "concurrent_wall_s": 61.27
+    },
+    {
+      "target_tokens": 131072,
+      "card": 0,
+      "dev": "Vulkan1",
+      "prompt_chars": 209748,
+      "wall_s": 711.61,
+      "prompt_n": 125375,
+      "prompt_tok_s": 178.47,
+      "predicted_n": 128,
+      "decode_tok_s": 14.15,
+      "prefill_s": 702.5,
+      "concurrent_wall_s": 711.62
+    },
+    {
+      "target_tokens": 131072,
+      "card": 1,
+      "dev": "Vulkan2",
+      "prompt_chars": 209748,
+      "wall_s": 706.04,
+      "prompt_n": 125375,
+      "prompt_tok_s": 179.87,
+      "predicted_n": 128,
+      "decode_tok_s": 14.3,
+      "prefill_s": 697.0,
+      "concurrent_wall_s": 711.62
+    }
+  ],
+  "logs": [
+    "bench\\logs\\2026-11-04_b65x2-longctx-concurrent-vk-c0-Vulkan1.log",
+    "bench\\logs\\2026-11-04_b65x2-longctx-concurrent-vk-c1-Vulkan2.log"
+  ],
+  "log_scan": [
+    {
+      "lines": 103,
+      "key_lines": [
+        "0.29.397.602 I srv    load_model: initializing, n_slots = 4, n_ctx_slot = 131072, kv_unified = 'true'"
+      ]
+    },
+    {
+      "lines": 102,
+      "key_lines": [
+        "0.09.746.488 I srv    load_model: initializing, n_slots = 4, n_ctx_slot = 131072, kv_unified = 'true'"
+      ]
+    }
+  ]
+}

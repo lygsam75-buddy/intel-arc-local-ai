@@ -1,0 +1,46 @@
+{
+  "schema": "arc-xpu-longctx/1",
+  "tag": "b65-32g-q4_0-longctx-vk-256k",
+  "date": "2026-11-04",
+  "source": "local",
+  "env": {
+    "gpu": "Intel Arc Pro B65 32G",
+    "driver": "32.0.101.9150",
+    "ecc": "off",
+    "backend": "Vulkan",
+    "tool": "llama-server",
+    "device_selector": "opencl:0",
+    "sycl_path": "",
+    "ram_gb": 31.1,
+    "commit_limit_gb": 127.1
+  },
+  "model": {
+    "name": "Qwen3.6-35B-A3B-Q4_0",
+    "quant": "Q4_0",
+    "size_gib": 18.36
+  },
+  "ctx_size": 262144,
+  "ncmoe": 0,
+  "server_args": "-fa on -ctk q8_0 -ctv q8_0 -dev Vulkan1",
+  "log": "bench\\logs\\2026-11-04_b65-32g-q4_0-longctx-vk-256k.log",
+  "points": [
+    {
+      "target_tokens": 262144,
+      "prompt_chars": 419463,
+      "wall_s": 2676.66,
+      "prompt_n": 250948,
+      "prompt_tok_s": 94.34,
+      "predicted_n": 128,
+      "decode_tok_s": 7.7,
+      "prefill_s": 2659.9
+    }
+  ],
+  "load_s": 48.7,
+  "status": "active",
+  "log_scan": {
+    "lines": 141,
+    "key_lines": [
+      "0.48.393.427 I srv    load_model: initializing, n_slots = 4, n_ctx_slot = 262144, kv_unified = 'true'"
+    ]
+  }
+}
