@@ -29,6 +29,8 @@
 > 两张卡插哪两个槽、电源按多少瓦算、钉卡与双实例怎么起、一片 B70 对两片 B65 怎么选，  
 > 全在那篇；**本页只做四张卡的并排比较，不再重复双卡**。
 >
+> 📦 **开箱即用的 ComfyUI 专版整合包 → [`intel-studio-pack`](https://github.com/lygsam75-buddy/intel-studio-pack)** —— 引擎 + 12 条 PIKA H3 Flex / Z-Image 工作流 + 13 模型 + SOP，无启动界面。全量包（约 85 GB）走百度网盘；轻量口径（字节校验模型脚本）在 GitHub。
+>
 > 🔗 仓库：<https://github.com/lygsam75-buddy/intel-arc-local-ai>
 
 **为什么会有这份手册**：Intel 卡便宜、显存大，但开箱确实不能直接用——`llama.cpp` 的 Intel 后端比上游慢一拍、  
