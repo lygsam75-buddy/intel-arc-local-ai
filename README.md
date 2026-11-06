@@ -29,7 +29,7 @@ machine-readable data, and a test registry that states what was tested *and what
 > Which two slots, how many watts to budget, how to pin each card and run two instances, and 1× B70 against
 > 2× B65 — all in that report. **This page compares the four single cards and does not repeat the dual-card numbers.**
 >
-> 📦 **Ready-to-run ComfyUI bundle → [`intel-studio-pack`](https://github.com/lygsam75-buddy/intel-studio-pack)** — engine + 12 PIKA H3 Flex / Z-Image workflows + 13 models + SOP, no launcher UI. Full bundle (~85 GB) via Baidu Netdisk; lightweight track (byte-checked model script) on GitHub.
+> 📦 **Ready-to-run ComfyUI bundle → [`intel-studio-pack`](https://github.com/lygsam75-buddy/intel-studio-pack)** — engine + 12 PIKA H3 Flex / Z-Image workflows + 13 models + SOP, no launcher UI. Full bundle (one archive, ~81 GB) via Baidu Netdisk / USB; lightweight track (byte-checked model script) on GitHub.
 >
 > 🔗 Repository: <https://github.com/lygsam75-buddy/intel-arc-local-ai>
 
@@ -49,6 +49,7 @@ how fast it goes and what it draws.
 | Your goal | Install | Skip |
 |---|---|---|
 | Images today, no command line | Driver + an [all-in-one bundle](docs/install.en.md) (6.0 GB, unzip and double-click) | torch, the XPU runtime, patches, Python — **all bundled** |
+| **Images + H3 video**, 12 ready-made workflows | Driver + the [Intel Studio Pack](https://github.com/lygsam75-buddy/intel-studio-pack) (full bundle via Baidu Netdisk / USB; lightweight = model script) | torch, XPU runtime, 13 models, workflows — **all bundled** |
 | Control versions yourself, follow upstream | Driver + Python 3.13 + three `+xpu` wheels + one pinned-memory patch | — |
 | Chat / coding only | Driver + one llama.cpp zip | **Python is not needed at all** |
 
