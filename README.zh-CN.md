@@ -29,7 +29,7 @@
 > 两张卡插哪两个槽、电源按多少瓦算、钉卡与双实例怎么起、一片 B70 对两片 B65 怎么选，  
 > 全在那篇；**本页只做四张卡的并排比较，不再重复双卡**。
 >
-> 📦 **开箱即用的 ComfyUI 专版整合包 → [`intel-studio-pack`](https://github.com/lygsam75-buddy/intel-studio-pack)** —— 引擎 + 12 条 PIKA H3 Flex / Z-Image 工作流 + 13 模型 + SOP，无启动界面。全量包（单归档包，约 81 GB）走百度网盘 / U 盘；轻量口径（字节校验模型脚本）在 GitHub。
+> 📦 **开箱即用的 ComfyUI 专版整合包 → [`intel-studio-pack`](https://github.com/lygsam75-buddy/intel-studio-pack)** —— 引擎 + 12 条 PIKA H3 Flex / Z-Image 工作流 + 13 模型 + SOP，无启动界面。全量包（5 个分卷，合计约 84 GB）走 [百度网盘](https://pan.baidu.com/s/17QiPfSvUCaR6vXV62v9n3g?pwd=jeg1)（提取码 `jeg1`）/ U 盘；轻量口径（字节校验模型脚本）在 GitHub。
 >
 > 🔗 仓库：<https://github.com/lygsam75-buddy/intel-arc-local-ai>
 
@@ -47,7 +47,6 @@
 | 你的目标          | 要装                                                        | 不用装                                |
 | ------------- | --------------------------------------------------------- | ---------------------------------- |
 | 当天就出图，不想碰命令行  | 驱动 + 一个[整合包](docs/install.md#3-路-a整合包省事那条)（6.0 GB，解压双击即用） | torch、XPU 运行库、补丁、Python——**包里全自带** |
-| **出图加 H3 视频**，12 条现成工作流 | 驱动 + [Intel 专版整合包](https://github.com/lygsam75-buddy/intel-studio-pack)（全量包走百度网盘 / U 盘；轻量=模型脚本） | torch、XPU 运行库、13 个模型、工作流——**包里全自带** |
 | 自己控版本、跟着上游走   | 驱动 + Python 3.13 + 3 个 `+xpu` 轮子 + 一个锁页内存补丁               | —                                  |
 | 只用大模型聊天 / 写代码 | 驱动 + 一个 llama.cpp 压缩包                                     | **Python 完全不用装**                   |
 
